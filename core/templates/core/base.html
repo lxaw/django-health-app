@@ -1,0 +1,96 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+	<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" type = "text/css" href = "{% static 'core/style.css' %}">
+
+
+	{% if strTitle %}
+		<title>socialPOD - {{ strTitle }}</title>
+	{% else %}
+		<title>socialPOD</title>
+	{% endif %}
+</head>
+<body>
+
+<!-- 
+Basic navbar to show it is possible
+-->
+<p class = "navbar-text">{{ request.build_absolute_uri }}</p>
+{% if user.is_authenticated and user.is_staff %}
+	<p style = "color:green">staff {{user.username}}.</p>
+{% elif user.is_authenticated %}
+	<p>logged as {{user.username}}.</p>
+{% endif %}
+
+<nav class="navbar navbar-light bg-light">
+
+	<a class = "navbar-brand" href = "{% url 'core:index' %}">
+		<img src = "{% static 'core/images/arnold_school_of_public_health.jpg' %}" alt = "arnold_school_of_public_health.jpg">
+	</a>
+
+	<a class = "navbar-text" href = "#">
+		Home
+	</a>
+	<a class = "navbar-text" href = "#">
+		About
+	</a>
+
+	{% if user.is_authenticated %}
+		<a class = "navbar-text" href = "#">
+			Profile
+		</a>
+		<a class = "navbar-text" href = "#">
+			Logout
+		</a>
+	{% else %}
+		<a class = "navbar-text" href = "#">
+			Register
+		</a>
+		<a class = "navbar-text" href = "#">
+			Login
+		</a>
+	{% endif %}
+
+	{% if user.is_staff %}
+		<a class = "navbar-text" href = "#">
+			Administration
+		</a>
+	{% endif %}
+</nav>
+
+<!-- If messages, display -->
+{% if messages %}
+	{% for message in messages %}
+		<div class = "alert-{{message.tags}}">{{message}}</div>
+	{% endfor %}
+{% endif %}
+
+<!-- 
+	
+Load the content from a child page
+-->
+	
+<div class = "div__GLOBAL_CONTENT">
+	{% block content %}{% endblock content %}
+	
+
+	{% block javascript %}{% endblock javascript %}
+</div>
+
+</body>
+</html>
