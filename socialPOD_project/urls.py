@@ -23,4 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # core urls
     path('',include('core.urls')),
+    # user urls
+    path('users/',include('users.urls'))
 ]

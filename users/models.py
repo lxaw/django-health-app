@@ -26,7 +26,7 @@ from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin,BaseUse
 
 class CustomUserManager(BaseUserManager):
 
-	def create_superuser(self,email,user_name,password,**other_fields):
+	def create_superuser(self,email,username,password,**other_fields):
 		# this is a required field by Django, cannot change name.
 		other_fields.setdefault("is_superuser",True)
 
@@ -42,19 +42,19 @@ class CustomUserManager(BaseUserManager):
 				"Superuser must be assigned to is_superuser = True"
 			)
 		
-		return self.create_user(email,user_name,password,**other_fields)
+		return self.create_user(email,username,password,**other_fields)
 
-	def create_user(self,email,user_name,password,**other_fields):
+	def create_user(self,email,username,password,**other_fields):
 		# normalize the email by lowercasing domain part
 
-		if not user_name:
+		if not username:
 			raise ValueError(gettext_lazy("Must provide a username."))
 
 		if not email:
 			raise ValueError(gettext_lazy("Must provide email address."))
 
 		email = self.normalize_email(email)
-		user = self.model(email=email,user_name=user_name,**other_fields)
+		user = self.model(email=email,username=username,**other_fields)
 
 		# set the password
 		user.set_password(password)
@@ -66,7 +66,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser,PermissionsMixin):
 	# Authentication of user
 	email = models.EmailField(gettext_lazy('email address'),unique = True)
-	user_name = models.CharField(max_length=150,unique = True)
+	username = models.CharField(max_length=150,unique = True)
 
 	########################
 	# User permissions / boolean traits
@@ -85,7 +85,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 	########################
 	# Custom fields
 	########################
-	is_developer = models.BooleanField(default = True)
+	is_developer = models.BooleanField(default = False)
 	is_pod_plus_member= models.BooleanField(default = True)
 
 	int_points = models.IntegerField(default = 0)	
@@ -102,8 +102,8 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 
 	# USERNAME_FIELD is the default unique field that ID's user
 	# This is the unique field that identies users.
-	USERNAME_FIELD = "user_name"
+	USERNAME_FIELD = "username"
 	REQUIRED_FIELDS = ["email"]
 
 	def __str__(self):
-		return self.user_name
+		return self.username
