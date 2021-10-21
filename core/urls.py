@@ -6,5 +6,7 @@ app_name = "core"
 urlpatterns = [
 	# ex: /
 	path('',core_views.viewIndex,name='index'),
+	# ex: /about/
+	path('about/',core_views.viewAbout,name='about'),
 
 ]

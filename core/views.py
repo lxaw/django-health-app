@@ -4,6 +4,12 @@ from django.http import HttpResponse
 
 # Create your views here.
 
+def viewAbout(request):
+	context = {
+
+	}
+	return render(request,'core/about.html',context = context)
+
 def viewIndex(request):
 	context = {
 		'strTitle':'index',

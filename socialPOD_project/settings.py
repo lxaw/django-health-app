@@ -35,6 +35,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # socialPOD apps
     'core.apps.CoreConfig',
+    # user models
+    'users.apps.UsersConfig',
 
     # django defaults
     'django.contrib.admin',
@@ -133,3 +135,7 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# For custom user model
+AUTH_USER_MODEL = 'users.CustomUser'
+

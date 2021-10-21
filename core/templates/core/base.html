@@ -31,10 +31,16 @@
 Basic navbar to show it is possible
 -->
 <p class = "navbar-text">{{ request.build_absolute_uri }}</p>
-{% if user.is_authenticated and user.is_staff %}
-	<p style = "color:green">staff {{user.username}}.</p>
+
+{% if user.is_developer %}
+	<p style = 'color:green'>developer {{user.user_name}}</p>
+	<a href = "{% url 'admin:index' %}">
+		Administration
+	</a>
+{% elif user.is_staff %}
+	<p style = "color:green">staff {{user.user_name}}</p>
 {% elif user.is_authenticated %}
-	<p>logged as {{user.username}}.</p>
+	<p>logged as {{user.user_name}}.</p>
 {% endif %}
 
 <nav class="navbar navbar-light bg-light">
@@ -43,11 +49,11 @@ Basic navbar to show it is possible
 		<img src = "{% static 'core/images/arnold_school_of_public_health.jpg' %}" alt = "arnold_school_of_public_health.jpg">
 	</a>
 
-	<a class = "navbar-text" href = "#">
+	<a class = "navbar-text" href = "{% url 'core:index' %}">
 		Home
 	</a>
-	<a class = "navbar-text" href = "#">
-		About
+	<a class = "navbar-text" href = "{% url 'core:about' %}">
+		About the Project
 	</a>
 
 	{% if user.is_authenticated %}
@@ -66,11 +72,6 @@ Basic navbar to show it is possible
 		</a>
 	{% endif %}
 
-	{% if user.is_staff %}
-		<a class = "navbar-text" href = "#">
-			Administration
-		</a>
-	{% endif %}
 </nav>
 
 <!-- If messages, display -->
