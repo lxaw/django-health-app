@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+
+{% block content %}
+
+<h2>
+	Welcome,  <strong>{{user.username}}</strong>
+</h2>
+
+<h2>Your stats:</h2>
+
+{% for key,value in dictUserStats.items %}
+<li>
+	{{key}} : {{value}}
+</li>
+{% endfor %}
+
+{% endblock %}

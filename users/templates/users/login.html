@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<form method = "POST">
+	{% csrf_token %}	
+	<fieldset>
+		<legend>
+			Log In
+		</legend>
+		{{form.as_p}}
+	</fieldset>
+	<button type='submit'>
+		Log In
+	</button>
+</form>
+
+
+<div>
+	<a href = "{% url 'users:register' %}">
+		Or sign up
+	</a>
+</div>
+
+{% endblock content %}

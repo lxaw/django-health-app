@@ -17,12 +17,16 @@ from django.contrib import admin
 from django.urls import path,include
 
 
-
 urlpatterns = [
     # admin urls
     path('admin/', admin.site.urls),
+
+    ##############################
+    # URLS for user created apps
+    ##############################
     # core urls
     path('',include('core.urls')),
     # user urls
     path('users/',include('users.urls'))
+
 ]

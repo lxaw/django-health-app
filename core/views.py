@@ -16,8 +16,6 @@ def viewIndex(request):
 
 	intParticipantCount = CustomUser.objects.filter(is_staff = False, is_developer = False).count()
 
-	print(intParticipantCount)
-
 	context = {
 		'strTitle':'index',
 		'intTotalParticipantCount': intParticipantCount,
