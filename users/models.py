@@ -1,26 +1,26 @@
+###########################
+# Django imports
+###########################
 from django.db import models
 
 from django.utils import timezone
 # get text lazy allows at any point you think data may be translated into user's lang
 from django.utils.translation import gettext_lazy
 
-# Create your models here.
-
-
 # import models
-
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin,BaseUserManager
 
-# Create your models here.
+###########################
+# Non-django imports
+###########################
+
+import datetime
 
 ###########################
 # Custom user models
 # With reference to: 
 # https://www.youtube.com/watch?v=Ae7nc1EGv-A
 ###########################
-
-# Notation: "m" in front = model, then followed by type of field
-# camel casing for name of var, snake case for type
 
 # PermissionsMixin allows the user class to get the permissions that dj needs
 
@@ -107,3 +107,23 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 
 	def __str__(self):
 		return self.username
+
+
+############################
+# Models directly related to users
+############################
+
+class KCalAmount(models.Model):
+	# associate with a user
+	author = models.ForeignKey(CustomUser,on_delete = models.CASCADE)
+
+	amount = models.FloatField(default=0.0)
+	date = models.DateTimeField(default=timezone.now)
+
+	def boolWithinXDays(self,intDays):
+		now = timezone.now()
+
+		return now - datetime.timedelta(days=intDays) <= self.date <= now
+	
+	def __str__(self):
+		return str(self.amount)

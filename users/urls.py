@@ -15,4 +15,8 @@ urlpatterns = [
 	path('logout/',auth_views.LogoutView.as_view(template_name="users/logout.html"),name='logout'),
 	# ex: /users/profile/
 	path('profile/',users_views.viewProfile,name='profile'),
+	# ex: /users/upload_kcals/
+	path('upload_kcals',users_views.viewUploadKCals,name='upload_kcals'),
+	# ex: /users/delete_kcal/7/
+	path('delete_kcal/<int:pk>',users_views.viewDeleteKCal,name='delete_kcal'),
 ]

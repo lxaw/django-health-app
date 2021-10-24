@@ -3,7 +3,10 @@ from django.contrib.auth.admin import UserAdmin
 from django.forms import TextInput, Textarea
 
 from .models import CustomUser
+
+from .models import KCalAmount
 # Register your models here.
+
 
 # This all deals with what the admin page shows for custom user class.
 class CustomUserAdminConfig(UserAdmin):

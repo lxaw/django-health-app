@@ -7,12 +7,39 @@
 	Welcome,  <strong>{{user.username}}</strong>
 </h2>
 
-<h2>Your stats:</h2>
+<h4>
+	<a href = "{% url 'users:upload_kcals' %}">
+		Upload your KCal count for today.
+	</a>
+</h4>
 
-{% for key,value in dictUserStats.items %}
-<li>
-	{{key}} : {{value}}
-</li>
-{% endfor %}
+<h2>Your Stats:</h2>
+
+<ul>
+	{% for key,value in dictUserStats.items %}
+	<li>
+		{{key}} : {{value}}
+	</li>
+	{% endfor %}
+</ul>
+
+<h2>Your History:</h2>
+
+<ul>
+	{% for modelKCal in setKCals %}
+
+		<li>
+			<p>Date: {{modelKCal.date}}</p>
+		</li>
+		<li>
+			<p>Amount: {{modelKCal.amount}}</p>
+		</li>
+		<li>
+			<a href = "{% url 'users:delete_kcal' modelKCal.id %}" >
+				Delete?
+			</a>
+		</li>
+	{% endfor %}
+</ul>
 
 {% endblock %}
