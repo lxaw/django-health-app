@@ -33,12 +33,22 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # ############################
     # socialPOD apps
-    'core.apps.CoreConfig',
-    # user models
-    'users.apps.UsersConfig',
+    # ############################
 
+    'core.apps.CoreConfig',
+    # user
+    'users.apps.UsersConfig',
+    # newsfeed
+    'newsfeed.apps.NewsfeedConfig',
+    # podcasts 
+    'podcasts.apps.PodcastsConfig',
+
+
+    # ############################
     # django defaults
+    # ############################
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

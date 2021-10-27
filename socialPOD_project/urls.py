@@ -27,6 +27,9 @@ urlpatterns = [
     # core urls
     path('',include('core.urls')),
     # user urls
-    path('users/',include('users.urls'))
-
+    path('users/',include('users.urls')),
+    # newsfeed urls
+    path('newsfeed/',include('newsfeed.urls')),
+    # podcasts urls
+    path('podcasts/',include('podcasts.urls')),
 ]

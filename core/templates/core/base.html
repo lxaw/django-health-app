@@ -37,6 +37,7 @@ Basic navbar to show it is possible
 	<a href = "{% url 'admin:index' %}">
 		Administration
 	</a>
+
 {% elif user.is_staff %}
 	<p style = "color:green">staff {{user.user_name}}</p>
 {% elif user.is_authenticated %}
@@ -52,6 +53,7 @@ Basic navbar to show it is possible
 	<a class = "navbar-text" href = "{% url 'core:index' %}">
 		Home
 	</a>
+
 	<a class = "navbar-text" href = "{% url 'core:about' %}">
 		About the Project
 	</a>
@@ -60,10 +62,10 @@ Basic navbar to show it is possible
 		<a class = "navbar-text" href = "#">
 			Community
 		</a>
-		<a class = "navbar-text" href = "#">
+		<a class = "navbar-text" href = "{% url 'newsfeed:index' %}">
 			Newsfeed
 		</a>
-		<a class = "navbar-text" href = "#">
+		<a class = "navbar-text" href = "{% url 'podcasts:index' %}">
 			Podcasts
 		</a>
 		<a class = "navbar-text" href = "{% url 'users:profile' %}">

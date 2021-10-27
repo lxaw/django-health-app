@@ -13,33 +13,42 @@
 	</a>
 </h4>
 
-<h2>Your Stats:</h2>
+<br>
 
-<ul>
-	{% for key,value in dictUserStats.items %}
-	<li>
-		{{key}} : {{value}}
-	</li>
-	{% endfor %}
-</ul>
+<h2>Your information:</h2>
+<strong>Email:</strong> {{dictUserStats.strEmail}}
+<br>
+<strong>Username:</strong> {{dictUserStats.strUsername}}
+<br>
+<strong>Days Active:</strong> {{dictUserStats.intDaysActive}}
+<br>
+<strong>Points:</strong> {{dictUserStats.intPoints}}
+<br>
+<strong>Date joined:</strong>{{dictUserStats.strDateJoined}}
+<br>
+
+<h2>Your Diet Stats:</h2>
+<strong>Standard Deviation:</strong>{{dictUserStats.floatStd}}
+<br>
+<strong>Mean:</strong>{{dictUserStats.floatMean}}
+<br>
+<strong>Median:</strong>{{dictUserStats.floatMedian}}
+<br>
+
+<h2>Your Graphs:</h2>
 
 <h2>Your History:</h2>
 
-<ul>
 	{% for modelKCal in setKCals %}
 
-		<li>
-			<p>Date: {{modelKCal.date}}</p>
-		</li>
-		<li>
-			<p>Amount: {{modelKCal.amount}}</p>
-		</li>
-		<li>
+
+	<div class = "div__kcal-entry">
+			<p><strong>Date:</strong> {{modelKCal.date}}</p>
+			<p><strong>Amount:</strong> {{modelKCal.amount}}</p>
 			<a href = "{% url 'users:delete_kcal' modelKCal.id %}" >
 				Delete?
 			</a>
-		</li>
+	</div>
 	{% endfor %}
-</ul>
 
 {% endblock %}

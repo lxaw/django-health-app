@@ -21,6 +21,11 @@ from django.http import HttpResponseForbidden
 
 from .models import KCalAmount
 
+#################################
+# Package installs
+#################################
+import numpy as np
+
 
 #################################
 # Views relating to user registration
@@ -60,10 +65,17 @@ def viewProfile(request):
 
 	user = request.user
 
-	###################
-	# These types may not be correct.
-	# ie: I do not know how HTML treats bools
-	###################
+
+	# performing calculations
+	# In reality, we may want the more important / longer calculations to be performed and stored in the model
+	# Standard deviation
+
+	arrfloatKCals = [i.amount for i in user.kcalamount_set.all()]
+
+	# Calculating user stats
+	floatStd = np.std(arrfloatKCals)
+	floatMean = np.mean(arrfloatKCals)
+	floatMedian = np.median(arrfloatKCals)
 
 	context = {
 		"dictUserStats" :{
@@ -76,6 +88,10 @@ def viewProfile(request):
 			"intUsersHelped":user.int_users_helped,
 			"strDateJoined":user.date_joined,
 			"intKCalUploadCount":user.kcalamount_set.count(),
+			# user stats
+			"floatStd":floatStd,
+			"floatMean":floatMean,
+			"floatMedian":floatMedian,
 		},
 		"setKCals":user.kcalamount_set.all(),
 	}
