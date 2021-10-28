@@ -35,6 +35,7 @@ class CustomUserChangeForm(UserChangeForm):
 #############################
 
 class KCalAmountForm(forms.ModelForm):
+
 	class Meta:
 		model = KCalAmount
 
@@ -42,5 +43,8 @@ class KCalAmountForm(forms.ModelForm):
 		fields = [
 			"amount"
 		]
+		widgets = {
+			'amount':forms.TextInput(attrs={'cols':5,'rows':20,'placeholder':"Input a value."},)
+		}
 
 		exclude = ()

@@ -112,21 +112,27 @@ def viewUploadKCals(request):
 
 	if request.method == "POST":
 
+		
+
 		formKCalForm = KCalAmountForm(request.POST)
 
-		if formKCalForm.is_valid():
+		if formKCalForm.is_valid() and formKCalForm.cleaned_data['amount'] > 0:
 			modelKCalCreated = formKCalForm.save(commit=False)
 
 			modelKCalCreated.author = user
 			modelKCalCreated.save()
 
 			return redirect('users:profile')
+		else:
+
+			messages.error(request,"Invalid KCal amount inputted.")
+			return redirect('users:profile')
 
 	context = {
 		"formKCalForm":formKCalForm,
 	}
 
-	return render(request,'users/upload_kcals.html',context);
+	return render(request,'users/upload_kcals.html',context)
 
 @login_required
 def viewDeleteKCal(request,pk):

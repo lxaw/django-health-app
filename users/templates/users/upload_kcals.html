@@ -2,10 +2,17 @@
 
 {% block content %}
 
+
+<h1>Enter today's KCal amount.</h1>
 <form method = "POST">
+	{{formKCalForm.non_field_errors}}
 	{% csrf_token %}
 
-	{{formKCalForm.as_p}}
+	<div class="form-group">
+	{{formKCalForm.amount.errors}}
+	<label for="kcal_amount">Amount: </label>
+	{{formKCalForm.amount}}
+	</div>
 
 	<input type="submit" value = "save">
 

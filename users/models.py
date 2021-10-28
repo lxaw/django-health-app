@@ -120,6 +120,11 @@ class KCalAmount(models.Model):
 	amount = models.FloatField(default=0.0)
 	date = models.DateTimeField(default=timezone.now)
 
+	class Meta:
+		constraints = [
+			models.CheckConstraint(check=models.Q(amount__gt=float(0)),name="amount_gt_0")
+		]
+
 	def boolWithinXDays(self,intDays):
 		now = timezone.now()
 

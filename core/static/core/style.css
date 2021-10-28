@@ -1,6 +1,39 @@
+/*
+***********************************
+* General styles for core/base
+***********************************
+*/
+.div__GLOBAL_CONTENT{
+    margin:50px;
+}
+/*
+***********************************
+* Navbar styles
+***********************************
+*/
+#navbar__main{
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(52,9,121,1) 100%, rgba(88,225,2,1) 100%, rgba(0,212,255,1) 100%);
+}
+.navbar__main__a-tag{
+    text-decoration: none;
+    font-size: large;
+    font-weight:bold;
+}
+.navbar__main__a-tag:hover{
+    text-decoration: none;
+}
+
+
+
+
+/*
+***********************************
+* Styles for Profile Page
+***********************************
+*/
 .div__kcal-entry{
     border-radius: 10px;
-    background-color: rgb(179, 245, 223);
+    background-color: rgb(233, 239, 255);
     margin:20px;
     width:50%;
     padding:10px;
