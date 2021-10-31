@@ -37,6 +37,13 @@
 
 <h2>Your Graphs:</h2>
 
+<!-- kcal info for grab by javascript -->
+{{listKCals|json_script:"jsonKCals"}}
+
+<div class = "div__users-profile-chart-container">
+	<canvas id = "canvas__users-profile-chart__id"></canvas>
+</div>
+
 <h2>Your History:</h2>
 
 	{% for modelKCal in setKCals %}
@@ -52,3 +59,48 @@
 	{% endfor %}
 
 {% endblock %}
+
+{% block javascript %}
+<script>
+var arrKCals = JSON.parse(document.getElementById('jsonKCals').textContent);
+
+var arrLabels = [];
+var arrData = [];
+var arrBackgroundColor = [];
+var arrBorderColor = [];
+
+// populate the arrays
+for(let kcalobjKCal of arrKCals){
+	arrLabels.push(kcalobjKCal.date);
+	arrData.push(kcalobjKCal.amount);
+	arrBackgroundColor.push("rgba(0,0,0,0.2)");
+	arrBorderColor.push("rgba(0,0,0,1)");
+}
+
+var ctx = document.getElementById('canvas__users-profile-chart__id').getContext('2d');
+
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+		labels: arrLabels,
+        datasets: [{
+            label: arrLabels,
+            data: arrData,
+			backgroundColor:arrBackgroundColor,
+			borderColor:arrBorderColor,
+            borderWidth: 1
+        }]
+    },
+    options: {
+		maintainAspectRatio:false,
+		responsive:true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+</script>
+{% endblock javascript %}

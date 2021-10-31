@@ -16,6 +16,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
+	<!-- ChartJS -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+	<!-- SocialPOD custom styles -->
 	<link rel="stylesheet" type = "text/css" href = "{% static 'core/style.css' %}">
 
 
@@ -59,8 +62,8 @@ Basic navbar to show it is possible
 	</a>
 
 	{% if user.is_authenticated %}
-		<a class = "navbar-text navbar__main__a-tag" href = "#">
-			Community
+		<a class = "navbar-text navbar__main__a-tag" href = "{% url 'communities:index' %}">
+			Communities
 		</a>
 		<a class = "navbar-text navbar__main__a-tag" href = "{% url 'newsfeed:index' %}">
 			Newsfeed

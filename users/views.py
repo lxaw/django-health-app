@@ -77,6 +77,10 @@ def viewProfile(request):
 	floatMean = np.mean(arrfloatKCals)
 	floatMedian = np.median(arrfloatKCals)
 
+
+	# for serialization
+	listKCals = list(user.kcalamount_set.all().values('date','amount'))
+
 	context = {
 		"dictUserStats" :{
 			"strEmail": user.email,
@@ -94,6 +98,7 @@ def viewProfile(request):
 			"floatMedian":floatMedian,
 		},
 		"setKCals":user.kcalamount_set.all(),
+		"listKCals":listKCals,
 	}
 
 	return render(request,'users/profile.html',context = context)
@@ -111,8 +116,6 @@ def viewUploadKCals(request):
 	formKCalForm = KCalAmountForm(instance = modelKCalInstance)
 
 	if request.method == "POST":
-
-		
 
 		formKCalForm = KCalAmountForm(request.POST)
 

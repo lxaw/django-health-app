@@ -32,4 +32,6 @@ urlpatterns = [
     path('newsfeed/',include('newsfeed.urls')),
     # podcasts urls
     path('podcasts/',include('podcasts.urls')),
+    # communities urls
+    path('communities/',include('communities.urls')),
 ]

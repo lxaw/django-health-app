@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'newsfeed.apps.NewsfeedConfig',
     # podcasts 
     'podcasts.apps.PodcastsConfig',
+    # communities
+    'communities.apps.CommunitiesConfig',
 
 
     # ############################
