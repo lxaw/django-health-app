@@ -23,6 +23,18 @@
     text-decoration: none;
 }
 
+/*
+***********************************
+* Styles for Communities Page
+***********************************
+*/
+.div__communities-post{
+    border-radius: 10px;
+    background-color: rgb(233, 239, 255);
+    margin:20px;
+    width:50%;
+    padding:10px;
+}
 
 
 

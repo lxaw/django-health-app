@@ -43,8 +43,6 @@ Basic navbar to show it is possible
 
 {% elif user.is_staff %}
 	<p style = "color:green">staff {{user.user_name}}</p>
-{% elif user.is_authenticated %}
-	<p>logged as {{user.user_name}}.</p>
 {% endif %}
 
 <nav class="navbar" id = "navbar__main">
