@@ -6,8 +6,9 @@ from django.contrib.auth.decorators import login_required
 #####################################
 # HTML routing imports
 #####################################
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 #####################################
 # Messages
@@ -72,5 +73,13 @@ def viewCreatePost(request):
 	}
 	return render(request, 'communities/create_post.html',context)
 
+def viewLikePost(request,post_pk):
+	modelPost = get_object_or_404(Post,id=request.POST.get('post_pk'))
+	if(modelPost.likes.filter(id=request.user.id).exists()):
+		modelPost.likes.remove(request.user)
+	else:
+		modelPost.likes.add(request.user)
+	
+	return HttpResponseRedirect(reverse('blogpost-detail',args=[str(post_pk)]))
 
 	

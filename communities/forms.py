@@ -14,6 +14,7 @@ class PostForm(forms.ModelForm):
 
 		# the editable fields by user
 		fields = [
+			"title",
 			"text_content",
 		]
 		exclude = ()
