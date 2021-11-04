@@ -38,6 +38,11 @@
 .p__communities-post-title{
     font-weight: bold;
 }
+.btn__like-post--active{
+    background-color: rgb(101, 226, 101);
+}
+.btn__like-post--inactive{
+}
 
 
 

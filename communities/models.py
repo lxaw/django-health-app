@@ -5,6 +5,13 @@ from django.db import models
 from django.utils import timezone
 
 ##########################################
+# For templating
+##########################################
+from django import template
+# instantiate the register
+register = template.Library()
+
+##########################################
 # Outside libraries
 ##########################################
 import datetime

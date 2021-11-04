@@ -12,23 +12,48 @@ Welcome, <strong>{{user.username}}.</strong>
 
 <h4>Recent posts:</h4>
 
-{% for modelPost in qsetLastFivePosts %}
+{% for modelPost in listModelPosts %}
+
+
 	<div class = "div__communities-post">
 		<p class = "p__communities-post-title">"{{modelPost.title}}"</p>
 		<p><strong>{{modelPost.author}}</strong> on {{modelPost.pub_date}}</p>
 		<p>{{modelPost.text_content}}</p>
 		<div class = "div__communities-post-likes">{{modelPost.likes}}</div>
-		<button id = "btn__like-post">Like post</button>
+		{% if user in modelPost.user_likes.all %}
+			<button  data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post btn__like-post--active" id = "btn__like-post${{modelPost.id}}">Like</button>
+			{{modelPost.user_likes.count}}
+		{% else %}
+			<button data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post" id = "btn__like-post${{modelPost.id}}">Like</button>
+			{{modelPost.user_likes.count}}
+		{% endif %}
 	</div>
 {% endfor %}
 
 {% endblock content %}
 
 {% block javascript %}
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
-	var btn = document.getElementById("btn__like-post");
-	btn.addEventListener("click",()=>{
-		alert('post liked');
-	})
+	function update_post(strUrl){
+		$.ajax({
+			url:strUrl,
+			success:function(){
+				window.location.reload();
+			}
+		})
+	}
+	let arrbtns = document.getElementsByClassName("btn__like-post")
+
+	for(let btn of arrbtns){
+		// get the id
+		let strUrl = btn.getAttribute("data-url");
+		btn.addEventListener("click",()=>{
+			update_post(strUrl);
+		})
+	}
+
 </script>
-{% endblock %}
+{% endblock javascript %}
+

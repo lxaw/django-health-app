@@ -32,10 +32,11 @@ from django.utils import timezone
 
 @login_required
 def viewIndex(request):
-	querysetLastFivePosts = Post.objects.all()
+	listModelPosts = Post.objects.all()
+
 
 	context = {
-		"qsetLastFivePosts":querysetLastFivePosts,
+		"listModelPosts":listModelPosts,
 	}
 	return render(request,'communities/index.html',context = context)
 
@@ -73,13 +74,14 @@ def viewCreatePost(request):
 	}
 	return render(request, 'communities/create_post.html',context)
 
-def viewLikePost(request,post_pk):
-	modelPost = get_object_or_404(Post,id=request.POST.get('post_pk'))
-	if(modelPost.likes.filter(id=request.user.id).exists()):
-		modelPost.likes.remove(request.user)
+def viewLikePost(request,post_id):
+	modelPost = get_object_or_404(Post,id=post_id)
+
+	if(modelPost.user_likes.filter(id=request.user.id).exists()):
+		modelPost.user_likes.remove(request.user)
 	else:
-		modelPost.likes.add(request.user)
+		modelPost.user_likes.add(request.user)
 	
-	return HttpResponseRedirect(reverse('blogpost-detail',args=[str(post_pk)]))
+	return redirect('communities:index')
 
 	
