@@ -19,13 +19,13 @@ Welcome, <strong>{{user.username}}.</strong>
 		<p class = "p__communities-post-title">"{{modelPost.title}}"</p>
 		<p><strong>{{modelPost.author}}</strong> on {{modelPost.pub_date}}</p>
 		<p>{{modelPost.text_content}}</p>
-		<div class = "div__communities-post-likes">{{modelPost.likes}}</div>
+
+		<p id = "p__post-likes${{modelPost.id}}">{{modelPost.user_likes.count}}</p>
+
 		{% if user in modelPost.user_likes.all %}
 			<button  data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post btn__like-post--active" id = "btn__like-post${{modelPost.id}}">Like</button>
-			{{modelPost.user_likes.count}}
 		{% else %}
-			<button data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post" id = "btn__like-post${{modelPost.id}}">Like</button>
-			{{modelPost.user_likes.count}}
+			<button  data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post" id = "btn__like-post${{modelPost.id}}">Like</button>
 		{% endif %}
 	</div>
 {% endfor %}
@@ -37,10 +37,29 @@ Welcome, <strong>{{user.username}}.</strong>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
 	function update_post(strUrl){
+		console.log(strUrl);
+		let strPostId = strUrl.split('\/').pop();
+		let btn = document.getElementById("btn__like-post$" + strPostId)
+		let pPostLikes = document.getElementById("p__post-likes$" + strPostId);
+		let intCurrrentLikeCount = parseInt(pPostLikes.innerText,10);
+
 		$.ajax({
 			url:strUrl,
 			success:function(){
-				window.location.reload();
+				if(btn.classList.contains("btn__like-post--active")){
+					// remove
+					// --
+
+					intCurrrentLikeCount -= 1;
+					btn.classList.remove("btn__like-post--active");
+				}
+				else{
+					// ++
+					intCurrrentLikeCount += 1;
+					btn.classList.add("btn__like-post--active");
+				}
+				// update like count
+				pPostLikes.innerHTML = intCurrrentLikeCount;
 			}
 		})
 	}
