@@ -7,11 +7,13 @@ from .models import Post
 class PostAdmin(admin.ModelAdmin):
 
 	fieldsets = [
+		("Title",{"fields":['title']}),
 		("Author, Text Content",{'fields':['author','text_content']}),
 		('Date',{'fields':["pub_date"]}),
+		('Slug',{'fields':["slug"]}),
 	]
 
-	list_display = ('author','text_content')
+	list_display = ('author','title','text_content')
 
 	list_filter = ['pub_date']
 

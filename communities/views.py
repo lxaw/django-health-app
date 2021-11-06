@@ -15,6 +15,8 @@ from django.urls import reverse
 #####################################
 from django.contrib import messages
 
+from users.models import CustomUser
+
 #####################################
 # Necessary models
 #####################################
@@ -74,6 +76,7 @@ def viewCreatePost(request):
 	}
 	return render(request, 'communities/create_post.html',context)
 
+@login_required
 def viewLikePost(request,post_id):
 	modelPost = get_object_or_404(Post,id=post_id)
 
@@ -84,4 +87,26 @@ def viewLikePost(request,post_id):
 	
 	return redirect('communities:index')
 
-	
+@login_required
+def viewPostDetail(request, slug,username):
+	postAuthor = get_object_or_404(CustomUser, username=username)
+	modelPost = get_object_or_404(Post,slug=slug,author=postAuthor)
+
+	context = {
+		"modelPost":modelPost,
+	}
+	return render(request, 'communities/post_detail.html',context)
+
+@login_required
+def viewProfile(request, username):
+	modelUser = get_object_or_404(CustomUser, username = username)
+
+	context = {
+		"strUsername":modelUser.username,
+		"intUsersHelped":modelUser.int_users_helped,
+		"intDaysActive":modelUser.int_days_active,
+		"strDateJoined":modelUser.date_joined,
+		"strAbout":modelUser.text_about,
+	}
+
+	return render(request, "communities/profile.html",context)

@@ -5,11 +5,14 @@ from django.db import models
 from django.utils import timezone
 
 ##########################################
-# For templating
+# Dj url imports
 ##########################################
-from django import template
-# instantiate the register
-register = template.Library()
+from django.urls import reverse
+
+##########################################
+# Dj slugs
+##########################################
+from django.template.defaultfilters import slugify
 
 ##########################################
 # Outside libraries
@@ -30,7 +33,7 @@ class Post(models.Model):
 	# associate with user
 	author = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
 	# associate with a title
-	title = models.CharField(max_length=200)
+	title = models.CharField(max_length=200,unique=True,null=False)
 	# associate with text
 	text_content = models.CharField(max_length = 300)
 
@@ -42,6 +45,23 @@ class Post(models.Model):
 
 	# associate with likes
 	user_likes = models.ManyToManyField(CustomUser, related_name="user_likes")
+
+	# slug field
+	slug = models.SlugField(null=False)
+
+	def save(self, *args, **kwargs):
+		if not self.id:
+			# newly created obj, so set slug
+			self.slug = slugify(self.title)
+
+		super(Post,self).save(*args, **kwargs)
+
+
+
+	def get_absolute_url(self):
+		return reverse('post_detail',kwargs={"slug":self.slug,
+			"username":self.author.username}
+			)
 	
 	def like_count(self):
 		return self.user_likes.count()
@@ -52,6 +72,4 @@ class Post(models.Model):
 		return now - datetime.timedelta(days=intDays) <= self.date <= now
 	
 	def __str__(self):
-		return self.text_content
-
-
+		return self.title

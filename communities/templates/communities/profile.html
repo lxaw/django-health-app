@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<h3>You're looking at <span style="color: red">{{strUsername}}'s</span> profile page.</h3>
+
+<h3>About:</h3>
+{{strAbout}}
+
+<h4>Stats:</h4>
+<ul>
+	<li>
+		Users helped: {{strUsersHelped}}
+	</li>
+	<li>
+		Days active: {{intDaysActive}}
+	</li>
+	<li>
+		Date joined: {{strDateJoined}}
+	</li>
+</ul>
+
+
+{% endblock %}

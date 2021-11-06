@@ -1,3 +1,11 @@
-from django.test import TestCase
+##########################################
+# Django imports
+##########################################
+from django.test import TestCase, Client
 
-# Create your tests here.
+##########################################
+# Model imports
+##########################################
+from .models import Post
+
+# Tests

@@ -1,0 +1,18 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<h3>You're looking at post "{{modelPost.title}}"</h3>
+<h4>
+	Author: 
+	<a href = "{% url 'communities:profile' modelPost.author.username %}">
+		{{modelPost.author}}
+	</a>
+</h4>
+<p>
+	{{modelPost.text_content}}
+</p>
+
+<h3>Comments</h3>
+
+
+{% endblock %}
