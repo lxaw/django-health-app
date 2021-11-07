@@ -31,6 +31,7 @@ Welcome, <strong>{{user.username}}.</strong>
 		{% else %}
 			<button  data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post" id = "btn__like-post${{modelPost.id}}">Like</button>
 		{% endif %}
+		Total Comments: {{modelPost.comments.count}}
 	</div>
 {% endfor %}
 

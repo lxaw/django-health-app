@@ -5,9 +5,9 @@ from django import forms
 # Necessary models
 #####################################
 
-from .models import Post
-from users.models import CustomUser
+from .models import Post, Comment
 
+# Form for creating post
 class PostForm(forms.ModelForm):
 	class Meta:
 		model = Post
@@ -23,3 +23,11 @@ class PostForm(forms.ModelForm):
 		widgets = {
 			'text_content':forms.Textarea(attrs={'rows':10,'cols':50}),
 		}
+
+# Form for creating Comments
+class CommentForm(forms.ModelForm):
+	class Meta:
+		model = Comment
+		fields = [
+			'body',
+		]

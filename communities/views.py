@@ -21,12 +21,12 @@ from users.models import CustomUser
 # Necessary models
 #####################################
 
-from .models import Post
+from .models import Post,Comment
 
 #####################################
 # Necessary forms
 #####################################
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 #####################################
 # Outside imports
 #####################################
@@ -34,8 +34,8 @@ from django.utils import timezone
 
 @login_required
 def viewIndex(request):
-	listModelPosts = Post.objects.all()
-
+	# order the posts
+	listModelPosts = Post.objects.all().order_by('-pub_date')
 
 	context = {
 		"listModelPosts":listModelPosts,
@@ -89,11 +89,14 @@ def viewLikePost(request,post_id):
 
 @login_required
 def viewPostDetail(request, slug,username):
-	postAuthor = get_object_or_404(CustomUser, username=username)
-	modelPost = get_object_or_404(Post,slug=slug,author=postAuthor)
+	modelPostAuthor = get_object_or_404(CustomUser, username=username)
+	modelPost = get_object_or_404(Post,slug=slug,author=modelPostAuthor)
+
+	listmodelComments = modelPost.comments.all
 
 	context = {
 		"modelPost":modelPost,
+		"listmodelComments":listmodelComments,
 	}
 	return render(request, 'communities/post_detail.html',context)
 
@@ -110,3 +113,70 @@ def viewProfile(request, username):
 	}
 
 	return render(request, "communities/profile.html",context)
+
+############
+# Creating comments
+# With reference to:
+# https://stackoverflow.com/questions/44837733/how-to-make-add-replies-to-comments-in-django
+############
+@login_required
+def viewCreateComment(request,username,slug):
+	# get the author
+	modelPostAuthor = get_object_or_404(CustomUser,username = username)
+	# get the post
+	modelPost = get_object_or_404(Post, slug = slug,author = modelPostAuthor)
+
+	# get list of active parent comments
+	listComments = modelPost.comments.filter(active = True, parent__isnull=True)
+
+
+	if request.method == "POST":
+		print("asdfasdfasd")
+		# get the current user
+		modelUser = request.user
+
+		# form for comment
+		formCommentForm = CommentForm(data=request.POST)
+
+		if formCommentForm.is_valid():
+
+			modelParentObj = None
+			# try to get parent comment id from hidden input
+			try:
+				intParentId = int(request.POST.get("intParentId"))
+			except:
+				intParentId = None
+			# if parent has been submitted get the parent's id
+			if intParentId:
+				modelParentObj = Comment.objects.get(id=intParentId)
+				# if there exists a parent
+				if modelParentObj:
+					# create reply
+					modelReplyComment = formCommentForm.save(commit=False)
+					# put user with comment
+					modelReplyComment.author = modelUser
+					# put the parent id in the reply
+					modelReplyComment.parent = modelParentObj
+			# Else, this is a normal comment
+			# create but dont save to db
+			modelNewComment = formCommentForm.save(commit = False)
+			modelNewComment.post = modelPost
+			modelNewComment.author = modelUser
+
+			# save
+			modelNewComment.save()
+			messages.success(request, "Comment created.")
+			return redirect('communities:index')
+
+	else:
+		formCommentForm = CommentForm()
+
+	context = {
+		"formCommentForm":formCommentForm,
+		"listComments":listComments,
+		"modelPost":modelPost,
+	}
+
+
+	return render(request,'communities/create_comment.html',context=context)
+

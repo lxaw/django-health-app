@@ -12,7 +12,29 @@
 	{{modelPost.text_content}}
 </p>
 
-<h3>Comments</h3>
+<h3>Comments:</h3>
+
+{% for modelComment in listmodelComments %}
+	<div class = "div__communities-post-comment">
+		Author: {{modelComment.author}}
+		<br>
+		Date: {{modelComment.pub_date}}
+		<br>
+		Content: {{modelComment.body}}
+		<br>
+		<h5>Reply</h5>
+		<form>
+			<input type = "hidden" name = "parent_id" value = "{{modelComment.id}}">
+			<input type = "submit" value = "Reply">
+		</form>
+	</div>
+{% endfor %}
+
+<h4>
+	<a href = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}">
+		Create a comment.
+	</a>
+</h4>
 
 
 {% endblock %}

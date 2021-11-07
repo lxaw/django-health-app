@@ -33,7 +33,7 @@ class Post(models.Model):
 	# associate with user
 	author = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
 	# associate with a title
-	title = models.CharField(max_length=200,unique=True,null=False)
+	title = models.CharField(max_length=200,null=False)
 	# associate with text
 	text_content = models.CharField(max_length = 300)
 
@@ -48,6 +48,12 @@ class Post(models.Model):
 
 	# slug field
 	slug = models.SlugField(null=False)
+
+	# for deactivating inappropriate comments
+	active = models.BooleanField(default=True)
+
+	class Meta:
+		unique_together = [['author','title']]
 
 	def save(self, *args, **kwargs):
 		if not self.id:
@@ -73,3 +79,26 @@ class Post(models.Model):
 	
 	def __str__(self):
 		return self.title
+
+class Comment(models.Model):
+	# associate with post
+	post = models.ForeignKey(Post, on_delete = models.CASCADE,related_name="comments")
+	# associate with user
+	author = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+	
+	body = models.TextField()
+
+	pub_date = models.DateTimeField(default=timezone.now)
+
+	# for deactivating inappropriate comments
+	active = models.BooleanField(default = True)
+
+	# if comment on other comments
+	parent = models.ForeignKey('self',null=True, blank = True, related_name = 'replies',on_delete=models.CASCADE)
+
+	class Meta:
+		# sort by time created
+		ordering = ('pub_date',)
+	
+	def __str__(self):
+		return "Comment by {}".format(self.author.username)

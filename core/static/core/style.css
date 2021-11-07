@@ -45,6 +45,13 @@
 }
 
 
+.div__communities-post-comment{
+    border-radius: 10px;
+    background-color: rgb(255, 254, 235);
+    margin:20px;
+    width:50%;
+    padding:10px;
+}
 
 /*
 ***********************************
