@@ -92,11 +92,15 @@ def viewPostDetail(request, slug,username):
 	modelPostAuthor = get_object_or_404(CustomUser, username=username)
 	modelPost = get_object_or_404(Post,slug=slug,author=modelPostAuthor)
 
-	listmodelComments = modelPost.comments.all
+	listmodelComments = modelPost.comments.all().order_by("-pub_date")
+
+	# form for creating a comment
+	formCommentForm = CommentForm()
 
 	context = {
 		"modelPost":modelPost,
 		"listmodelComments":listmodelComments,
+		"formCommentForm":formCommentForm,
 	}
 	return render(request, 'communities/post_detail.html',context)
 
@@ -126,12 +130,7 @@ def viewCreateComment(request,username,slug):
 	# get the post
 	modelPost = get_object_or_404(Post, slug = slug,author = modelPostAuthor)
 
-	# get list of active parent comments
-	listComments = modelPost.comments.filter(active = True, parent__isnull=True)
-
-
 	if request.method == "POST":
-		print("asdfasdfasd")
 		# get the current user
 		modelUser = request.user
 
@@ -162,21 +161,20 @@ def viewCreateComment(request,username,slug):
 			modelNewComment = formCommentForm.save(commit = False)
 			modelNewComment.post = modelPost
 			modelNewComment.author = modelUser
-
 			# save
 			modelNewComment.save()
-			messages.success(request, "Comment created.")
-			return redirect('communities:index')
+	return redirect(reverse("communities:post_detail",kwargs = {'username':modelPost.author.username,'slug':modelPost.slug}))
 
-	else:
-		formCommentForm = CommentForm()
+@login_required
+def viewDeleteComment(request,comment_id):
+	modelComment = get_object_or_404(Comment,id = comment_id)	
+	modelParentPost = modelComment.post
+	modelCommentAuthor =  modelComment.author
 
-	context = {
-		"formCommentForm":formCommentForm,
-		"listComments":listComments,
-		"modelPost":modelPost,
-	}
+	if request.user == modelCommentAuthor:
 
-
-	return render(request,'communities/create_comment.html',context=context)
+		messages.success(request,"Comment successfully deleted.")
+		modelComment.delete()
+		
+	return redirect(reverse("communities:post_detail",kwargs = {'username':modelParentPost.author.username,'slug':modelParentPost.slug}))
 

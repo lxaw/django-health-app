@@ -39,10 +39,9 @@ Welcome, <strong>{{user.username}}.</strong>
 
 {% block javascript %}
 
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
 	function update_post(strUrl){
-		console.log(strUrl);
+		console.log(strUrl)
 		let strPostId = strUrl.split('\/').pop();
 		let btn = document.getElementById("btn__like-post$" + strPostId)
 		let pPostLikes = document.getElementById("p__post-likes$" + strPostId);

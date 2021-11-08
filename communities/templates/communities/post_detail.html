@@ -11,11 +11,17 @@
 <p>
 	{{modelPost.text_content}}
 </p>
+<h3>Create a comment.</h3>
+<form method = "POST" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" >
+	{% csrf_token %}
+	{{formCommentForm.as_p}}
+	<input type = "submit" value = "Post" >
+</form>
 
 <h3>Comments:</h3>
 
 {% for modelComment in listmodelComments %}
-	<div class = "div__communities-post-comment">
+	<div class = "div__communities-post-comment" id = "div__communities-post-comment${{modelComment.id}}">
 		Author: {{modelComment.author}}
 		<br>
 		Date: {{modelComment.pub_date}}
@@ -27,6 +33,15 @@
 			<input type = "hidden" name = "parent_id" value = "{{modelComment.id}}">
 			<input type = "submit" value = "Reply">
 		</form>
+		{% if modelComment.author == user %}
+
+		<btn id = "btn__delete-comment${{modelComment.id}}" class = "btn__delete-comment" data-url = "{% url 'communities:delete_comment' modelComment.id %}">
+			Delete?
+			<!-- <a href = "{% url 'communities:delete_comment' modelComment.id %}">
+				Delete?
+			</a> -->
+		</btn>
+		{% endif %}
 	</div>
 {% endfor %}
 
@@ -36,5 +51,33 @@
 	</a>
 </h4>
 
-
 {% endblock %}
+
+{% block javascript %}
+<script>
+	function update_comment(strUrl){
+		let strCommentId = strUrl.split("\/").pop();
+		let strDiv = "div__communities-post-comment$" + strCommentId;
+		let divComment = document.getElementById(strDiv);
+		
+		$.ajax({
+			url:strUrl,
+			success:function(){
+				// delete the comment
+				// hide it
+				divComment.style.display = "None";
+			}
+		})
+	}
+
+	let arrbtns = document.getElementsByClassName("btn__delete-comment");
+	for(let btn of arrbtns){
+		// get the id
+		let strUrl = btn.getAttribute('data-url');
+		btn.addEventListener("click",()=>{
+			update_comment(strUrl);
+		})
+	}
+
+</script>
+{% endblock javascript %}
