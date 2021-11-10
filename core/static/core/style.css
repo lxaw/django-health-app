@@ -47,10 +47,20 @@
 
 .div__communities-post-comment{
     border-radius: 10px;
-    background-color: rgb(255, 254, 235);
+    background-color: rgb(215, 192, 252);
     margin:20px;
     width:50%;
     padding:10px;
+}
+.div__communities-post-comment-reply{
+    border-radius: 10px;
+    background-color: #c3c2ff;
+    margin:20px;
+    width:50%;
+    padding:10px;
+}
+.btn__communities-post-comment-delete{
+    background-color: rgb(255, 126, 126);
 }
 
 /*

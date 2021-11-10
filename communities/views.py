@@ -92,7 +92,8 @@ def viewPostDetail(request, slug,username):
 	modelPostAuthor = get_object_or_404(CustomUser, username=username)
 	modelPost = get_object_or_404(Post,slug=slug,author=modelPostAuthor)
 
-	listmodelComments = modelPost.comments.all().order_by("-pub_date")
+	# filter only those comments that are not replies
+	listmodelComments = modelPost.comments.filter(active = True, parent__isnull = True).order_by("-pub_date")
 
 	# form for creating a comment
 	formCommentForm = CommentForm()

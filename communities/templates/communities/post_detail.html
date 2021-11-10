@@ -14,7 +14,12 @@
 <h3>Create a comment.</h3>
 <form method = "POST" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" >
 	{% csrf_token %}
-	{{formCommentForm.as_p}}
+	{{formCommentForm.non_field_errors}}
+	<div>
+		{{formCommentForm.body.errors}}
+		{{formCommentForm.body}}
+	</div>
+	<!-- {{formCommentForm.as_p}} -->
 	<input type = "submit" value = "Post" >
 </form>
 
@@ -22,34 +27,51 @@
 
 {% for modelComment in listmodelComments %}
 	<div class = "div__communities-post-comment" id = "div__communities-post-comment${{modelComment.id}}">
-		Author: {{modelComment.author}}
+		<strong>Author: </strong>{{modelComment.author}}
 		<br>
-		Date: {{modelComment.pub_date}}
+		<strong>Date: </strong>{{modelComment.pub_date}}
 		<br>
-		Content: {{modelComment.body}}
+		{{modelComment.body|linebreaks}}
 		<br>
-		<h5>Reply</h5>
-		<form>
-			<input type = "hidden" name = "parent_id" value = "{{modelComment.id}}">
-			<input type = "submit" value = "Reply">
-		</form>
-		{% if modelComment.author == user %}
 
-		<btn id = "btn__delete-comment${{modelComment.id}}" class = "btn__delete-comment" data-url = "{% url 'communities:delete_comment' modelComment.id %}">
+		<div>
+			{% if modelComment.replies.count > 0 %}
+			<button data-reply-count={{modelComment.replies.count}} data-id = {{modelComment.id}} class = "btn__show-hide-reply">
+				See {{modelComment.replies.count}} repl{{modelComment.replies.count|pluralize:"y,ies"}}.
+			</button>
+			<div style="display:none" id = "div__communities-replies-comment${{modelComment.id}}">
+				{% for modelCommentReply in modelComment.replies.all %}
+					<div class = "div__communities-post-comment-reply" id = "div__communities-post-comment${{modelCommentReply.id}}">
+						<strong>Author:</strong> {{modelCommentReply.author}}
+						<br>
+						<strong>Date:</strong> {{modelCommentReply.pub_date}}
+						<br>
+						{{modelCommentReply.body|linebreaks}}
+					</div>
+				{% endfor %}
+			</div>
+			{% endif %}
+		</div>
+
+		<div>
+			<form action = "{% url 'communities:create_comment' modelComment.author modelPost.slug %}" method = "POST">
+				{% csrf_token %}
+				{{formCommentForm.non_field_errors}}
+				<div>
+					{{formCommentForm.body.errors}}
+					{{formCommentForm.body}}
+				</div>
+				<input type = "hidden" name = "intParentId" value = "{{modelComment.id}}">
+				<input type = "submit" value = "Reply">
+			</form>
+		</div>
+		{% if modelComment.author == user %}
+		<button id = "btn__delete-comment${{modelComment.id}}" class = "btn__delete-comment btn btn-danger" data-url = "{% url 'communities:delete_comment' modelComment.id %}">
 			Delete?
-			<!-- <a href = "{% url 'communities:delete_comment' modelComment.id %}">
-				Delete?
-			</a> -->
-		</btn>
+		</button>
 		{% endif %}
 	</div>
 {% endfor %}
-
-<h4>
-	<a href = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}">
-		Create a comment.
-	</a>
-</h4>
 
 {% endblock %}
 
@@ -65,13 +87,35 @@
 			success:function(){
 				// delete the comment
 				// hide it
-				divComment.style.display = "None";
+				divComment.style.display = "none";
 			}
 		})
 	}
+	function hide_show_reply(btn){
+		let strId = btn.getAttribute('data-id');
+		let divId = "div__communities-replies-comment$" + strId;
+		let divHideShow = document.getElementById(divId);
 
-	let arrbtns = document.getElementsByClassName("btn__delete-comment");
-	for(let btn of arrbtns){
+		let strReplyCount = btn.getAttribute('data-reply-count');
+
+		if(divHideShow.style.display == "none"){
+			divHideShow.style.display = "block";
+			btn.innerText = "Close replies";
+		}else{
+			divHideShow.style.display = "none";
+			btn.innerText = "See " + strReplyCount + " replies.";
+		}
+	}
+
+	let arrbtnShowHideComments = document.getElementsByClassName("btn__show-hide-reply");
+	for(let btn of arrbtnShowHideComments){
+		btn.addEventListener("click",()=>{
+			hide_show_reply(btn);
+		});
+	}
+
+	let arrbtnDeleteComment = document.getElementsByClassName("btn__delete-comment");
+	for(let btn of arrbtnDeleteComment){
 		// get the id
 		let strUrl = btn.getAttribute('data-url');
 		btn.addEventListener("click",()=>{
