@@ -44,19 +44,22 @@
 .btn__like-post--inactive{
 }
 
+.div__communities-post-detail{
+    border-radius:10px;
+    border-color: black;
+    background-color: red;
+}
 
 .div__communities-post-comment{
     border-radius: 10px;
     background-color: rgb(215, 192, 252);
     margin:20px;
-    width:50%;
     padding:10px;
 }
 .div__communities-post-comment-reply{
     border-radius: 10px;
     background-color: #c3c2ff;
     margin:20px;
-    width:50%;
     padding:10px;
 }
 .btn__communities-post-comment-delete{
@@ -78,4 +81,12 @@
 .div__users-profile-chart-container{
     height:300px;
     width:400px;
+}
+
+/*
+Styles for forms
+*/
+
+.form__comment-reply{
+
 }

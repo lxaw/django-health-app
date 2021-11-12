@@ -2,15 +2,16 @@
 
 {% block content %}
 <h3>You're looking at post "{{modelPost.title}}"</h3>
-<h4>
+<div class = "div__communities-post">
 	Author: 
 	<a href = "{% url 'communities:profile' modelPost.author.username %}">
 		{{modelPost.author}}
 	</a>
-</h4>
-<p>
-	{{modelPost.text_content}}
-</p>
+	<p>
+		{{modelPost.text_content}}
+	</p>
+</div>
+
 <h3>Create a comment.</h3>
 <form method = "POST" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" >
 	{% csrf_token %}
@@ -27,7 +28,7 @@
 
 {% for modelComment in listmodelComments %}
 	<div class = "div__communities-post-comment" id = "div__communities-post-comment${{modelComment.id}}">
-		<strong>Author: </strong>{{modelComment.author}}
+		<strong>Author: </strong><a href = "{% url 'communities:profile' modelComment.author.username %}">{{modelComment.author}}</a>
 		<br>
 		<strong>Date: </strong>{{modelComment.pub_date}}
 		<br>
@@ -42,26 +43,29 @@
 			<div style="display:none" id = "div__communities-replies-comment${{modelComment.id}}">
 				{% for modelCommentReply in modelComment.replies.all %}
 					<div class = "div__communities-post-comment-reply" id = "div__communities-post-comment${{modelCommentReply.id}}">
-						<strong>Author:</strong> {{modelCommentReply.author}}
+						<strong>Author:</strong> <a href = "{% url 'communities:profile' modelCommentReply.author.username %}">{{modelCommentReply.author}}</a>
 						<br>
 						<strong>Date:</strong> {{modelCommentReply.pub_date}}
 						<br>
 						{{modelCommentReply.body|linebreaks}}
 					</div>
+					<button class = 'btn__reply-to-comment' data-parent-id="{{modelComment.id}}" data-comment-author = "{{modelCommentReply.author}}">
+						reply
+					</button>
+
 				{% endfor %}
 			</div>
 			{% endif %}
 		</div>
 
 		<div>
-			<form action = "{% url 'communities:create_comment' modelComment.author modelPost.slug %}" method = "POST">
+			<form id = "form__comment-reply${{modelComment.id}}" class = "form__comment-reply" action = "{% url 'communities:create_comment' modelComment.author modelPost.slug %}" method = "POST">
 				{% csrf_token %}
 				{{formCommentForm.non_field_errors}}
-				<div>
 					{{formCommentForm.body.errors}}
 					{{formCommentForm.body}}
-				</div>
 				<input type = "hidden" name = "intParentId" value = "{{modelComment.id}}">
+				<br>
 				<input type = "submit" value = "Reply">
 			</form>
 		</div>
@@ -105,6 +109,20 @@
 			divHideShow.style.display = "none";
 			btn.innerText = "See " + strReplyCount + " replies.";
 		}
+	}
+	function populate_reply_field(btn){
+		let strCommentAuthor = btn.getAttribute("data-comment-author");
+		let strCommentParentId = btn.getAttribute('data-parent-id');
+		let formCommentForm = document.getElementById('form__comment-reply$' + strCommentParentId);
+		let textarea = formCommentForm.children[1]
+		textarea.value = "@" + strCommentAuthor + " ";
+	}
+
+	let arrbtnReplyToComments = document.getElementsByClassName('btn__reply-to-comment');
+	for(let btn of arrbtnReplyToComments){
+		btn.addEventListener('click',()=>{
+			populate_reply_field(btn);
+		});
 	}
 
 	let arrbtnShowHideComments = document.getElementsByClassName("btn__show-hide-reply");

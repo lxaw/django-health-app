@@ -21,7 +21,8 @@ class PostForm(forms.ModelForm):
 
 		# change size of form
 		widgets = {
-			'text_content':forms.Textarea(attrs={'rows':10,'cols':50}),
+			'text_content':forms.Textarea(attrs={'rows':10,'cols':50,
+			'style':'resize:none'}),
 		}
 
 # Form for creating Comments
@@ -32,5 +33,6 @@ class CommentForm(forms.ModelForm):
 			'body',
 		]
 		widgets = {
-			'body':forms.Textarea(attrs={'rows':5,'cols':20}),
+			'body':forms.Textarea(attrs={'rows':2,'cols':20,
+			'style':'resize:none'}),
 		}

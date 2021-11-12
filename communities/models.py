@@ -102,3 +102,8 @@ class Comment(models.Model):
 	
 	def __str__(self):
 		return "Comment by {}".format(self.author.username)
+
+	def boolIsReply(self):
+		if(self.parent):
+			return True
+		return False
