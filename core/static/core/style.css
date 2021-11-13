@@ -28,22 +28,38 @@
 * Styles for Communities Page
 ***********************************
 */
-.div__communities-post{
-    border-radius: 10px;
-    background-color: rgb(233, 239, 255);
-    margin:20px;
-    width:50%;
-    padding:10px;
-}
 .p__communities-post-title{
     font-weight: bold;
 }
 .btn__like-post--active{
     background-color: rgb(101, 226, 101);
+    border-radius: 5px;
 }
 .btn__like-post--inactive{
+    border-radius: 5px;
 }
 
+.btn__delete-comment{
+    background-color: rgb(255, 115, 115);
+    border-radius: 5px;
+}
+.btn__reply-to-comment{
+    border-radius: 5px;
+}
+.btn__communities-post-comment-delete{
+    background-color: rgb(255, 126, 126);
+}
+/*
+Inputs
+*/
+.input__reply-to-comment{
+    border-radius: 5px;
+    background-color: rgb(101, 226, 101);
+}
+
+/*
+divs
+*/
 .div__communities-post-detail{
     border-radius:10px;
     border-color: black;
@@ -52,7 +68,7 @@
 
 .div__communities-post-comment{
     border-radius: 10px;
-    background-color: rgb(215, 192, 252);
+    background-color: rgb(241, 233, 255);
     margin:20px;
     padding:10px;
 }
@@ -62,8 +78,11 @@
     margin:20px;
     padding:10px;
 }
-.btn__communities-post-comment-delete{
-    background-color: rgb(255, 126, 126);
+.div__communities-post{
+    border-radius: 10px;
+    background-color: rgb(233, 239, 255);
+    margin:20px;
+    padding:10px;
 }
 
 /*
@@ -86,7 +105,7 @@
 /*
 Styles for forms
 */
-
-.form__comment-reply{
-
+.form__create-comment{
+    padding:10px;
+    margin:20px;
 }
