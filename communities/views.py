@@ -93,7 +93,7 @@ def viewPostDetail(request, slug,username):
 	modelPost = get_object_or_404(Post,slug=slug,author=modelPostAuthor)
 
 	# filter only those comments that are not replies
-	listmodelComments = modelPost.comments.filter(active = True, parent__isnull = True).order_by("-pub_date")
+	listmodelComments = modelPost.comments.filter(active = True).order_by("pub_date")
 
 	# form for creating a comment
 	formCommentForm = CommentForm()
@@ -167,6 +167,17 @@ def viewCreateComment(request,username,slug):
 			# save
 			modelNewComment.save()
 	return redirect(reverse("communities:post_detail",kwargs = {'username':modelPost.author.username,'slug':modelPost.slug}))
+
+@login_required
+def viewDeletePost(request,post_id):
+	modelPost = get_object_or_404(Post, id = post_id)
+	modelPostAuthor = modelPost.author
+
+	if request.user == modelPostAuthor:
+		messages.success(request, "Post successfully deleted.")
+		modelPost.delete()
+	
+	return redirect('communities:index')
 
 @login_required
 def viewDeleteComment(request,comment_id):

@@ -4,6 +4,10 @@
 
 <h3>You're looking at <span style="color: red">{{strUsername}}'s</span> profile page.</h3>
 
+{% if user.is_pod_plus_member %}
+<p style="color:rgb(255, 218, 6);font-weight: bolder;">POD+ Member</p>
+{% endif %}
+
 <h3>About:</h3>
 {{strAbout}}
 

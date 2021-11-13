@@ -15,7 +15,7 @@ Welcome, <strong>{{user.username}}.</strong>
 {% for modelPost in listModelPosts %}
 
 
-	<div class = "div__communities-post">
+	<div id = "div__post${{modelPost.id}}" class = "div__communities-post">
 		<a href = "{% url 'communities:post_detail' modelPost.author.username modelPost.slug %}" class = "p__communities-post-title">
 			{{modelPost.title}}
 		</a>
@@ -32,6 +32,11 @@ Welcome, <strong>{{user.username}}.</strong>
 			<button  data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post" id = "btn__like-post${{modelPost.id}}">Like</button>
 		{% endif %}
 		Total Comments: {{modelPost.comments.count}}
+		{% if modelPost.author == user %}
+			<button class = "btn__delete-post" data-url = "{% url 'communities:delete_post' modelPost.id %}">
+				Delete?
+			</button>
+		{% endif %}
 	</div>
 {% endfor %}
 
@@ -40,36 +45,54 @@ Welcome, <strong>{{user.username}}.</strong>
 {% block javascript %}
 
 <script>
+	function delete_post(strUrl){
+		let strPostId = strUrl.split("\/").pop();
+		let divPost = document.getElementById('div__post$' + strPostId);
+		divPost.style.display = "none"
+
+		$.ajax({
+			url:strUrl,
+		})
+	}
+
+
 	function update_post(strUrl){
-		console.log(strUrl)
 		let strPostId = strUrl.split('\/').pop();
 		let btn = document.getElementById("btn__like-post$" + strPostId)
 		let pPostLikes = document.getElementById("p__post-likes$" + strPostId);
 		let intCurrrentLikeCount = parseInt(pPostLikes.innerText,10);
+		if(btn.classList.contains("btn__like-post--active")){
+			// remove
+			// --
+
+			intCurrrentLikeCount -= 1;
+			btn.classList.remove("btn__like-post--active");
+		}
+		else{
+			// ++
+			intCurrrentLikeCount += 1;
+			btn.classList.add("btn__like-post--active");
+		}
+		// update like count
+		pPostLikes.innerHTML = intCurrrentLikeCount;
 
 		$.ajax({
 			url:strUrl,
-			success:function(){
-				if(btn.classList.contains("btn__like-post--active")){
-					// remove
-					// --
-
-					intCurrrentLikeCount -= 1;
-					btn.classList.remove("btn__like-post--active");
-				}
-				else{
-					// ++
-					intCurrrentLikeCount += 1;
-					btn.classList.add("btn__like-post--active");
-				}
-				// update like count
-				pPostLikes.innerHTML = intCurrrentLikeCount;
-			}
 		})
 	}
-	let arrbtns = document.getElementsByClassName("btn__like-post")
 
-	for(let btn of arrbtns){
+	// associating delete buttons with function
+	let arrbtnsDelete = document.getElementsByClassName("btn__delete-post");
+	for(let btn of arrbtnsDelete){
+		let strUrl = btn.getAttribute('data-url');
+		btn.addEventListener('click',()=>{
+			delete_post(strUrl);
+		})
+	}
+
+	// associating like buttons with function
+	let arrbtnsLike = document.getElementsByClassName("btn__like-post")
+	for(let btn of arrbtnsLike){
 		// get the id
 		let strUrl = btn.getAttribute("data-url");
 		btn.addEventListener("click",()=>{

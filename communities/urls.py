@@ -13,6 +13,7 @@ urlpatterns = [
 	path('posts/<str:username>/<slug:slug>/create_comment',communities_views.viewCreateComment,name="create_comment" ),
 	# ex: /communities/posts/username/slug-my-post-title/delete_comment/
 	path('posts/delete_comment/<int:comment_id>',communities_views.viewDeleteComment,name="delete_comment" ),
+	path('posts/delete_post/<int:post_id>',communities_views.viewDeletePost,name="delete_post"),
 	# ex: /communities/posts/username/slug-my-post-title/
 	path('posts/<str:username>/<slug:slug>',communities_views.viewPostDetail,name="post_detail"),
 	# ex: /communities/like/2/
