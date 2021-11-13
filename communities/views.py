@@ -169,6 +169,17 @@ def viewCreateComment(request,username,slug):
 	return redirect(reverse("communities:post_detail",kwargs = {'username':modelPost.author.username,'slug':modelPost.slug}))
 
 @login_required
+def viewDeletePost(request,post_id):
+	modelPost = get_object_or_404(Post, id = post_id)
+	modelPostAuthor = modelPost.author
+
+	if request.user == modelPostAuthor:
+		messages.success(request, "Post successfully deleted.")
+		modelPost.delete()
+	
+	return redirect('communities:index')
+
+@login_required
 def viewDeleteComment(request,comment_id):
 	modelComment = get_object_or_404(Comment,id = comment_id)	
 	modelParentPost = modelComment.post
