@@ -110,6 +110,8 @@ def viewProfile(request, username):
 	modelUser = get_object_or_404(CustomUser, username = username)
 
 	context = {
+		"boolIsPodPlusMember":modelUser.is_pod_plus_member,
+		"imgProfilePic":modelUser.profile_picture,
 		"strUsername":modelUser.username,
 		"intUsersHelped":modelUser.int_users_helped,
 		"intDaysActive":modelUser.int_days_active,

@@ -90,6 +90,22 @@ divs
 * Styles for Profile Page
 ***********************************
 */
+.img__users-profile-img{
+    width:100px;
+    height:100px;
+}
+.div__users-profile{
+    border-radius: 10px;
+    background-color: rgb(233, 239, 255);
+    padding:10px;
+}
+.div__users-profile-media{
+    margin:10px;
+}
+.div__users-profile-media-account{
+    margin-left:15px;
+    margin-top:15px;
+}
 .div__kcal-entry{
     border-radius: 10px;
     background-color: rgb(233, 239, 255);

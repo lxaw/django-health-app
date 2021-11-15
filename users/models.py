@@ -95,6 +95,9 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 	text_about = models.TextField(gettext_lazy(
 		'about'),max_length=500,blank = True)
 
+	# need Pillow library for images
+	profile_picture = models.ImageField(default="users/profile_pics/defaults/default_profile_pic.jpg",upload_to="users/profile_pics")
+
 	date_joined = models.DateTimeField(default=timezone.now)
 	
 	# Defining that we use a custom account manager
