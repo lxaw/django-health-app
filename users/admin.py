@@ -23,7 +23,8 @@ class CustomUserAdminConfig(UserAdmin):
 	fieldsets = (
 		('User Information',{'fields':('email','username',)}),
 		('User Permissions',{'fields':('is_staff','is_active','is_developer','is_pod_plus_member')}),
-		('User Personal Information',{'fields':('text_about',)})
+		('User Personal Information',{'fields':('text_about',)}),
+		('User Media',{'fields':('profile_picture',)}),
 	)
 
 # Register the configuration

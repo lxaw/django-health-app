@@ -2,9 +2,19 @@
 
 {% block content %}
 
-<h3>You're looking at <span style="color: red">{{strUsername}}'s</span> profile page.</h3>
+<div style="align-items:flex-start;" class = "div__users-profile">
+	<div style="display:inline-flex" class = "div__users-profile-media">
+		<img class = "rounded-circle img__users-profile-img" src = "{{imgProfilePic.url}}">
+		<div class = "div__users-profile-media-account">
+			<h2 class = "account-heading">
+				{{strUsername}}
+			</h2>
+		</div>
 
-{% if user.is_pod_plus_member %}
+	</div>
+</div>
+
+{% if boolIsPodPlusMember %}
 <p style="color:rgb(255, 218, 6);font-weight: bolder;">POD+ Member</p>
 {% endif %}
 
@@ -13,6 +23,9 @@
 
 <h4>Stats:</h4>
 <ul>
+	<li>
+		Joined: {{strDateJoined}}
+	</li>
 	<li>
 		Users helped: {{strUsersHelped}}
 	</li>

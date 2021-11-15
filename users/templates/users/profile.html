@@ -3,9 +3,18 @@
 
 {% block content %}
 
-<h2>
-	Welcome,  <strong>{{user.username}}.</strong>
-</h2>
+<div style="align-items:flex-start;" class = "div__users-profile">
+	<div style="display:inline-flex" class = "div__users-profile-media">
+		<img class = "rounded-circle img__users-profile-img" src = "{{user.profile_picture.url}}">
+		<div class = "div__users-profile-media-account">
+			<h2 class = "account-heading">
+				Welcome,  <strong>{{user.username}}.</strong>
+			</h2>
+			<p class = "text-secondary">{{user.email}}</p>
+		</div>
+
+	</div>
+</div>
 
 <h4>
 	<a href = "{% url 'users:upload_kcals' %}">
