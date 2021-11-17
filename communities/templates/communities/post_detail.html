@@ -31,7 +31,7 @@
 		</div>
 		<br>
 		<div>
-			<form style="display:none"  id = "form__comment-reply${{modelComment.id}}" class = "form__comment-reply" action = "{% url 'communities:create_comment' modelComment.author modelPost.slug %}" method = "POST">
+			<form style="display:none"  id = "form__comment-reply${{modelComment.id}}" class = "form__comment-reply" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" method = "POST">
 				{% csrf_token %}
 				{{formCommentForm.non_field_errors}}
 					{{formCommentForm.body.errors}}
@@ -94,13 +94,6 @@
 			formCommentForm.style.display = "none";
 			btn.innerText = "Reply";
 		}
-	}
-
-	function populate_reply_field(btn){
-		let strCommentAuthor = btn.getAttribute("data-comment-author");
-		let formCommentForm = document.getElementById('form__comment-reply$' + strCommentParentId);
-		let textarea = formCommentForm.children[1]
-		textarea.value = "@" + strCommentAuthor + " ";
 	}
 
 	let arrbtnReplyToComments = document.getElementsByClassName('input__reply-to-comment');
