@@ -81,6 +81,11 @@ def viewProfile(request):
 	# for serialization
 	listKCals = list(user.kcalamount_set.all().values('date','amount'))
 
+	# followed users
+	listFollowedUsers = list(user.follows.all())
+	# followers
+	listFollowerUsers = list(user.followed_by.all())
+
 	context = {
 		"dictUserStats" :{
 			"strEmail": user.email,
@@ -99,6 +104,9 @@ def viewProfile(request):
 		},
 		"setKCals":user.kcalamount_set.all(),
 		"listKCals":listKCals,
+		# followed users
+		"listFollowerUsers":listFollowerUsers,
+		"listFollowedUsers":listFollowedUsers,
 	}
 
 	return render(request,'users/profile.html',context = context)

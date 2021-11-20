@@ -7,6 +7,8 @@ from django.utils import timezone
 # get text lazy allows at any point you think data may be translated into user's lang
 from django.utils.translation import gettext_lazy
 
+from django.urls import reverse
+
 # import models
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin,BaseUserManager
 
@@ -99,6 +101,9 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 	profile_picture = models.ImageField(default="users/profile_pics/defaults/default_profile_pic.jpg",upload_to="users/profile_pics")
 
 	date_joined = models.DateTimeField(default=timezone.now)
+
+	# for following users
+	follows = models.ManyToManyField('CustomUser',related_name='followed_by')
 	
 	# Defining that we use a custom account manager
 	objects = CustomUserManager()
@@ -110,6 +115,9 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 
 	def __str__(self):
 		return self.username
+	
+	def get_public_profile_url(self):
+		return reverse('communities:profile',kwargs={"username":self.username})
 
 
 ############################
