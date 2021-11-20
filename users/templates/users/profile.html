@@ -16,6 +16,8 @@
 	</div>
 </div>
 
+<br>
+
 <h4>
 	<a href = "{% url 'users:upload_kcals' %}">
 		Upload your KCal count for today.
@@ -66,6 +68,16 @@
 			</a>
 	</div>
 	{% endfor %}
+
+<br>
+<h4>Following: {{user.follows.count}}</h4>
+{% for modelUser in listFollowedUsers %}
+	<div class = "border border-primary" style = "width:50%;padding:10px;margin-bottom:10px;border-radius:5px;">
+		<a href = "{{modelUser.get_public_profile_url}}">
+			{{modelUser.username}}
+		</a>
+	</div>
+{% endfor %}
 
 {% endblock %}
 

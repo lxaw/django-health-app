@@ -110,13 +110,7 @@ def viewProfile(request, username):
 	modelUser = get_object_or_404(CustomUser, username = username)
 
 	context = {
-		"boolIsPodPlusMember":modelUser.is_pod_plus_member,
-		"imgProfilePic":modelUser.profile_picture,
-		"strUsername":modelUser.username,
-		"intUsersHelped":modelUser.int_users_helped,
-		"intDaysActive":modelUser.int_days_active,
-		"strDateJoined":modelUser.date_joined,
-		"strAbout":modelUser.text_about,
+		"modelViewedUser": modelUser,
 	}
 
 	return render(request, "communities/profile.html",context)
@@ -193,4 +187,28 @@ def viewDeleteComment(request,comment_id):
 		modelComment.delete()
 		
 	return redirect(reverse("communities:post_detail",kwargs = {'username':modelParentPost.author.username,'slug':modelParentPost.slug}))
+
+@login_required
+def viewFollowUser(request, username):
+	modelUserToBeFollowed = get_object_or_404(CustomUser,username=username)
+
+	modelCurrentUser = request.user
+
+	if modelCurrentUser != modelUserToBeFollowed and (modelUserToBeFollowed not in modelCurrentUser.follows.all()):
+		modelCurrentUser.follows.add(modelUserToBeFollowed)
+	
+	# this never runs if use ajax
+	return HttpResponseRedirect('/')
+
+@login_required
+def viewUnfollowUser(request,username):
+	modelUserToBeFollowed = get_object_or_404(CustomUser,username=username)
+
+	modelCurrentUser = request.user
+
+	if modelCurrentUser != modelUserToBeFollowed and (modelUserToBeFollowed not in modelCurrentUser.follows.all()):
+		modelCurrentUser.follows.remove(modelUserToBeFollowed)
+	
+	# this never runs if use ajax
+	return HttpResponseRedirect('/')
 

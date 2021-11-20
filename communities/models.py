@@ -65,7 +65,7 @@ class Post(models.Model):
 
 
 	def get_absolute_url(self):
-		return reverse('post_detail',kwargs={"slug":self.slug,
+		return reverse('communities:post_detail',kwargs={"slug":self.slug,
 			"username":self.author.username}
 			)
 	
@@ -75,7 +75,7 @@ class Post(models.Model):
 	def boolWithinXDays(self,intDays):
 		now = timezone.now()
 
-		return now - datetime.timedelta(days=intDays) <= self.date <= now
+		return now - datetime.timedelta(days=intDays) <= self.pub_date <= now
 	
 	def __str__(self):
 		return self.title

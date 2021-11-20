@@ -2,40 +2,71 @@
 
 {% block content %}
 
+{% if modelViewedUser == user %}
+<div class = "alert alert-primary">
+	This is how you appear publicly.
+</div>
+{% endif %}
+
 <div style="align-items:flex-start;" class = "div__users-profile">
 	<div style="display:inline-flex" class = "div__users-profile-media">
-		<img class = "rounded-circle img__users-profile-img" src = "{{imgProfilePic.url}}">
+		<img class = "rounded-circle img__users-profile-img" src = "{{modelViewedUser.profile_picture.url}}">
 		<div class = "div__users-profile-media-account">
 			<h2 class = "account-heading">
-				{{strUsername}}
+				{{modelViewedUser.username}}
 			</h2>
-		</div>
+			{% if modelViewedUser != user and modelViewedUser in user.follows.all %}
+			Followed
+			{% elif modelViewedUser != user and modelViewedUser not in user.follows.all %}
 
+			<p id = "p__follow-user" style='color:rgb(8, 63, 184)'
+			data-url = "{% url 'communities:add_follow' modelViewedUser.username %}"
+			>
+				Follow {{modelViewedUser.username}}.
+			</p>
+
+			{% endif %}
+			<p></p>
+		</div>
 	</div>
 </div>
 
-{% if boolIsPodPlusMember %}
+
+{% if modelViewedUser.is_pod_plus_member %}
 <p style="color:rgb(255, 218, 6);font-weight: bolder;">POD+ Member</p>
 {% endif %}
 
 <h3>About:</h3>
-{{strAbout}}
+{{modelViewedUser.text_about}}
 
 <h4>Stats:</h4>
 <ul>
 	<li>
-		Joined: {{strDateJoined}}
+		Joined: {{modelViewedUser.date_joined}}
 	</li>
 	<li>
-		Users helped: {{strUsersHelped}}
+		Users helped: {{modelViewedUser.int_users_helped}}
 	</li>
 	<li>
-		Days active: {{intDaysActive}}
-	</li>
-	<li>
-		Date joined: {{strDateJoined}}
+		Days active: {{modelViewedUser.int_days_active}}
 	</li>
 </ul>
 
 
 {% endblock %}
+
+{% block javascript %}
+<script>
+	function follow_user(strUrl){
+		$.ajax({
+			url:strUrl,
+		})
+	}
+
+	let pFollow = document.getElementById('p__follow-user');
+	pFollow.addEventListener("click",()=>{
+		let strUrl = pFollow.getAttribute('data-url');
+		follow_user(strUrl);
+	})
+</script>
+{% endblock javascript %}

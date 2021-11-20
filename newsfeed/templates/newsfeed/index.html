@@ -6,5 +6,33 @@
 
 Welcome, <strong>{{user.username}}.</strong>
 
+<br>
+<h4>
+	See what your followed users are posting.
+</h4>
+{% for modelPost in listLastNFollowedUserPosts %}
+	<div class = "newsfeed__new-post border border-primary" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
+		<a href = "{{modelPost.get_absolute_url}}">
+			User  {{modelPost.author}} uploaded a post at {{modelPost.pub_date}}
+		</a>
+	</div>
+{% endfor %}
+
+<br>
+<br>
+<h4>
+	Most recent posts today.
+</h4>
+<br>
+{% for modelPost in listRecentPosts %}
+
+	<div class = "newsfeed__new-post border border-primary" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
+		<a href = "{{modelPost.get_absolute_url}}">
+			User  {{modelPost.author}} uploaded a post at {{modelPost.pub_date}}
+		</a>
+	</div>
+
+{% endfor %}
+
 
 {% endblock content %}

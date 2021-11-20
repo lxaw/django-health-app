@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'podcasts.apps.PodcastsConfig',
     # communities
     'communities.apps.CommunitiesConfig',
+    # food
+    'food.apps.FoodConfig',
 
 
     # ############################
