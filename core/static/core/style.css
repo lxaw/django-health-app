@@ -93,6 +93,8 @@ divs
 .img__users-profile-img{
     width:100px;
     height:100px;
+    margin-left:10px;
+    margin-right:10px;
 }
 .div__users-profile{
     border-radius: 10px;

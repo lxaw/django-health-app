@@ -15,17 +15,18 @@
 			<h2 class = "account-heading">
 				{{modelViewedUser.username}}
 			</h2>
+			
+			<p data-url = "{% url 'communities:add_remove_follow' modelViewedUser.username %}" id = "p__follow-unfollow-user">
 			{% if modelViewedUser != user and modelViewedUser in user.follows.all %}
-			Followed
+			<span class = "text-danger">
+				Unfollow {{modelViewedUser.username}}?
+			</span>
 			{% elif modelViewedUser != user and modelViewedUser not in user.follows.all %}
-
-			<p id = "p__follow-user" style='color:rgb(8, 63, 184)'
-			data-url = "{% url 'communities:add_follow' modelViewedUser.username %}"
-			>
-				Follow {{modelViewedUser.username}}.
-			</p>
-
+			<span class = "text-success">
+				Follow {{modelViewedUser.username}}?
+			</span>
 			{% endif %}
+			</p>
 			<p></p>
 		</div>
 	</div>
@@ -57,16 +58,21 @@
 
 {% block javascript %}
 <script>
-	function follow_user(strUrl){
+	function add_remove_follow(pTag){
+		let strUrl = pTag.getAttribute('data-url');
 		$.ajax({
 			url:strUrl,
+			success: function(){
+				$("#p__follow-unfollow-user").load(document.URL + ' #p__follow-unfollow-user');
+			}
 		})
+
 	}
 
-	let pFollow = document.getElementById('p__follow-user');
-	pFollow.addEventListener("click",()=>{
-		let strUrl = pFollow.getAttribute('data-url');
-		follow_user(strUrl);
+	let pTag = document.getElementById('p__follow-unfollow-user');
+	pTag.addEventListener("click",()=>{
+		add_remove_follow(pTag);
 	})
+
 </script>
 {% endblock javascript %}

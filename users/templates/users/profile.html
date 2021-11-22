@@ -18,51 +18,60 @@
 
 <br>
 
-<h4>
-	<a href = "{% url 'users:upload_kcals' %}">
-		Upload your KCal count for today.
-	</a>
-</h4>
 
 <br>
 
-<h2>Your information:</h2>
-<strong>Email:</strong> {{dictUserStats.strEmail}}
-<br>
-<strong>Username:</strong> {{dictUserStats.strUsername}}
-<br>
-<strong>Days Active:</strong> {{dictUserStats.intDaysActive}}
-<br>
-<strong>Points:</strong> {{dictUserStats.intPoints}}
-<br>
-<strong>Date joined:</strong>{{dictUserStats.strDateJoined}}
-<br>
+<div class = "container border border-primary rounded">
+	<div class = "row">
+		<div class = "col-sm ">
+			<h2>Your information:</h2>
+			<strong>Email:</strong> {{dictUserStats.strEmail}}
+			<br>
+			<strong>Username:</strong> {{dictUserStats.strUsername}}
+			<br>
+			<strong>Days Active:</strong> {{dictUserStats.intDaysActive}}
+			<br>
+			<strong>Points:</strong> {{dictUserStats.intPoints}}
+			<br>
+			<strong>Date joined:</strong>{{dictUserStats.strDateJoined}}
+			<br>
+		</div>
+		<div class = "col-sm">
+			<h2>Your Diet Stats:</h2>
+			<strong>Standard Deviation: </strong>{{dictUserStats.floatStd}}
+			<br>
+			<strong>Mean: </strong>{{dictUserStats.floatMean}}
+			<br>
+			<strong>Median: </strong>{{dictUserStats.floatMedian}}
+			<br>
+		</div>
+		<div class = "col-sm ">
+			<h2>Your Graphs:</h2>
 
-<h2>Your Diet Stats:</h2>
-<strong>Standard Deviation: </strong>{{dictUserStats.floatStd}}
-<br>
-<strong>Mean: </strong>{{dictUserStats.floatMean}}
-<br>
-<strong>Median: </strong>{{dictUserStats.floatMedian}}
-<br>
+			<!-- kcal info for grab by javascript -->
+			{{listKCals|json_script:"jsonKCals"}}
 
-<h2>Your Graphs:</h2>
-
-<!-- kcal info for grab by javascript -->
-{{listKCals|json_script:"jsonKCals"}}
-
-<div class = "div__users-profile-chart-container">
-	<canvas id = "canvas__users-profile-chart__id"></canvas>
+			<div class = "div__users-profile-chart-container">
+				<canvas id = "canvas__users-profile-chart__id"></canvas>
+			</div>
+		</div>
+	</div>
 </div>
 
-<h2>Your History:</h2>
 
+
+
+<h2>Your History:</h2>
+	<a href = "{% url 'users:upload_kcals' %}">
+		Upload your most recent meal.
+	</a>
 	{% for modelKCal in setKCals %}
 
 
 	<div class = "div__kcal-entry">
+			<p><strong>Meal name: ?????</strong></p>
 			<p><strong>Date:</strong> {{modelKCal.date}}</p>
-			<p><strong>Amount:</strong> {{modelKCal.amount}}</p>
+			<p><strong>Kilocalorie count:</strong> {{modelKCal.amount}}</p>
 			<a href = "{% url 'users:delete_kcal' modelKCal.id %}" >
 				Delete?
 			</a>
@@ -73,6 +82,7 @@
 <h4>Following: {{user.follows.count}}</h4>
 {% for modelUser in listFollowedUsers %}
 	<div class = "border border-primary" style = "width:50%;padding:10px;margin-bottom:10px;border-radius:5px;">
+		<img class = "rounded-circle img__users-profile-img" src = "{{modelUser.profile_picture.url}}">
 		<a href = "{{modelUser.get_public_profile_url}}">
 			{{modelUser.username}}
 		</a>

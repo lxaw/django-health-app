@@ -36,5 +36,5 @@ urlpatterns = [
 	##################
 	# URLS for Following
 	##################
-	path('following/add_follow/<str:username>',communities_views.viewFollowUser,name="add_follow"),
+	path('following/add_remove_follow/<str:username>',communities_views.viewAddRemoveFollow,name="add_remove_follow"),
 ]

@@ -189,25 +189,19 @@ def viewDeleteComment(request,comment_id):
 	return redirect(reverse("communities:post_detail",kwargs = {'username':modelParentPost.author.username,'slug':modelParentPost.slug}))
 
 @login_required
-def viewFollowUser(request, username):
+def viewAddRemoveFollow(request, username):
 	modelUserToBeFollowed = get_object_or_404(CustomUser,username=username)
 
 	modelCurrentUser = request.user
 
-	if modelCurrentUser != modelUserToBeFollowed and (modelUserToBeFollowed not in modelCurrentUser.follows.all()):
-		modelCurrentUser.follows.add(modelUserToBeFollowed)
-	
-	# this never runs if use ajax
-	return HttpResponseRedirect('/')
+	if modelCurrentUser != modelUserToBeFollowed:
+		if modelUserToBeFollowed not in modelCurrentUser.follows.all():
+			# follow
+			modelCurrentUser.follows.add(modelUserToBeFollowed)
+		else:
+			# unfollow
+			modelCurrentUser.follows.remove(modelUserToBeFollowed)
 
-@login_required
-def viewUnfollowUser(request,username):
-	modelUserToBeFollowed = get_object_or_404(CustomUser,username=username)
-
-	modelCurrentUser = request.user
-
-	if modelCurrentUser != modelUserToBeFollowed and (modelUserToBeFollowed not in modelCurrentUser.follows.all()):
-		modelCurrentUser.follows.remove(modelUserToBeFollowed)
 	
 	# this never runs if use ajax
 	return HttpResponseRedirect('/')
