@@ -1,10 +1,68 @@
 {% extends "core/base.html" %}
+{% load static %}
 
 {% block content %}
 
-<h1>Here are your podcasts.</h1>
+<h1 class = "text-center">Your recently recommended podcasts</h1>
+<div class = "container">
+	<div class = "row">
+		<div class = "col text-center div__podcasts-podcast-thumbnail">
+			<a href="#" class = "a__podcasts-podcast-link">
+				<img src = "{% static 'core/images/podcasts/podcasts__default-podcast-thumbnail.jpg' %}">
+				<p> 
+					Podcast Title
+				</p>
+			</a>
+		</div>
+		<div class = "col text-center div__podcasts-podcast-thumbnail">
+			<a href="#" class = "a__podcasts-podcast-link">
+				<img src = "{% static 'core/images/podcasts/podcasts__default-podcast-thumbnail.jpg' %}">
+				<p> 
+					Podcast Title
+				</p>
+			</a>
+		</div>
+		<div class = "col text-center div__podcasts-podcast-thumbnail">
+			<a href="#" class = "a__podcasts-podcast-link">
+				<img src = "{% static 'core/images/podcasts/podcasts__default-podcast-thumbnail.jpg' %}">
+				<p> 
+					Podcast Title
+				</p>
+			</a>
+		</div>
+	</div>
+	<div class = "row">
+		<div class = "col text-center div__podcasts-podcast-thumbnail">
+			<a href="#" class = "a__podcasts-podcast-link">
+				<img src = "{% static 'core/images/podcasts/podcasts__default-podcast-thumbnail.jpg' %}">
+				<p> 
+					Podcast Title
+				</p>
+			</a>
+		</div>
+		<div class = "col text-center div__podcasts-podcast-thumbnail">
+			<a href="#" class = "a__podcasts-podcast-link">
+				<img src = "{% static 'core/images/podcasts/podcasts__default-podcast-thumbnail.jpg' %}">
+				<p> 
+					Podcast Title
+				</p>
+			</a>
+		</div>
+		<div class = "col text-center div__podcasts-podcast-thumbnail">
+			<a href="#" class = "a__podcasts-podcast-link">
+				<img src = "{% static 'core/images/podcasts/podcasts__default-podcast-thumbnail.jpg' %}">
+				<p> 
+					Podcast Title
+				</p>
+			</a>
+		</div>
+	</div>
+</div>
 
-Welcome, <strong>{{user.username}}.</strong>
+<h2>
+	<a href = "#">See previous podcasts. (DEAD LINK)</a>
+</h2>
 
+<h2>Tips Archive</h2>
 
 {% endblock content %}

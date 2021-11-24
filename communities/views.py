@@ -177,15 +177,14 @@ def viewDeletePost(request,post_id):
 
 @login_required
 def viewDeleteComment(request,comment_id):
-	modelComment = get_object_or_404(Comment,id = comment_id)	
+	modelComment = get_object_or_404(Comment,id = comment_id)
 	modelParentPost = modelComment.post
-	modelCommentAuthor =  modelComment.author
+	modelCommentAuthor = modelComment.author
 
 	if request.user == modelCommentAuthor:
-
 		messages.success(request,"Comment successfully deleted.")
 		modelComment.delete()
-		
+
 	return redirect(reverse("communities:post_detail",kwargs = {'username':modelParentPost.author.username,'slug':modelParentPost.slug}))
 
 @login_required

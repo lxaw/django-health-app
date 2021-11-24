@@ -47,16 +47,12 @@ Basic navbar to show it is possible
 
 <nav class="navbar" id = "navbar__main">
 
-	<a class = "navbar-brand" href = "{% url 'core:index' %}">
-		<img src = "{% static 'core/images/arnold_school_of_public_health.jpg' %}" alt = "arnold_school_of_public_health.jpg">
+	<a class = "navbar-brand" href = "{% url 'core:about' %}">
+		<img src = "{% static 'core/images/core/arnold_school_of_public_health.jpg' %}" alt = "arnold_school_of_public_health.jpg">
 	</a>
 
 	<a class = "navbar-text navbar__main__a-tag" href = "{% url 'core:index' %}">
 		Home
-	</a>
-
-	<a class = "navbar-text navbar__main__a-tag" href = "{% url 'core:about' %}">
-		About the Project
 	</a>
 
 	{% if user.is_authenticated %}
@@ -67,7 +63,7 @@ Basic navbar to show it is possible
 			Newsfeed
 		</a>
 		<a class = "navbar-text navbar__main__a-tag" href = "{% url 'podcasts:index' %}">
-			Podcasts
+			Podcasts & Tips
 		</a>
 		<a class = "navbar-text navbar__main__a-tag" href = "{% url 'users:profile' %}">
 			Profile

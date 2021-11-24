@@ -17,21 +17,20 @@ from datetime import date
 # Create your views here.
 
 def viewAbout(request):
+	intParticipantCount = CustomUser.objects.filter(is_staff = False, is_developer = False).count()
 	context = {
-
+		'intTotalParticipantCount': intParticipantCount,
 	}
 	return render(request,'core/about.html',context = context)
 
 def viewIndex(request):
 
-	intParticipantCount = CustomUser.objects.filter(is_staff = False, is_developer = False).count()
 	dateToday = date.today()
 	strDate = dateToday.strftime("%B %d, %Y")
 	strDayName = dateToday.strftime("%A")
 
 	context = {
 		'strTitle':'index',
-		'intTotalParticipantCount': intParticipantCount,
 		'strDate':strDate,
 		'strDayName':strDayName,
 	}

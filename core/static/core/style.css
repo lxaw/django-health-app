@@ -119,6 +119,25 @@ divs
     height:300px;
     width:400px;
 }
+/*
+***********************************
+* Styles for Podcasts & Tips Page
+***********************************
+*/
+.a__podcasts-podcast-link{
+    text-decoration: none;
+    color:mediumblue;
+}
+.a__podcasts-podcast-link:hover{
+    color:royalblue;
+    text-decoration: none;
+}
+.div__podcasts-podcast-thumbnail{
+    width:30px;
+    height:200px;
+    border-radius:5px;
+    margin:10px;
+}
 
 /*
 Styles for forms
