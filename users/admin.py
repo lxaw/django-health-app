@@ -21,7 +21,7 @@ class CustomUserAdminConfig(UserAdmin):
 		'is_developer','is_staff','is_pod_plus_member')
 	# fieldsets that display on admin page
 	fieldsets = (
-		('User Information',{'fields':('email','username',)}),
+		('User Information',{'fields':('email','username','phone_number')}),
 		('User Permissions',{'fields':('is_staff','is_active','is_developer','is_pod_plus_member')}),
 		('User Personal Information',{'fields':('text_about',)}),
 		('User Media',{'fields':('profile_picture',)}),

@@ -1,4 +1,8 @@
 from django.db import models
+###########################
+# Necessary imports
+###########################
+from django.utils import timezone
 
 ###########################
 # Necessary other models
@@ -19,4 +23,5 @@ class TipOfDay(models.Model):
 
 	def __str__(self):
 		return "Tip #{}: {}".format(self.id,self.text_content)
+
 

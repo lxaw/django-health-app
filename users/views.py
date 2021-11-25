@@ -26,6 +26,11 @@ from .models import KCalAmount
 #################################
 import numpy as np
 from datetime import datetime
+import re
+
+
+def strParsePhoneNumber(strEntry):
+	return ''.join(n for n in strEntry if n.isdigit())
 
 
 #################################
@@ -33,8 +38,16 @@ from datetime import datetime
 #################################
 
 def viewRegister(request):
-
 	if request.method == "POST":
+		# check the phone number
+		phone_number = request.POST.get("phone_number")
+		pattern = re.compile(r'\d{3}-\d{3}-\d{4}')
+		boolValidNumber = bool(pattern.match(phone_number))
+
+		if not boolValidNumber:
+			messages.error(request,"Please format number as 3 digits, hyphen, 3 digits, hyphen, 4 digits.")
+			return redirect("users:register")
+
 		# if get post request, instantiate form with user data
 		form = UserRegisterForm(request.POST)
 
