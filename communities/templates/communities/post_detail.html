@@ -1,72 +1,87 @@
 {% extends "core/base.html" %}
 
 {% block content %}
-<h3>You're looking at post "{{modelPost.title}}"</h3>
-<div class = "div__communities-post">
-	<strong>Author: </strong>
-	<a href = "{% url 'communities:profile' modelPost.author.username %}">
-		{{modelPost.author}}
-	</a>
-	<p>
-		{{modelPost.text_content}}
-	</p>
+
+<div class = "container border border-primary rounded">
+	<h3>You're looking at post "{{modelPost.title}}"</h3>
 </div>
 
+<br>
 
-<h3>Comments:</h3>
-
-<div class = "div__communities-post-comment-container">
-
-	{% for modelComment in listmodelComments %}
-		<div class = "div__communities-post-comment" id = "div__communities-post-comment${{modelComment.id}}">
-			<strong>Author: </strong><a href = "{% url 'communities:profile' modelComment.author.username %}">{{modelComment.author}}</a>
-			<br>
-			<strong>Date: </strong>{{modelComment.pub_date}}
-			<br>
-			{% if modelComment.boolIsReply %}
-			<a  href = "{% url 'communities:profile' modelComment.parent.author.username %}">
-				@{{modelComment.parent.author}}
-			</a>
-			{% endif %}
-			<div>
-				{{modelComment.body|linebreaks}}
-			</div>
-			<br>
-			<div>
-				<form style="display:none"  id = "form__comment-reply${{modelComment.id}}" class = "form__comment-reply" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" method = "POST">
-					{% csrf_token %}
-					{{formCommentForm.non_field_errors}}
-						{{formCommentForm.body.errors}}
-						{{formCommentForm.body}}
-					<input type = "hidden" name = "intParentId" value = "{{modelComment.id}}">
-					<br>
-					<input class = "input__reply-to-comment" data-comment-author = "{{modelComment.author.username}}" type = "submit" value = "Reply">
-
-				</form>
-				<button data-id = "{{modelComment.id}}" class = btn__reply-to-comment>
-					Reply
-				</button>
-				{% if modelComment.author == user %}
-					<button id = "btn__delete-comment${{modelComment.id}}" class = "btn__delete-comment" data-url = "{% url 'communities:delete_comment' modelComment.id %}">
-						Delete?
-					</button>
-				{% endif %}
-			</div>
-		</div>
-	{% endfor %}
-</div>
-
-<form class = "form__create-comment" method = "POST" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" >
-	<h3>Create a comment.</h3>
-	{% csrf_token %}
-	{{formCommentForm.non_field_errors}}
-	<div>
-		{{formCommentForm.body.errors}}
-		{{formCommentForm.body}}
+<div class = "container border border-primary rounded">
+	<div class = "div__communities-post">
+		<strong>Author: </strong>
+		<a href = "{% url 'communities:profile' modelPost.author.username %}">
+			{{modelPost.author}}
+		</a>
+		<p>
+			{{modelPost.text_content}}
+		</p>
 	</div>
-	<!-- {{formCommentForm.as_p}} -->
-	<input type = "submit" value = "Post" >
-</form>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded">
+<h3>Comments:</h3>
+	<br>
+	<div class = "div__communities-post-comment-container">
+
+		{% for modelComment in listmodelComments %}
+			<div class = "div__communities-post-comment" id = "div__communities-post-comment${{modelComment.id}}">
+				<strong>Author: </strong><a href = "{% url 'communities:profile' modelComment.author.username %}">{{modelComment.author}}</a>
+				<br>
+				<strong>Date: </strong>{{modelComment.pub_date}}
+				<br>
+				{% if modelComment.boolIsReply %}
+				<a  href = "{% url 'communities:profile' modelComment.parent.author.username %}">
+					@{{modelComment.parent.author}}
+				</a>
+				{% endif %}
+				<div>
+					{{modelComment.body|linebreaks}}
+				</div>
+				<br>
+				<div>
+					<form style="display:none"  id = "form__comment-reply${{modelComment.id}}" class = "form__comment-reply" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" method = "POST">
+						{% csrf_token %}
+						{{formCommentForm.non_field_errors}}
+							{{formCommentForm.body.errors}}
+							{{formCommentForm.body}}
+						<input type = "hidden" name = "intParentId" value = "{{modelComment.id}}">
+						<br>
+						<input class = "input__reply-to-comment" data-comment-author = "{{modelComment.author.username}}" type = "submit" value = "Reply">
+
+					</form>
+					<button data-id = "{{modelComment.id}}" class = btn__reply-to-comment>
+						Reply
+					</button>
+					{% if modelComment.author == user %}
+						<button id = "btn__delete-comment${{modelComment.id}}" class = "btn__delete-comment" data-url = "{% url 'communities:delete_comment' modelComment.id %}">
+							Delete?
+						</button>
+					{% endif %}
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded">
+	<form class = "form__create-comment" method = "POST" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" >
+		<h3>Create a comment.</h3>
+		{% csrf_token %}
+		{{formCommentForm.non_field_errors}}
+		<div>
+			{{formCommentForm.body.errors}}
+			{{formCommentForm.body}}
+		</div>
+		<!-- {{formCommentForm.as_p}} -->
+		<input type = "submit" value = "Post" >
+	</form>
+</div>
 
 {% endblock %}
 

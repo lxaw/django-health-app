@@ -8,6 +8,7 @@
 </div>
 {% endif %}
 
+<div class = "container border border-primary rounded">
 <div style="align-items:flex-start;" class = "div__users-profile">
 	<div style="display:inline-flex" class = "div__users-profile-media">
 		<img class = "rounded-circle img__users-profile-img" src = "{{modelViewedUser.profile_picture.url}}">
@@ -27,19 +28,26 @@
 			</span>
 			{% endif %}
 			</p>
-			<p></p>
+			{% if modelViewedUser.is_pod_plus_member %}
+			<p style="color:rgb(255, 218, 6);font-weight: bolder;">POD+ Member</p>
+			{% endif %}
 		</div>
 	</div>
 </div>
+</div>
 
+<br>
 
-{% if modelViewedUser.is_pod_plus_member %}
-<p style="color:rgb(255, 218, 6);font-weight: bolder;">POD+ Member</p>
-{% endif %}
+<div class = "container border border-primary rounded">
+	<h3>About:</h3>
+	<p>
+		{{modelViewedUser.text_about}}
+	</p>
+</div>
 
-<h3>About:</h3>
-{{modelViewedUser.text_about}}
+<br>
 
+<div class = "container border border-primary rounded">
 <h4>Stats:</h4>
 <ul>
 	<li>
@@ -52,6 +60,7 @@
 		Days active: {{modelViewedUser.int_days_active}}
 	</li>
 </ul>
+</div>
 
 
 {% endblock %}

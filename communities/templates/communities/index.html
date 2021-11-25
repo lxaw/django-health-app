@@ -2,50 +2,62 @@
 
 {% block content %}
 
-<h1 class = "text-hover">Here are your communities.</h1>
 
-<h4>
-	<a href = "{% url 'communities:create_post' %}">Create a post.</a>
-</h4>
-
-<h4>Recent posts:</h4>
-
-<div class = "div__communities-recent-post-container container">
-
-	<div class = "row">
-		<div class = "col-8">
-			{% for modelPost in listModelPosts %}
-				<div id = "div__post${{modelPost.id}}" class = "div__communities-post">
-					<a href = "{% url 'communities:post_detail' modelPost.author.username modelPost.slug %}" class = "p__communities-post-title">
-						{{modelPost.title}}
-					</a>
-					<br>
-					<a href = "{% url 'communities:profile' modelPost.author.username %}">
-						{{modelPost.author}}
-					</a> on {{modelPost.pub_date}}
-					<p>{{modelPost.text_content}}</p>
-					<p id = "p__post-likes${{modelPost.id}}">{{modelPost.user_likes.count}}</p>
-
-					{% if user in modelPost.user_likes.all %}
-						<button  data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post btn__like-post--active" id = "btn__like-post${{modelPost.id}}">Like</button>
-					{% else %}
-						<button  data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post" id = "btn__like-post${{modelPost.id}}">Like</button>
-					{% endif %}
-					Total Comments: {{modelPost.comments.count}}
-					{% if modelPost.author == user %}
-						<button class = "btn__delete-post" data-url = "{% url 'communities:delete_post' modelPost.id %}">
-							Delete?
-						</button>
-					{% endif %}
-				</div>
-			{% endfor %}
-		</div>
-		<div class = "col-4" style="background-color: red;">
-
-		</div>
-	</div>
-
+<div class = "container border border-primary rounded">
+	<h1 class = "text-hover">Here are your communities.</h1>
+	<h4>
+		<a href = "{% url 'communities:create_post' %}">Create a post.</a>
+	</h4>
 </div>
+
+<br>
+
+<div class = "container border border-primary rounded">
+	<h1 class = "text-center">
+		<a href = "#">
+			Request help.
+		</a>
+	</h1>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded pb-4">
+	<div class = "div__communities-recent-post-container">
+		<h4 class = "pl-4">Recent posts:</h4>
+		<div class = "row">
+			<div class = "col">
+				{% for modelPost in listModelPosts %}
+					<div id = "div__post${{modelPost.id}}" class = "div__communities-post">
+						<a href = "{% url 'communities:post_detail' modelPost.author.username modelPost.slug %}" class = "p__communities-post-title">
+							{{modelPost.title}}
+						</a>
+						<br>
+						<a href = "{% url 'communities:profile' modelPost.author.username %}">
+							{{modelPost.author}}
+						</a> on {{modelPost.pub_date}}
+						<p>{{modelPost.text_content}}</p>
+						<p id = "p__post-likes${{modelPost.id}}">{{modelPost.user_likes.count}}</p>
+
+						{% if user in modelPost.user_likes.all %}
+							<button  data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post btn__like-post--active" id = "btn__like-post${{modelPost.id}}">Like</button>
+						{% else %}
+							<button  data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post" id = "btn__like-post${{modelPost.id}}">Like</button>
+						{% endif %}
+						Total Comments: {{modelPost.comments.count}}
+						{% if modelPost.author == user %}
+							<button class = "btn__delete-post" data-url = "{% url 'communities:delete_post' modelPost.id %}">
+								Delete?
+							</button>
+						{% endif %}
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+
+	</div>
+</div>
+
 
 {% endblock content %}
 

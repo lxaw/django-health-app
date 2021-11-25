@@ -12,15 +12,17 @@
 ***********************************
 */
 #navbar__main{
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(52,9,121,1) 100%, rgba(88,225,2,1) 100%, rgba(0,212,255,1) 100%);
+    background: rgb(24,7,7);
+background: linear-gradient(90deg, rgba(24,7,7,1) 0%, rgba(179,1,1,1) 100%, rgba(88,225,2,1) 100%, rgba(0,212,255,1) 100%);
 }
 .navbar__main__a-tag{
     text-decoration: none;
-    font-size: large;
     font-weight:bold;
+    color:gainsboro;
 }
 .navbar__main__a-tag:hover{
     text-decoration: none;
+    color:ghostwhite;
 }
 
 /*
@@ -96,10 +98,8 @@ divs
     margin-left:10px;
     margin-right:10px;
 }
-.div__users-profile{
-    border-radius: 10px;
-    background-color: rgb(233, 239, 255);
-    padding:10px;
+.div__users-profile-banner{
+    border-color: rgb(216, 49, 49)
 }
 .div__users-profile-media{
     margin:10px;
@@ -115,7 +115,6 @@ divs
     padding:10px;
 }
 .div__users-profile-chart-container{
-    height:auto;
 }
 /*
 ***********************************

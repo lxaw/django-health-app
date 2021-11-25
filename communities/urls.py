@@ -31,6 +31,10 @@ urlpatterns = [
 	##################
 	# URLS for Posts Comments
 	##################
+
+	##################
+	# URLS for Posts Comments
+	##################
 	# ex: /communities/posts/username/slug-my-post-title/create_comment/
 	path('posts/<str:username>/<slug:slug>/create_comment',communities_views.viewCreateComment,name="create_comment"),
 	# ex: /communities/posts/username/slug-my-post-title/delete_comment/
