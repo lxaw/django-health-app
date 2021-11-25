@@ -25,6 +25,7 @@ from .models import KCalAmount
 # Package installs
 #################################
 import numpy as np
+from datetime import datetime
 
 
 #################################
@@ -77,9 +78,14 @@ def viewProfile(request):
 	floatMean = np.mean(arrfloatKCals)
 	floatMedian = np.median(arrfloatKCals)
 
-
 	# for serialization
-	listKCals = list(user.kcalamount_set.all().values('date','amount'))
+	listKCals = []
+	for modelKCal in user.kcalamount_set.all():
+		dictTemplate = {}
+		dictTemplate["date"] = modelKCal.date.strftime("%-j")
+		dictTemplate["amount"] = modelKCal.amount
+		listKCals.append(dictTemplate)
+	
 
 	# followed users
 	listFollowedUsers = list(user.follows.all())

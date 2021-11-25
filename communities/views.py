@@ -134,8 +134,6 @@ def viewCreateComment(request,username,slug):
 		# form for comment
 		formCommentForm = CommentForm(data=request.POST)
 
-		print(request.POST.get('body'))
-
 		if formCommentForm.is_valid():
 
 			modelParentObj = None

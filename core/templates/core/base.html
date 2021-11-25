@@ -82,17 +82,6 @@ Basic navbar to show it is possible
 
 </nav>
 
-<!-- If tip of day, display -->
-<div id = "core__tip-of-day" class = "alert alert-info rounded m-5" role = "alert">
-	<div class = "row">
-		<p class = "col-md-6">
-			Some good tip about health
-		</p>
-		<p id = "core__tip-of-day-snooze" class = "col-md-6 text-right">
-			Got it!
-		</p>
-	</div>
-</div>
 
 <!-- If messages, display -->
 {% if messages %}
@@ -112,21 +101,6 @@ Load the content from a child page
 
 	{% block javascript %}{% endblock javascript %}
 </div>
-
-<script>
-	function coreTipOfDaySnooze(){
-		// to do: snooze the tip for the day
-		document.getElementById('core__tip-of-day').style.display = "none";
-		$.ajax({
-
-		})
-	}
-	let pSnoozeTipOfDay = document.getElementById("core__tip-of-day-snooze");
-
-	pSnoozeTipOfDay.addEventListener("click",()=>{
-		coreTipOfDaySnooze();
-	})
-</script>
 
 </body>
 </html>

@@ -23,7 +23,7 @@
 
 <div class = "container border border-primary rounded">
 	<div class = "row">
-		<div class = "col-sm ">
+		<div class = "col-sm col-md-4">
 			<h2>Your information:</h2>
 			<strong>Email:</strong> {{dictUserStats.strEmail}}
 			<br>
@@ -36,7 +36,7 @@
 			<strong>Date joined:</strong>{{dictUserStats.strDateJoined}}
 			<br>
 		</div>
-		<div class = "col-sm">
+		<div class = "col-sm col-md-4">
 			<h2>Your Diet Stats:</h2>
 			<strong>Standard Deviation: </strong>{{dictUserStats.floatStd}}
 			<br>
@@ -45,7 +45,7 @@
 			<strong>Median: </strong>{{dictUserStats.floatMedian}}
 			<br>
 		</div>
-		<div class = "col-sm ">
+		<div class = "col-sm col-md-4">
 			<h2>Your Physical Activity</h2>
 
 		</div>
@@ -53,32 +53,45 @@
 </div>
 
 <br>
-<h2>Your Graphs:</h2>
-<!-- kcal info for grab by javascript -->
-{{listKCals|json_script:"jsonKCals"}}
+<br>
 
-<div class = "div__users-profile-chart-container">
-	<canvas id = "canvas__users-profile-chart__id"></canvas>
+<div class = "container border border-primary rounded">
+	<h2 class = "text-center">Your Graphs:</h2>
+	<div class = "row">
+		<div class = "col-sm col-md-7">
+
+		</div>
+		<div class = "col-sm col-md-5">
+			<!-- kcal info for grab by javascript -->
+			{{listKCals|json_script:"jsonKCals"}}
+			<div class = "div__users-profile-chart-container">
+				<canvas id = "canvas__users-profile-chart__id"></canvas>
+			</div>
+		</div>
+	</div>
 </div>
 
+<br>
 
-
+<a href = "{% url 'users:upload_kcals' %}">
+	Upload your most recent meal.
+</a>
 <h2>Your History:</h2>
-	<a href = "{% url 'users:upload_kcals' %}">
-		Upload your most recent meal.
-	</a>
-	{% for modelKCal in setKCals %}
-
-
+{% for modelKCal in setKCals %}
 	<div class = "div__kcal-entry">
-			<p><strong>Meal name: ?????</strong></p>
-			<p><strong>Date:</strong> {{modelKCal.date}}</p>
-			<p><strong>Kilocalorie count:</strong> {{modelKCal.amount}}</p>
-			<a href = "{% url 'users:delete_kcal' modelKCal.id %}" >
-				Delete?
-			</a>
+		<p><strong>Meal name: ?????</strong></p>
+		<p><strong>Date:</strong> {{modelKCal.date}}</p>
+		<p><strong>Kilocalorie count:</strong> {{modelKCal.amount}}</p>
+		<a href = "{% url 'users:delete_kcal' modelKCal.id %}" >
+			Delete?
+		</a>
 	</div>
-	{% endfor %}
+{% endfor %}
+
+
+
+
+
 
 <br>
 <h4>Following: {{user.follows.count}}</h4>
@@ -100,37 +113,45 @@ var arrKCals = JSON.parse(document.getElementById('jsonKCals').textContent);
 var arrLabels = [];
 var arrData = [];
 var arrBackgroundColor = [];
-var arrBorderColor = [];
 
 // populate the arrays
 for(let kcalobjKCal of arrKCals){
 	arrLabels.push(kcalobjKCal.date);
 	arrData.push(kcalobjKCal.amount);
 	arrBackgroundColor.push("rgba(0,0,0,0.2)");
-	arrBorderColor.push("rgba(0,0,0,1)");
 }
 
 var ctx = document.getElementById('canvas__users-profile-chart__id').getContext('2d');
 
 var myChart = new Chart(ctx, {
-    type: 'bar',
+    type: 'line',
     data: {
 		labels: arrLabels,
         datasets: [{
-            label: arrLabels,
+            label: "My K-Cal Graph",
             data: arrData,
-			backgroundColor:arrBackgroundColor,
-			borderColor:arrBorderColor,
-            borderWidth: 1
+			borderColor:'rgb(75,192,192)',
+            borderWidth: 1,
+			fill:false,
+			tension:0.1
         }]
     },
     options: {
 		maintainAspectRatio:false,
 		responsive:true,
         scales: {
-            y: {
-                beginAtZero: true
-            }
+			yAxes: [{
+				scaleLabel:{
+					display:true,
+					labelString:'K-Cal Count'
+				}
+			}],
+			xAxes: [{
+				scaleLabel:{
+					display:true,
+					labelString:'Day Number of Year'
+				}
+			}]
         }
     }
 });

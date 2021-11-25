@@ -112,12 +112,10 @@ divs
     border-radius: 10px;
     background-color: rgb(233, 239, 255);
     margin:20px;
-    width:50%;
     padding:10px;
 }
 .div__users-profile-chart-container{
-    height:300px;
-    width:400px;
+    height:auto;
 }
 /*
 ***********************************

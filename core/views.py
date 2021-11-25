@@ -7,12 +7,14 @@ from django.http import HttpResponse
 ###########################
 # Necessary models
 ###########################
+from .models import TipOfDay
 from users.models import CustomUser
 
 ###########################
 # Necessary imports
 ###########################
 from datetime import date
+import random
 
 # Create your views here.
 
@@ -25,6 +27,13 @@ def viewAbout(request):
 
 def viewIndex(request):
 
+	listModelTips = []
+	for modelTip in TipOfDay.objects.all():
+		if request.user not in modelTip.responded_users.all():
+			# user has not yet responded to tip
+			listModelTips.append(modelTip)
+	
+
 	dateToday = date.today()
 	strDate = dateToday.strftime("%B %d, %Y")
 	strDayName = dateToday.strftime("%A")
@@ -33,6 +42,7 @@ def viewIndex(request):
 		'strTitle':'index',
 		'strDate':strDate,
 		'strDayName':strDayName,
+		'modelTip':listModelTips,
 	}
 
 	return render(request,'core/index.html',context = context)
