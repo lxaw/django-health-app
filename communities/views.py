@@ -1,6 +1,3 @@
-#####################################
-# dj default imports
-#####################################
 from django.contrib.auth.decorators import login_required
 
 #####################################
@@ -15,12 +12,12 @@ from django.urls import reverse
 #####################################
 from django.contrib import messages
 
-from users.models import CustomUser
 
 #####################################
 # Necessary models
 #####################################
-
+from users.models import CustomUser
+from core.models import Notification
 from .models import Post,Comment
 
 #####################################
@@ -160,6 +157,16 @@ def viewCreateComment(request,username,slug):
 			modelNewComment.author = modelUser
 			# save
 			modelNewComment.save()
+
+			# create a notification for the other users
+			# always notify the post owner
+			modelNotification = Notification(sender=request.user,recipient=modelPost.author,
+				message="{} has commented on your post \"{}\".".format(request.user.username,modelPost.title))
+			
+			modelNotification.save()
+
+			# increment the user's notification count
+
 	return redirect(reverse("communities:post_detail",kwargs = {'username':modelPost.author.username,'slug':modelPost.slug}))
 
 @login_required

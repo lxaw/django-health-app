@@ -1,13 +1,15 @@
 ###########################
 # Django functions
 ###########################
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 ###########################
 # Necessary models
 ###########################
-from .models import TipOfDay
+from .models import TipOfDay, Notification
 from users.models import CustomUser
 
 ###########################
@@ -17,7 +19,6 @@ from datetime import date
 import random
 
 # Create your views here.
-
 def viewAbout(request):
 	intParticipantCount = CustomUser.objects.filter(is_staff = False, is_developer = False).count()
 	context = {
@@ -46,3 +47,14 @@ def viewIndex(request):
 	}
 
 	return render(request,'core/index.html',context = context)
+
+@login_required
+def viewDeleteNotification(request,notification_id):
+	modelNotification = get_object_or_404(Notification, id = notification_id)
+	modelNotificationRecipient = modelNotification.recipient
+
+	if request.user == modelNotificationRecipient:
+		messages.success(request, "Notification successfully deleted.")
+		modelNotification.delete()
+	
+	return redirect('core:index')
