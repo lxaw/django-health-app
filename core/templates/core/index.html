@@ -2,6 +2,8 @@
 {% block content %}
 
 <div class = "container border border-primary rounded div__home-tip-of-day">
+	Tip of The Day:
+	<br>
 	{{modelTip}}
 </div>
 
@@ -28,7 +30,7 @@
 			{{modelNotification.message}}
 		</div>
 		<button id = "btn__delete-notification" data-url="{% url 'core:notification_delete' modelNotification.id %}">
-			Got it
+			Got it!
 		</button>
 
 	</div>

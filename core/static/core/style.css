@@ -6,6 +6,11 @@
 .div__GLOBAL_CONTENT{
     margin:50px;
 }
+
+input[type=checkbox]{
+    transform:scale(2.0);
+}
+
 /*
 ***********************************
 * Navbar styles
@@ -34,10 +39,11 @@ background: linear-gradient(90deg, rgba(24,7,7,1) 0%, rgba(179,1,1,1) 100%, rgba
     font-weight: bold;
 }
 .btn__like-post--active{
-    background-color: rgb(101, 226, 101);
+    background-color: #5df362;
     border-radius: 5px;
 }
 .btn__like-post--inactive{
+    border-radius: 5px;
     border-radius: 5px;
 }
 

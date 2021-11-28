@@ -80,7 +80,13 @@ def viewLikePost(request,post_id):
 	if(modelPost.user_likes.filter(id=request.user.id).exists()):
 		modelPost.user_likes.remove(request.user)
 	else:
+
 		modelPost.user_likes.add(request.user)
+		# notify that they liked post
+		modelNotificationToReply = Notification(sender=request.user,recipient=modelPost.author, message="{} has liked your post \"{}\".".format(request.user.username,modelPost.title))
+		# dont keep showing notification if press like and unlike 
+		
+		modelNotificationToReply.save()
 	
 	return redirect('communities:index')
 
@@ -150,6 +156,10 @@ def viewCreateComment(request,username,slug):
 					modelReplyComment.author = modelUser
 					# put the parent id in the reply
 					modelReplyComment.parent = modelParentObj
+					# since reply, notify the person you reply to
+					modelNotificationToReply = Notification(sender=request.user,recipient=modelParentObj.author, message="{} has replied to your comment.".format(request.user.username))
+					modelNotificationToReply.save()
+			
 			# Else, this is a normal comment
 			# create but dont save to db
 			modelNewComment = formCommentForm.save(commit = False)
@@ -160,10 +170,10 @@ def viewCreateComment(request,username,slug):
 
 			# create a notification for the other users
 			# always notify the post owner
-			modelNotification = Notification(sender=request.user,recipient=modelPost.author,
+			modelNotificationToParent = Notification(sender=request.user,recipient=modelPost.author,
 				message="{} has commented on your post \"{}\".".format(request.user.username,modelPost.title))
 			
-			modelNotification.save()
+			modelNotificationToParent.save()
 
 			# increment the user's notification count
 
@@ -209,4 +219,12 @@ def viewAddRemoveFollow(request, username):
 	
 	# this never runs if use ajax
 	return HttpResponseRedirect('/')
+
+@login_required
+def viewRequestHelp(request):
+
+	context = {
+	}
+
+	return render(request, "communities/request_help.html",context)
 

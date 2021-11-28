@@ -1,0 +1,51 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class = "container border border-primary rounded">
+	<h1>What would you like help with?</h1>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded">
+	<h4>Give some information on your problem.</h4>
+	<div class = "form-group">
+		<textarea id= "textareaProblemEntry" class = "form-control" rows = 3></textarea>
+	</div>
+
+	<br>
+	<div class = "container border border-primary rounded">
+
+		<br>
+
+		<div class = "row">
+			<div class = "col-4 text-center">
+				<input class = "form-check-input" type="checkbox" id= "inlineCheckBox1">
+				<label class = "form-check-label" for ="inlineCheckBox1">Nutrition</label>
+			</div>
+			<div class = "col-4 text-center">
+				<input class = "form-check-input" type="checkbox" id= "inlineCheckBox2">
+				<label class = "form-check-label" for ="inlineCheckBox2">Diet</label>
+			</div>
+			<div class = "col-4 text-center">
+				<input class = "form-check-input" type="checkbox" id= "inlineCheckBox3">
+				<label class = "form-check-label" for ="inlineCheckBox2">Routine</label>
+			</div>
+		</div>
+
+		<br>
+
+	</div>
+
+	<br>
+
+	<div>
+		<button type = "submit" class = "btn btn-primary">Submit</button>
+	</div>
+
+	<br>
+
+</div>
+
+{% endblock %}
