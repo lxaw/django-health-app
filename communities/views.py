@@ -31,11 +31,39 @@ from django.utils import timezone
 
 @login_required
 def viewIndex(request):
+	modelPost = Post()
+
+	formPostForm = PostForm(instance=modelPost)
+
+	if request.method == "POST":
+
+		# fill with post data
+		formPostForm = PostForm(request.POST)
+
+		modelCreatedPost = formPostForm.save(commit=False)
+
+		formPostForm = PostForm(request.POST)
+
+		if formPostForm.is_valid():
+			# save the object
+			user = request.user
+
+			modelCreatedPost.author = user
+
+			modelCreatedPost.save()
+
+			# show message that post created
+			messages.success(request, "Post created.")
+
+			# redirect
+			return redirect('communities:index')
+	
 	# order the posts
 	listModelPosts = Post.objects.all().order_by('-pub_date')
 
 	context = {
 		"listModelPosts":listModelPosts,
+		"formPostForm":formPostForm,
 	}
 	return render(request,'communities/index.html',context = context)
 

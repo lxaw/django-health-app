@@ -14,7 +14,7 @@ def viewIndex(request):
 
     listRecentPosts = []
     for modelPost in Post.objects.all().order_by('-pub_date'):
-        if modelPost.boolWithinXDays(1):
+        if modelPost.boolWithinXDays(1) and modelPost.author != request.user:
             listRecentPosts.append(modelPost)
 
 
