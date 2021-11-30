@@ -62,8 +62,6 @@ class Post(models.Model):
 
 		super(Post,self).save(*args, **kwargs)
 
-
-
 	def get_absolute_url(self):
 		return reverse('communities:post_detail',kwargs={"slug":self.slug,
 			"username":self.author.username}

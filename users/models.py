@@ -34,6 +34,7 @@ class CustomUserManager(BaseUserManager):
 
 		other_fields.setdefault("is_staff",True)
 		other_fields.setdefault("is_active",True)
+		other_fields.setdefault("is_developer",True)
 
 		if other_fields.get("is_staff") is not True:
 			raise ValueError(
@@ -46,7 +47,7 @@ class CustomUserManager(BaseUserManager):
 		
 		return self.create_user(email,username,password,**other_fields)
 
-	def create_user(self,email,username,password,**other_fields):
+	def create_user(self,email,username,password,phone_number,**other_fields):
 		# normalize the email by lowercasing domain part
 
 		if not username:
@@ -54,9 +55,11 @@ class CustomUserManager(BaseUserManager):
 
 		if not email:
 			raise ValueError(gettext_lazy("Must provide email address."))
+		if not phone_number:
+			raise ValueError(gettext_lazy("Must provide phone number."))
 
 		email = self.normalize_email(email)
-		user = self.model(email=email,username=username,**other_fields)
+		user = self.model(email=email,username=username,phone_number=phone_number,**other_fields)
 
 		# set the password
 		user.set_password(password)
@@ -100,6 +103,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 	# need Pillow library for images
 	profile_picture = models.ImageField(default="users/profile_pics/defaults/default_profile_pic.jpg",upload_to="users/profile_pics")
 
+	# store when the user joined
 	date_joined = models.DateTimeField(default=timezone.now)
 
 	# for following users
@@ -108,10 +112,13 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 	# Defining that we use a custom account manager
 	objects = CustomUserManager()
 
+	# store user phone number
+	phone_number = models.CharField(max_length=12,unique=True,null=False)
+
 	# USERNAME_FIELD is the default unique field that ID's user
 	# This is the unique field that identies users.
 	USERNAME_FIELD = "username"
-	REQUIRED_FIELDS = ["email"]
+	REQUIRED_FIELDS = ["email","phone_number"]
 
 	def __str__(self):
 		return self.username

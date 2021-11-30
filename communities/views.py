@@ -1,6 +1,3 @@
-#####################################
-# dj default imports
-#####################################
 from django.contrib.auth.decorators import login_required
 
 #####################################
@@ -15,12 +12,12 @@ from django.urls import reverse
 #####################################
 from django.contrib import messages
 
-from users.models import CustomUser
 
 #####################################
 # Necessary models
 #####################################
-
+from users.models import CustomUser
+from core.models import Notification
 from .models import Post,Comment
 
 #####################################
@@ -34,11 +31,39 @@ from django.utils import timezone
 
 @login_required
 def viewIndex(request):
+	modelPost = Post()
+
+	formPostForm = PostForm(instance=modelPost)
+
+	if request.method == "POST":
+
+		# fill with post data
+		formPostForm = PostForm(request.POST)
+
+		modelCreatedPost = formPostForm.save(commit=False)
+
+		formPostForm = PostForm(request.POST)
+
+		if formPostForm.is_valid():
+			# save the object
+			user = request.user
+
+			modelCreatedPost.author = user
+
+			modelCreatedPost.save()
+
+			# show message that post created
+			messages.success(request, "Post created.")
+
+			# redirect
+			return redirect('communities:index')
+	
 	# order the posts
 	listModelPosts = Post.objects.all().order_by('-pub_date')
 
 	context = {
 		"listModelPosts":listModelPosts,
+		"formPostForm":formPostForm,
 	}
 	return render(request,'communities/index.html',context = context)
 
@@ -83,7 +108,13 @@ def viewLikePost(request,post_id):
 	if(modelPost.user_likes.filter(id=request.user.id).exists()):
 		modelPost.user_likes.remove(request.user)
 	else:
+
 		modelPost.user_likes.add(request.user)
+		# notify that they liked post
+		modelNotificationToReply = Notification(sender=request.user,recipient=modelPost.author, message="{} has liked your post \"{}\".".format(request.user.username,modelPost.title))
+		# dont keep showing notification if press like and unlike 
+		
+		modelNotificationToReply.save()
 	
 	return redirect('communities:index')
 
@@ -134,8 +165,6 @@ def viewCreateComment(request,username,slug):
 		# form for comment
 		formCommentForm = CommentForm(data=request.POST)
 
-		print(request.POST.get('body'))
-
 		if formCommentForm.is_valid():
 
 			modelParentObj = None
@@ -155,6 +184,10 @@ def viewCreateComment(request,username,slug):
 					modelReplyComment.author = modelUser
 					# put the parent id in the reply
 					modelReplyComment.parent = modelParentObj
+					# since reply, notify the person you reply to
+					modelNotificationToReply = Notification(sender=request.user,recipient=modelParentObj.author, message="{} has replied to your comment.".format(request.user.username))
+					modelNotificationToReply.save()
+			
 			# Else, this is a normal comment
 			# create but dont save to db
 			modelNewComment = formCommentForm.save(commit = False)
@@ -162,6 +195,16 @@ def viewCreateComment(request,username,slug):
 			modelNewComment.author = modelUser
 			# save
 			modelNewComment.save()
+
+			# create a notification for the other users
+			# always notify the post owner
+			modelNotificationToParent = Notification(sender=request.user,recipient=modelPost.author,
+				message="{} has commented on your post \"{}\".".format(request.user.username,modelPost.title))
+			
+			modelNotificationToParent.save()
+
+			# increment the user's notification count
+
 	return redirect(reverse("communities:post_detail",kwargs = {'username':modelPost.author.username,'slug':modelPost.slug}))
 
 @login_required
@@ -204,4 +247,12 @@ def viewAddRemoveFollow(request, username):
 	
 	# this never runs if use ajax
 	return HttpResponseRedirect('/')
+
+@login_required
+def viewRequestHelp(request):
+
+	context = {
+	}
+
+	return render(request, "communities/request_help.html",context)
 

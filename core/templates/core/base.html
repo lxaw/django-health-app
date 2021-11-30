@@ -51,11 +51,18 @@ Basic navbar to show it is possible
 		<img src = "{% static 'core/images/core/arnold_school_of_public_health.jpg' %}" alt = "arnold_school_of_public_health.jpg">
 	</a>
 
-	<a class = "navbar-text navbar__main__a-tag" href = "{% url 'core:index' %}">
-		Home
-	</a>
-
 	{% if user.is_authenticated %}
+	<div style="display:grid;">
+		<a style="grid-column:1;grid-row:1;"   class = "navbar-text navbar__main__a-tag" href = "{% url 'core:index' %}">
+			Home
+		</a>
+		<div style = "grid-column-start: 2;grid-row:1;">
+			<span style="color:white">
+				{{user.recipient_notification.count}}
+			</span>
+		</div>
+	</div>
+
 		<a class = "navbar-text navbar__main__a-tag" href = "{% url 'communities:index' %}">
 			Communities
 		</a>
@@ -82,17 +89,6 @@ Basic navbar to show it is possible
 
 </nav>
 
-<!-- If tip of day, display -->
-<div id = "core__tip-of-day" class = "alert alert-info rounded m-5" role = "alert">
-	<div class = "row">
-		<p class = "col-md-6">
-			Some good tip about health
-		</p>
-		<p id = "core__tip-of-day-snooze" class = "col-md-6 text-right">
-			Got it!
-		</p>
-	</div>
-</div>
 
 <!-- If messages, display -->
 {% if messages %}
@@ -112,21 +108,6 @@ Load the content from a child page
 
 	{% block javascript %}{% endblock javascript %}
 </div>
-
-<script>
-	function coreTipOfDaySnooze(){
-		// to do: snooze the tip for the day
-		document.getElementById('core__tip-of-day').style.display = "none";
-		$.ajax({
-
-		})
-	}
-	let pSnoozeTipOfDay = document.getElementById("core__tip-of-day-snooze");
-
-	pSnoozeTipOfDay.addEventListener("click",()=>{
-		coreTipOfDaySnooze();
-	})
-</script>
 
 </body>
 </html>

@@ -25,6 +25,12 @@ from .models import KCalAmount
 # Package installs
 #################################
 import numpy as np
+from datetime import datetime
+import re
+
+
+def strParsePhoneNumber(strEntry):
+	return ''.join(n for n in strEntry if n.isdigit())
 
 
 #################################
@@ -32,8 +38,16 @@ import numpy as np
 #################################
 
 def viewRegister(request):
-
 	if request.method == "POST":
+		# check the phone number
+		phone_number = request.POST.get("phone_number")
+		pattern = re.compile(r'\d{3}-\d{3}-\d{4}')
+		boolValidNumber = bool(pattern.match(phone_number))
+
+		if not boolValidNumber:
+			messages.error(request,"Please format number as 3 digits, hyphen, 3 digits, hyphen, 4 digits.")
+			return redirect("users:register")
+
 		# if get post request, instantiate form with user data
 		form = UserRegisterForm(request.POST)
 
@@ -77,9 +91,14 @@ def viewProfile(request):
 	floatMean = np.mean(arrfloatKCals)
 	floatMedian = np.median(arrfloatKCals)
 
-
 	# for serialization
-	listKCals = list(user.kcalamount_set.all().values('date','amount'))
+	listKCals = []
+	for modelKCal in user.kcalamount_set.all():
+		dictTemplate = {}
+		dictTemplate["date"] = modelKCal.date.strftime("%-j")
+		dictTemplate["amount"] = modelKCal.amount
+		listKCals.append(dictTemplate)
+	
 
 	# followed users
 	listFollowedUsers = list(user.follows.all())

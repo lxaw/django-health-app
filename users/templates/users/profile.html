@@ -3,16 +3,19 @@
 
 {% block content %}
 
-<div style="align-items:flex-start;" class = "div__users-profile">
+<div style="align-items:flex-start;" 
+	class = "container border border-dark rounded pt-2  div__users-profile-banner"
+>
 	<div style="display:inline-flex" class = "div__users-profile-media">
 		<img class = "rounded-circle img__users-profile-img" src = "{{user.profile_picture.url}}">
 		<div class = "div__users-profile-media-account">
 			<h2 class = "account-heading">
 				Welcome,  <strong>{{user.username}}.</strong>
 			</h2>
-			<p class = "text-secondary">{{user.email}}</p>
+			{% if user.is_pod_plus_member %}
+				<p class = "text-secondary">POD+ Member</p>
+			{% endif %}
 		</div>
-
 	</div>
 </div>
 
@@ -21,9 +24,9 @@
 
 <br>
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded pb-5 pt-1">
 	<div class = "row">
-		<div class = "col-sm ">
+		<div class = "col-sm col-md-4">
 			<h2>Your information:</h2>
 			<strong>Email:</strong> {{dictUserStats.strEmail}}
 			<br>
@@ -34,9 +37,8 @@
 			<strong>Points:</strong> {{dictUserStats.intPoints}}
 			<br>
 			<strong>Date joined:</strong>{{dictUserStats.strDateJoined}}
-			<br>
 		</div>
-		<div class = "col-sm">
+		<div class = "col-sm col-md-4">
 			<h2>Your Diet Stats:</h2>
 			<strong>Standard Deviation: </strong>{{dictUserStats.floatStd}}
 			<br>
@@ -45,7 +47,7 @@
 			<strong>Median: </strong>{{dictUserStats.floatMedian}}
 			<br>
 		</div>
-		<div class = "col-sm ">
+		<div class = "col-sm col-md-4">
 			<h2>Your Physical Activity</h2>
 
 		</div>
@@ -53,43 +55,59 @@
 </div>
 
 <br>
-<h2>Your Graphs:</h2>
-<!-- kcal info for grab by javascript -->
-{{listKCals|json_script:"jsonKCals"}}
+<br>
 
-<div class = "div__users-profile-chart-container">
-	<canvas id = "canvas__users-profile-chart__id"></canvas>
+<div class = "container border border-primary rounded pt-1 pb-5">
+	<h2 class = "text-center">Your Graphs:</h2>
+	<br>
+	<div class = "row">
+		<div class = "col-sm col-md-7">
+
+		</div>
+		<div class = "col-sm col-md-5">
+			<!-- kcal info for grab by javascript -->
+			{{listKCals|json_script:"jsonKCals"}}
+			<div class = "div__users-profile-chart-container">
+				<canvas id = "canvas__users-profile-chart__id"></canvas>
+			</div>
+		</div>
+	</div>
 </div>
 
+<br>
 
-
-<h2>Your History:</h2>
+<div class = "container border border-primary rounded pt-1 pb-5">
 	<a href = "{% url 'users:upload_kcals' %}">
 		Upload your most recent meal.
 	</a>
+	<h2>Your History:</h2>
 	{% for modelKCal in setKCals %}
-
-
-	<div class = "div__kcal-entry">
+		<div class = "div__kcal-entry">
 			<p><strong>Meal name: ?????</strong></p>
 			<p><strong>Date:</strong> {{modelKCal.date}}</p>
 			<p><strong>Kilocalorie count:</strong> {{modelKCal.amount}}</p>
 			<a href = "{% url 'users:delete_kcal' modelKCal.id %}" >
 				Delete?
 			</a>
-	</div>
+		</div>
 	{% endfor %}
+</div>
 
 <br>
-<h4>Following: {{user.follows.count}}</h4>
-{% for modelUser in listFollowedUsers %}
-	<div class = "border border-primary" style = "width:50%;padding:10px;margin-bottom:10px;border-radius:5px;">
-		<img class = "rounded-circle img__users-profile-img" src = "{{modelUser.profile_picture.url}}">
-		<a href = "{{modelUser.get_public_profile_url}}">
-			{{modelUser.username}}
-		</a>
-	</div>
-{% endfor %}
+
+<div class = "container border border-primary rounded pb-5 pt-1">
+	<h4>Following: {{user.follows.count}}</h4>
+	{% for modelUser in listFollowedUsers %}
+		<div class = "border border-primary" style = "width:50%;padding:10px;margin-bottom:10px;border-radius:5px;">
+			<img class = "rounded-circle img__users-profile-img" src = "{{modelUser.profile_picture.url}}">
+			<a href = "{{modelUser.get_public_profile_url}}">
+				{{modelUser.username}}
+			</a>
+		</div>
+	{% endfor %}
+</div>
+
+
 
 {% endblock %}
 
@@ -99,38 +117,46 @@ var arrKCals = JSON.parse(document.getElementById('jsonKCals').textContent);
 
 var arrLabels = [];
 var arrData = [];
-var arrBackgroundColor = [];
-var arrBorderColor = [];
 
 // populate the arrays
 for(let kcalobjKCal of arrKCals){
 	arrLabels.push(kcalobjKCal.date);
 	arrData.push(kcalobjKCal.amount);
-	arrBackgroundColor.push("rgba(0,0,0,0.2)");
-	arrBorderColor.push("rgba(0,0,0,1)");
 }
 
 var ctx = document.getElementById('canvas__users-profile-chart__id').getContext('2d');
 
 var myChart = new Chart(ctx, {
-    type: 'bar',
+    type: 'line',
     data: {
 		labels: arrLabels,
         datasets: [{
-            label: arrLabels,
             data: arrData,
-			backgroundColor:arrBackgroundColor,
-			borderColor:arrBorderColor,
-            borderWidth: 1
+			borderColor:'rgb(75,192,192)',
+            borderWidth: 1,
+			fill:false,
+			tension:0.1
         }]
     },
     options: {
 		maintainAspectRatio:false,
 		responsive:true,
+		legend:{
+			display:false
+		},
         scales: {
-            y: {
-                beginAtZero: true
-            }
+			yAxes: [{
+				scaleLabel:{
+					display:true,
+					labelString:'K-Cal Count'
+				}
+			}],
+			xAxes: [{
+				scaleLabel:{
+					display:true,
+					labelString:'Day Number of Year'
+				}
+			}]
         }
     }
 });

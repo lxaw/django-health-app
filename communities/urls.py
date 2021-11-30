@@ -15,7 +15,6 @@ urlpatterns = [
 	##################
 	# URLS for Posts
 	##################
-
 	# CREATING A POST
 	path('create_post',communities_views.viewCreatePost,name="create_post"),
 	# DELETING A POST
@@ -27,6 +26,7 @@ urlpatterns = [
 	# URLS for Posts Actions (Like)
 	##################
 	path('like_post/<int:post_id>',communities_views.viewLikePost,name="like_post"),
+
 
 	##################
 	# URLS for Posts Comments
@@ -45,4 +45,8 @@ urlpatterns = [
 	# URLS for Following
 	##################
 	path('following/add_remove_follow/<str:username>',communities_views.viewAddRemoveFollow,name="add_remove_follow"),
+	##################
+	# URLS for Ask for Help
+	##################
+	path('request-help',communities_views.viewRequestHelp,name="request_help"),
 ]
