@@ -43,7 +43,7 @@
 				</div>
 				<br>
 				<div>
-					<form style="display:none"  id = "form__comment-reply${{modelComment.id}}" class = "form__comment-reply" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" method = "POST">
+					<form style="display:none"  id = "form__comment-reply${{modelComment.id}}" class = "form__comment-forms" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" method = "POST">
 						{% csrf_token %}
 						{{formCommentForm.non_field_errors}}
 							{{formCommentForm.body.errors}}
@@ -70,7 +70,7 @@
 <br>
 
 <div class = "container border border-primary rounded">
-	<form class = "form__create-comment" method = "POST" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" >
+	<form id = "form__create-comment" class = "form__comment-forms" method = "POST" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" >
 		<h3>Create a comment.</h3>
 		{% csrf_token %}
 		{{formCommentForm.non_field_errors}}
@@ -87,6 +87,24 @@
 
 {% block javascript %}
 <script>
+	// form submissions redirect to same page
+	function update_form_on_submit(form,url){
+		form.addEventListener("submit",function(e){
+			$.ajax({
+				url:url,
+				success:function(){
+					location.reload();
+				}
+			})
+		});
+	}
+	
+	let arrFormCommentForms = document.getElementsByClassName('form__comment-forms');
+	for(let form of arrFormCommentForms){
+		update_form_on_submit(form, form.action);
+	}
+
+
 	function delete_comment(strUrl){
 		let strCommentId = strUrl.split("\/").pop();
 		let strDiv = "div__communities-post-comment$" + strCommentId;
@@ -110,6 +128,9 @@
 			formCommentForm.style.display = "none";
 			btn.innerText = "Reply";
 		}
+	}
+	function create_comment(strUrl){
+
 	}
 
 	let arrbtnReplyToComments = document.getElementsByClassName('input__reply-to-comment');

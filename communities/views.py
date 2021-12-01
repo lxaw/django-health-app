@@ -50,6 +50,7 @@ def viewIndex(request):
 		"formPostForm":formPostForm,
 		"formCommentForm":formCommentForm,
 	}
+
 	return render(request,'communities/index.html',context = context)
 
 @login_required
@@ -124,9 +125,11 @@ def viewPostDetail(request, slug,username):
 @login_required
 def viewProfile(request, username):
 	modelUser = get_object_or_404(CustomUser, username = username)
+	listModelPosts = modelUser.created_post_set.all().order_by("-pub_date")
 
 	context = {
 		"modelViewedUser": modelUser,
+		"listModelPosts":listModelPosts,
 	}
 
 	return render(request, "communities/profile.html",context)
@@ -230,7 +233,6 @@ def viewAddRemoveFollow(request, username):
 			# unfollow
 			modelCurrentUser.follows.remove(modelUserToBeFollowed)
 
-	
 	# this never runs if use ajax
 	return HttpResponseRedirect('/')
 

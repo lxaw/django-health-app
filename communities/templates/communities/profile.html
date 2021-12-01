@@ -59,6 +59,18 @@
 </ul>
 </div>
 
+<br>
+<div class = "container border border-primary rounded">
+	<h4>All posts from {{modelViewedUser.username}}</h4>
+	{% for modelPost in listModelPosts %}
+	<a href = "{{modelPost.get_absolute_url}}">
+		<div class = "container border border-primary rounded">
+			{{modelPost.title}}
+		</div>
+		<br>
+	</a>
+	{% endfor %}
+</div>
 
 {% endblock %}
 
