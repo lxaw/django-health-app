@@ -8,7 +8,7 @@
 	<h4>
 		<p id = "p__show-hide-create-post">Create Post</p>
 		<div class = "container border border-primary rounded" id = "div__create-post" style="display:none">
-			<form method = "POST">
+			<form method = "POST" action = "{% url 'communities:create_post' %}">
 				{% csrf_token %}
 				{{formPostForm.as_p}}
 				<input type = "submit" value = "Save Post">
@@ -34,39 +34,81 @@
 		<h4 class = "pl-4">Recent posts:</h4>
 		<div class = "row">
 			<div class = "col">
-				{% for modelPost in listModelPosts %}
-					<div id = "div__post${{modelPost.id}}" class = "div__communities-post">
-						<img style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img" src = "{{modelPost.author.profile_picture.url}}">
-						<a href = "{% url 'communities:profile' modelPost.author.username %}">
-							{{modelPost.author}}
-						</a> on {{modelPost.pub_date}}
-						<br>
-						<a href = "{% url 'communities:post_detail' modelPost.author.username modelPost.slug %}" class = "p__communities-post-title">
+
+				{% for modelPost,listPostComments in dictModelPosts.items %}
+				<div class = "div__communities-post" id = "div__post${{modelPost.id}}">
+					<img style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img" src = "{{modelPost.author.profile_picture.url}}">
+					<a href = "{% url 'communities:profile' modelPost.author.username %}">
+						{{modelPost.author}}
+					</a> on {{modelPost.pub_date}}
+					<br>
+						<strong>
 							{{modelPost.title}}
-						</a>
+						</strong>
+					<br>
+					{{modelPost.text_content}}
+					<br>
+					Comments
+					{% for modelComment in listPostComments %}
+					<div class = "div__communities-post-comment">
+						<strong>Author: </strong>{{modelComment.author}}
 						<br>
-
-						<div class = "container border border-primary rounded">
-							<p>{{modelPost.text_content}}</p>
-						</div>
-
-						<div id = "div__post-{{modelPost.id}}-likes">
-							{% if user in modelPost.user_likes.all %}
-								<button  data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post btn__like-post--active" id = "btn__like-post${{modelPost.id}}">
-									Like
-								</button>
-							{% else %}
-								<button  data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post btn__like-post--inactive" id = "btn__like-post${{modelPost.id}}">Like</button>
-							{% endif %}
-						</div>
-						Total Comments: {{modelPost.comments.count}}
-						{% if modelPost.author == user %}
-							<p style="color:rgb(185, 43, 43);" class = "btn__delete-post" data-url = "{% url 'communities:delete_post' modelPost.id %}">
-								Delete?
-							</p>
+						<strong>Pub date: </strong>{{modelComment.pub_date}}
+						<br>
+						{% if modelComment.boolIsReply %}
+						<a href = "{% url 'communities:profile' modelComment.parent.author.username %}">
+							@{{modelComment.parent.author}}
+						</a>
 						{% endif %}
+						<div>
+							{{modelComment.body|linebreaks}}
+						</div>
+
+						<form style = "display:none" id = "form__comment-reply${{modelComment.id}}" class = "form__comment-reply" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" method = "POST">
+							{% csrf_token %}
+							{{formCommentForm.non_field_errors}}
+								{{formCommentForm.body.errors}}	
+								{{formCommentForm.body}}
+							<input type = "hidden" name = "intParentId" value = "{{modelComment.id}}">
+							<br>
+							<input class = "input__reply-to-comment" data-comment-author="{{modelComment.author.username}}" type="submit" value = "Reply">
+						</form>
+
+						<button data-id = "{{modelComment.id}}" class = "btn__reply-to-comment">
+							Reply
+						</button>
+
+						{% if modelComment.author == user %}
+							<button id = "btn__delete-comment${{modelComment.id}}" class = "btn__delete-comment" data-url = "{% url 'communities:delete_comment' modelComment.id %}">
+								Delete?
+							</button>
+						{% endif %}
+
 					</div>
+					{% endfor %}
+					<div class = "container">
+						<form class = "form__create-comment" method = "POST" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" >
+							<h3>Create a comment.</h3>
+							{% csrf_token %}
+							{{formCommentForm.non_field_errors}}
+							<div>
+								{{formCommentForm.body.errors}}
+								{{formCommentForm.body}}
+							</div>
+							<!-- {{formCommentForm.as_p}} -->
+							<input type = "submit" value = "Post" >
+						</form>
+					</div>
+					{% if modelPost.author == user %}
+						<p style="color:rgb(185, 43, 43);" class = "btn__delete-post" data-url = "{% url 'communities:delete_post' modelPost.id %}">
+							Delete post?
+						</p>
+					{% endif %}
+				</div>
+
+					
 				{% endfor %}
+
 			</div>
 		</div>
 
@@ -109,6 +151,53 @@
 			divShowHide.style.display = "none";
 			pClicker.innerText = "Create Post";
 		}
+	}
+	function delete_comment(strUrl){
+		let strCommentId = strUrl.split("\/").pop();
+		let strDiv = "div__communities-post-comment$" + strCommentId;
+		let divComment = document.getElementById(strDiv);
+
+		$.ajax({
+			url:strUrl,
+			success:function(){
+				location.reload();
+			}
+		})
+	}
+	function show_hide_reply_field(btn){
+		let strId = btn.getAttribute('data-id');
+		let formCommentForm = document.getElementById('form__comment-reply$' + strId);
+		if(formCommentForm.style.display == "none"){
+			formCommentForm.style.display = "block";
+			btn.innerText = "Close reply";
+		}
+		else{
+			formCommentForm.style.display = "none";
+			btn.innerText = "Reply";
+		}
+	}
+
+	let arrbtnReplyToComments = document.getElementsByClassName('input__reply-to-comment');
+	for(let btn of arrbtnReplyToComments){
+		btn.addEventListener('click',()=>{
+			populate_reply_field(btn);
+		});
+	}
+
+	let arrbtnReplyComment = document.getElementsByClassName('btn__reply-to-comment');
+	for(let btn of arrbtnReplyComment){
+		btn.addEventListener('click',()=>{
+			show_hide_reply_field(btn);
+		})
+	}
+
+	let arrbtnDeleteComment = document.getElementsByClassName("btn__delete-comment");
+	for(let btn of arrbtnDeleteComment){
+		// get the id
+		let strUrl = btn.getAttribute('data-url');
+		btn.addEventListener("click",()=>{
+			delete_comment(strUrl);
+		})
 	}
 	// associate p show hide create post with func
 	let pShowHideCreatePost = document.getElementById("p__show-hide-create-post");

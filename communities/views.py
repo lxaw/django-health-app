@@ -33,37 +33,22 @@ from django.utils import timezone
 def viewIndex(request):
 	modelPost = Post()
 
+	# note that create post is handled in a different view
+	# we use form action to create the objects
 	formPostForm = PostForm(instance=modelPost)
+	formCommentForm = CommentForm()
 
-	if request.method == "POST":
-
-		# fill with post data
-		formPostForm = PostForm(request.POST)
-
-		modelCreatedPost = formPostForm.save(commit=False)
-
-		formPostForm = PostForm(request.POST)
-
-		if formPostForm.is_valid():
-			# save the object
-			user = request.user
-
-			modelCreatedPost.author = user
-
-			modelCreatedPost.save()
-
-			# show message that post created
-			messages.success(request, "Post created.")
-
-			# redirect
-			return redirect('communities:index')
 	
 	# order the posts
-	listModelPosts = Post.objects.all().order_by('-pub_date')
+	# Create a dictionary of {Post:Post comments sorted}
+	dictModelPosts = {}
+	for modelPost in Post.objects.all().order_by('-pub_date'):
+		dictModelPosts[modelPost] = modelPost.comments.filter(active=True).order_by("-pub_date")
 
 	context = {
-		"listModelPosts":listModelPosts,
+		"dictModelPosts":dictModelPosts,
 		"formPostForm":formPostForm,
+		"formCommentForm":formCommentForm,
 	}
 	return render(request,'communities/index.html',context = context)
 
@@ -99,7 +84,7 @@ def viewCreatePost(request):
 	context = {
 		"formPostForm":formPostForm,
 	}
-	return render(request, 'communities/create_post.html',context)
+	return redirect("communities:index")
 
 @login_required
 def viewLikePost(request,post_id):
@@ -205,7 +190,8 @@ def viewCreateComment(request,username,slug):
 
 			# increment the user's notification count
 
-	return redirect(reverse("communities:post_detail",kwargs = {'username':modelPost.author.username,'slug':modelPost.slug}))
+	#return redirect(reverse("communities:post_detail",kwargs = {'username':modelPost.author.username,'slug':modelPost.slug}))
+	return redirect('communities:index')
 
 @login_required
 def viewDeletePost(request,post_id):
