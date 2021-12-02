@@ -36,59 +36,75 @@
 			<div class = "col">
 
 				{% for modelPost,listPostComments in dictModelPosts.items %}
-				<div class = "div__communities-post" id = "div__post${{modelPost.id}}">
-					<img style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img" src = "{{modelPost.author.profile_picture.url}}">
-					<a href = "{% url 'communities:profile' modelPost.author.username %}">
-						{{modelPost.author}}
-					</a> on {{modelPost.pub_date}}
-					<br>
+				<div class = "div__communities-post border rounded" id = "div__post${{modelPost.id}}">
+					<div class = "container border rounded">
+						<br>
+						<img style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img border border-dark" src = "{{modelPost.author.profile_picture.url}}">
+						<a href = "{% url 'communities:profile' modelPost.author.username %}">
+							{{modelPost.author}}
+						</a> on {{modelPost.pub_date}}
+						<br>
 						<strong>
 							{{modelPost.title}}
 						</strong>
-					<br>
-					{{modelPost.text_content}}
-					<br>
-					Comments
-					{% for modelComment in listPostComments %}
-					<div class = "div__communities-post-comment">
-						<strong>Author: </strong>{{modelComment.author}}
 						<br>
-						<strong>Pub date: </strong>{{modelComment.pub_date}}
-						<br>
-						{% if modelComment.boolIsReply %}
-						<a href = "{% url 'communities:profile' modelComment.parent.author.username %}">
-							@{{modelComment.parent.author}}
-						</a>
-						{% endif %}
-						<div>
-							{{modelComment.body|linebreaks}}
-						</div>
-
-						<form style = "display:none" id = "form__comment-reply${{modelComment.id}}" class = "form__comment-reply" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" method = "POST">
-							{% csrf_token %}
-							{{formCommentForm.non_field_errors}}
-								{{formCommentForm.body.errors}}	
-								{{formCommentForm.body}}
-							<input type = "hidden" name = "intParentId" value = "{{modelComment.id}}">
-							<br>
-							<input class = "input__reply-to-comment" data-comment-author="{{modelComment.author.username}}" type="submit" value = "Reply">
-						</form>
-
-						<button data-id = "{{modelComment.id}}" class = "btn__reply-to-comment">
-							Reply
-						</button>
-
-						{% if modelComment.author == user %}
-							<button id = "btn__delete-comment${{modelComment.id}}" class = "btn__delete-comment" data-url = "{% url 'communities:delete_comment' modelComment.id %}">
-								Delete?
-							</button>
-						{% endif %}
-
+						{{modelPost.text_content}}
+					<br>
 					</div>
-					{% endfor %}
-					<div class = "container">
+					{% if modelPost.comments.count != 0 %}
+						<p id = "p__view-comments-post${{modelPost.id}}" class = "p__show-hide-comments text-muted" data-id = "{{modelPost.id}}">
+							Show comments
+						</p>
+						<div style= "display:none" id = "div__hide-show-comments${{modelPost.id}}">
+							{% for modelComment in listPostComments %}
+							<div class = "div__communities-post-comment border rounded">
+								<div class = "container border rounded">
+									<br>
+									<img style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img border border-dark" src = "{{modelPost.author.profile_picture.url}}">
+									<a href ="{% url 'communities:profile' modelComment.author.username %}">
+										{{modelComment.author}}
+									</a>
+									on {{modelComment.pub_date}}
+									<br>
+									{% if modelComment.boolIsReply %}
+									<a href = "{% url 'communities:profile' modelComment.parent.author.username %}">
+										@{{modelComment.parent.author}}
+									</a>
+									{% endif %}
+									<div>
+										{{modelComment.body|linebreaks}}
+									</div>
+								</div>
+
+								<form style = "display:none" id = "form__comment-reply${{modelComment.id}}" class = "form__comment-reply" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" method = "POST">
+									{% csrf_token %}
+									{{formCommentForm.non_field_errors}}
+										{{formCommentForm.body.errors}}	
+										{{formCommentForm.body}}
+									<input type = "hidden" name = "intParentId" value = "{{modelComment.id}}">
+									<br>
+									<input class = "input__reply-to-comment" data-comment-author="{{modelComment.author.username}}" type="submit" value = "Reply">
+								</form>
+
+								<button data-id = "{{modelComment.id}}" class = "btn__reply-to-comment">
+									Reply
+								</button>
+
+								{% if modelComment.author == user %}
+									<button id = "btn__delete-comment${{modelComment.id}}" class = "btn__delete-comment" data-url = "{% url 'communities:delete_comment' modelComment.id %}">
+										Delete?
+									</button>
+								{% endif %}
+
+							</div>
+						</div>
+						{% endfor %}
+					{% endif %}
+					<p class = "text-muted p__show-hide-create-comment" data-id = "{{modelPost.id}}">
+						Create a comment
+					</p>
+					<div style = "display:none" id = "div__create-comment${{modelPost.id}}">
 						<form class = "form__create-comment" method = "POST" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" >
-							<h3>Create a comment.</h3>
 							{% csrf_token %}
 							{{formCommentForm.non_field_errors}}
 							<div>
@@ -105,8 +121,6 @@
 						</p>
 					{% endif %}
 				</div>
-
-					
 				{% endfor %}
 
 			</div>
@@ -121,7 +135,42 @@
 {% block javascript %}
 
 <script>
+	/*
+	************************
+	* Functions
+	************************
+	*/
+	function show_hide_comments(divCommentDiv,pClicker){
+		if(divCommentDiv.style.display == "none"){
+			divCommentDiv.style.display = "block";
+			pClicker.innerText = "Hide comments";
+		}else{
+			divCommentDiv.style.display = "none";
+			pClicker.innerText = "Show comments";
+		}
+	}
+	function show_hide_create_comment(divCommentDiv,pClicker){
+		if(divCommentDiv.style.display == "none"){
+			divCommentDiv.style.display = "block";
+			pClicker.innerText = "Hide create comment";
+		}else{
+			divCommentDiv.style.display = "none";
+			pClicker.innerText = "Create a comment";
+		}
+	}
+	let arrPShowHideCreateComments = document.getElementsByClassName("p__show-hide-create-comment");
+	for(let p of arrPShowHideCreateComments){
+		let strModelPostId = p.getAttribute("data-id");
+		let divCommentCreateDiv = document.getElementById("div__create-comment$" + strModelPostId);
+		p.addEventListener('click',()=>{
+			show_hide_create_comment(divCommentCreateDiv,p);
+		})
+	}
+
 	function delete_post(strUrl){
+		/*
+		Deletes a post.
+		*/
 		let strPostId = strUrl.split("\/").pop();
 		let divPost = document.getElementById('div__post$' + strPostId);
 		divPost.style.display = "none"
@@ -131,7 +180,10 @@
 		})
 	}
 
-	function update_post(strUrl){
+	function update_post_likes(strUrl){
+		/*
+		Updates like on post
+		*/
 		let strPostId = strUrl.split('\/').pop();
 		let btn = document.getElementById("btn__like-post$" + strPostId)
 		$.ajax({
@@ -143,6 +195,9 @@
 	}
 	
 	function show_hide_create_post_field(divShowHide,pClicker){
+		/*
+		Show and hide the create post
+		*/
 		if(divShowHide.style.display == "none"){
 			divShowHide.style.display = "block";
 			pClicker.innerText = "Cancel";
@@ -153,6 +208,9 @@
 		}
 	}
 	function delete_comment(strUrl){
+		/*
+		Deletes a comment
+		*/
 		let strCommentId = strUrl.split("\/").pop();
 		let strDiv = "div__communities-post-comment$" + strCommentId;
 		let divComment = document.getElementById(strDiv);
@@ -165,6 +223,9 @@
 		})
 	}
 	function show_hide_reply_field(btn){
+		/*
+		Shows and hide reply field
+		*/
 		let strId = btn.getAttribute('data-id');
 		let formCommentForm = document.getElementById('form__comment-reply$' + strId);
 		if(formCommentForm.style.display == "none"){
@@ -176,14 +237,7 @@
 			btn.innerText = "Reply";
 		}
 	}
-
-	let arrbtnReplyToComments = document.getElementsByClassName('input__reply-to-comment');
-	for(let btn of arrbtnReplyToComments){
-		btn.addEventListener('click',()=>{
-			populate_reply_field(btn);
-		});
-	}
-
+	// associatione btn with reply to comment
 	let arrbtnReplyComment = document.getElementsByClassName('btn__reply-to-comment');
 	for(let btn of arrbtnReplyComment){
 		btn.addEventListener('click',()=>{
@@ -191,6 +245,7 @@
 		})
 	}
 
+	// association buttons with delete comments
 	let arrbtnDeleteComment = document.getElementsByClassName("btn__delete-comment");
 	for(let btn of arrbtnDeleteComment){
 		// get the id
@@ -221,7 +276,16 @@
 		// get the id
 		let strUrl = btn.getAttribute("data-url");
 		btn.addEventListener("click",()=>{
-			update_post(strUrl);
+			update_post_likes(strUrl);
+		})
+	}
+	// associate p with show hide comments
+	let arrPShowHideComments = document.getElementsByClassName("p__show-hide-comments");
+	for(let p of arrPShowHideComments){
+		p.addEventListener("click",()=>{
+			let strModelPostId = p.getAttribute("data-id");
+			let divCommentDiv = document.getElementById("div__hide-show-comments$" + strModelPostId);
+			show_hide_comments(divCommentDiv,p);
 		})
 	}
 

@@ -69,26 +69,22 @@ Inputs
 divs
 */
 .div__communities-post-detail{
-    border-radius:10px;
     border-color: black;
     background-color: red;
 }
 
 .div__communities-post-comment{
-    border-radius: 10px;
-    background-color: rgb(241, 233, 255);
+    background-color: rgb(255, 224, 224);
     margin:20px;
     padding:10px;
 }
 .div__communities-post-comment-reply{
-    border-radius: 10px;
-    background-color: #c3c2ff;
+    background-color: #ffd2d2;
     margin:20px;
     padding:10px;
 }
 .div__communities-post{
-    border-radius: 10px;
-    background-color: rgb(233, 239, 255);
+    background-color: rgb(243, 243, 243);
     margin:20px;
     padding:10px;
 }
