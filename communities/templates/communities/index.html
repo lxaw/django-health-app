@@ -33,10 +33,10 @@
 	<div id = "div__communities-recent-post-container">
 		<h4 class = "pl-4">Recent posts:</h4>
 		<div class = "row">
-			<div class = "col">
-
 				{% for modelPost,listPostComments in dictModelPosts.items %}
+
 				<div class = "div__communities-post border rounded" id = "div__post${{modelPost.id}}">
+
 					<div class = "container border rounded">
 						<br>
 						<img style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img border border-dark" src = "{{modelPost.author.profile_picture.url}}">
@@ -49,33 +49,31 @@
 						</strong>
 						<br>
 						{{modelPost.text_content}}
-					<br>
+						<br>
 					</div>
+
 					{% if modelPost.comments.count != 0 %}
 						<p id = "p__view-comments-post${{modelPost.id}}" class = "p__show-hide-comments text-muted" data-id = "{{modelPost.id}}">
 							Show comments
 						</p>
 						<div style= "display:none" id = "div__hide-show-comments${{modelPost.id}}">
 							{% for modelComment in listPostComments %}
-							<div class = "div__communities-post-comment border rounded">
-								<div class = "container border rounded">
-									<br>
-									<img style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img border border-dark" src = "{{modelPost.author.profile_picture.url}}">
-									<a href ="{% url 'communities:profile' modelComment.author.username %}">
-										{{modelComment.author}}
-									</a>
-									on {{modelComment.pub_date}}
-									<br>
-									{% if modelComment.boolIsReply %}
-									<a href = "{% url 'communities:profile' modelComment.parent.author.username %}">
-										@{{modelComment.parent.author}}
-									</a>
-									{% endif %}
-									<div>
-										{{modelComment.body|linebreaks}}
-									</div>
+							<div class = "div__comunities-post-comment border rounded container">
+								<br>
+								<img style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img border border-dark" src = "{{modelPost.author.profile_picture.url}}">
+								<a href ="{% url 'communities:profile' modelComment.author.username %}">
+									{{modelComment.author}}
+								</a>
+								on {{modelComment.pub_date}}
+								<br>
+								{% if modelComment.boolIsReply %}
+								<a href = "{% url 'communities:profile' modelComment.parent.author.username %}">
+									@{{modelComment.parent.author}}
+								</a>
+								{% endif %}
+								<div>
+									{{modelComment.body|linebreaks}}
 								</div>
-
 								<form style = "display:none" id = "form__comment-reply${{modelComment.id}}" class = "form__comment-reply" action = "{% url 'communities:create_comment' modelPost.author.username modelPost.slug %}" method = "POST">
 									{% csrf_token %}
 									{{formCommentForm.non_field_errors}}
@@ -85,20 +83,18 @@
 									<br>
 									<input class = "input__reply-to-comment" data-comment-author="{{modelComment.author.username}}" type="submit" value = "Reply">
 								</form>
-
 								<button data-id = "{{modelComment.id}}" class = "btn__reply-to-comment">
 									Reply
 								</button>
-
 								{% if modelComment.author == user %}
 									<button id = "btn__delete-comment${{modelComment.id}}" class = "btn__delete-comment" data-url = "{% url 'communities:delete_comment' modelComment.id %}">
 										Delete?
 									</button>
 								{% endif %}
-
+								<br>
 							</div>
+							{% endfor %}
 						</div>
-						{% endfor %}
 					{% endif %}
 					<p class = "text-muted p__show-hide-create-comment" data-id = "{{modelPost.id}}">
 						Create a comment
@@ -121,11 +117,8 @@
 						</p>
 					{% endif %}
 				</div>
-				{% endfor %}
-
-			</div>
+			{% endfor %}
 		</div>
-
 	</div>
 </div>
 
