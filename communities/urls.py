@@ -35,7 +35,7 @@ urlpatterns = [
 	path('posts/<str:username>/<slug:slug>/create_comment',communities_views.viewCreateComment,name="create_comment"),
 	# ex: /communities/posts/username/slug-my-post-title/delete_comment/
 	path('posts/delete_comment/<int:comment_id>',communities_views.viewDeleteComment,name="delete_comment"),
-	# ex: /communities/like/2/
+
 	##################
 	# URLS for Public Profiles
 	##################
@@ -48,5 +48,8 @@ urlpatterns = [
 	##################
 	# URLS for Ask for Help
 	##################
-	path('request-help',communities_views.viewRequestHelp,name="request_help"),
+	path('request_help',communities_views.viewRequestHelp,name="request_help"),
+
+	# creating a request for help
+	path('request_help/create',communities_views.viewCreateHelpRequest,name="create_help_request"),
 ]

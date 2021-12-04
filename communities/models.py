@@ -27,7 +27,7 @@ from users.models import CustomUser
 ##########################################
 # Models related to requests for help
 ##########################################
-class RequestForHelp(models.Model):
+class HelpRequest(models.Model):
 	# associate with user
 	author = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name = "created_request_help_set")
 	# associate with a title
@@ -54,7 +54,7 @@ class RequestForHelp(models.Model):
 			# newly created obj, so set slug
 			self.slug = slugify(self.title)
 
-		super(RequestForHelp,self).save(*args, **kwargs)
+		super(HelpRequest,self).save(*args, **kwargs)
 
 	def boolWithinXDays(self,intDays):
 		now = timezone.now()

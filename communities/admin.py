@@ -1,8 +1,19 @@
 from django.contrib import admin
 
-from .models import Post
+from .models import Post,HelpRequest
 
 # Register your models here.
+
+class HelpRequestAdmin(admin.ModelAdmin):
+
+	fieldsets = [
+		('Title',{'fields':["title"]}),
+		("Author",{"fields":["author"]}),
+		('Text Content',{"fields":["text_content"]}),
+		('Tags',{"fields":['tags']}),
+		("Date",{"fields":['pub_date']}),
+		("Slug",{'fields':['slug']}),
+	]
 
 class PostAdmin(admin.ModelAdmin):
 
@@ -20,3 +31,4 @@ class PostAdmin(admin.ModelAdmin):
 	search_fields = ['author']
 
 admin.site.register(Post,PostAdmin)
+admin.site.register(HelpRequest,HelpRequestAdmin)

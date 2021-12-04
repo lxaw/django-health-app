@@ -23,11 +23,12 @@ from .models import Post,Comment
 #####################################
 # Necessary forms
 #####################################
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm,HelpRequestForm
 #####################################
 # Outside imports
 #####################################
 from django.utils import timezone
+
 
 @login_required
 def viewIndex(request):
@@ -43,7 +44,7 @@ def viewIndex(request):
 	# Create a dictionary of {Post:Post comments sorted}
 	dictModelPosts = {}
 	for modelPost in Post.objects.all().order_by('-pub_date'):
-		dictModelPosts[modelPost] = modelPost.comments.filter(active=True).order_by("-pub_date")
+		dictModelPosts[modelPost] = modelPost.comments.filter(active=True).order_by("pub_date")
 
 	context = {
 		"dictModelPosts":dictModelPosts,
@@ -237,9 +238,52 @@ def viewAddRemoveFollow(request, username):
 	return HttpResponseRedirect('/')
 
 @login_required
+def viewCreateHelpRequest(request):
+	# This is a list of all possible tags in the create help request form
+	listPossibleTags = ["nutrition","diet","routine"]
+
+	if request.method == "POST":
+		# get the user who wants help
+		modelUser = request.user
+		# get title for post
+		strTitle = request.POST['title']
+		# get the content
+		strTextContent = request.POST['text_content']
+
+		# get the tags and concat them
+		strConcatedTags = ""
+		for strPossibleTag in listPossibleTags:
+			if strPossibleTag in request.POST.keys():
+				strConcatedTags += (strPossibleTag) + "-"
+		if(strConcatedTags != ""):
+			# if not empty, remove the last "-"
+			strConcatedTags = strConcatedTags[:-1]
+
+		# create help request form so we can create object
+		formCreateHelpRequest = HelpRequestForm()
+		# commit = false so we can edit attributes	
+		modelCreatedHelpRequest = formCreateHelpRequest.save(commit = False)
+		# edit attributes
+		modelCreatedHelpRequest.author = modelUser
+		modelCreatedHelpRequest.title = strTitle
+		modelCreatedHelpRequest.text_content = strTextContent
+		# if tags, put them
+		if strConcatedTags != "":
+			modelCreatedHelpRequest.tags = strConcatedTags
+
+		# save the model when all attributes edited
+		modelCreatedHelpRequest.save()
+
+
+	return redirect('communities:index')
+
+
+@login_required
 def viewRequestHelp(request):
 
+
 	context = {
+		"formCreateHelpRequest":HelpRequestForm,
 	}
 
 	return render(request, "communities/request_help.html",context)
