@@ -5,18 +5,8 @@ from django import forms
 # Necessary models
 #####################################
 
-from .models import Post, Comment,HelpRequest
+from .models import Post, Comment
 
-class HelpRequestForm(forms.ModelForm):
-	class Meta:
-		model = HelpRequest
-
-		fields = [
-			"title",
-			"text_content",
-			"tags",
-		]
-		exclude = ()
 
 
 # Form for creating post

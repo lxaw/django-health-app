@@ -23,7 +23,8 @@ from .models import Post,Comment
 #####################################
 # Necessary forms
 #####################################
-from .forms import PostForm, CommentForm,HelpRequestForm
+from .forms import PostForm, CommentForm
+from newsfeed.forms import HelpRequestForm
 #####################################
 # Outside imports
 #####################################

@@ -24,45 +24,6 @@ import datetime
 ##########################################
 from users.models import CustomUser
 
-##########################################
-# Models related to requests for help
-##########################################
-class HelpRequest(models.Model):
-	# associate with user
-	author = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name = "created_request_help_set")
-	# associate with a title
-	title = models.CharField(max_length=200,null=False)
-	# associate with text
-	text_content = models.CharField(max_length = 300)
-	# associate with tags
-	tags = models.CharField(max_length = 300,null=True)
-
-	# store date of publication
-	pub_date = models.DateTimeField(default=timezone.now)
-
-	# associate with the users that have commented / posted / whatever
-	responded_users = models.ManyToManyField(CustomUser)
-
-	# slug field
-	slug = models.SlugField(null=False)
-
-	class Meta:
-		unique_together = [['author','title']]
-
-	def save(self, *args, **kwargs):
-		if not self.id:
-			# newly created obj, so set slug
-			self.slug = slugify(self.title)
-
-		super(HelpRequest,self).save(*args, **kwargs)
-
-	def boolWithinXDays(self,intDays):
-		now = timezone.now()
-
-		return now - datetime.timedelta(days=intDays) <= self.pub_date <= now
-	
-	def __str__(self):
-		return self.title
 
 ##########################################
 # Models related to posts

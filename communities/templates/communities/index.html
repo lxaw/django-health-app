@@ -60,7 +60,7 @@
 							{% for modelComment in listPostComments %}
 							<div class = "div__comunities-post-comment border rounded container">
 								<br>
-								<img style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img border border-dark" src = "{{modelPost.author.profile_picture.url}}">
+								<img style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img border border-dark" src = "{{modelComment.author.profile_picture.url}}">
 								<a href ="{% url 'communities:profile' modelComment.author.username %}">
 									{{modelComment.author}}
 								</a>
@@ -90,9 +90,13 @@
 									<button id = "btn__delete-comment${{modelComment.id}}" class = "btn__delete-comment" data-url = "{% url 'communities:delete_comment' modelComment.id %}">
 										Delete?
 									</button>
+									<br>
 								{% endif %}
 								<br>
 							</div>
+
+							<br>
+
 							{% endfor %}
 						</div>
 					{% endif %}

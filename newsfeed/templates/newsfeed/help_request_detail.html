@@ -1,0 +1,52 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class = "container border border-primary rounded">
+	<div>
+		<br>
+		<a href = "{% url 'communities:profile' modelHelpRequest.author.username %}">
+			<img alt = "a profile picture" style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img border border-dark" src = "{{modelHelpRequest.author.profile_picture.url}}">
+				{{modelHelpRequest.author}}
+		</a> on {{modelHelpRequest.pub_date}}
+		<br>
+	</div>
+	<br>
+	<h4>What is the issue?</h4>
+	<div class = "container border border-dark rounded">
+		{{modelHelpRequest.text_content}}
+	</div>
+	<h6>Related tags:</h6>
+		{% for strTag in modelHelpRequest.get_parsed_tags %}
+			<span style= "background-color: aliceblue;" class ="rounded mr-3 p-1">
+				{{strTag}}
+			</span>
+		{% endfor %}
+	<br>
+	<br>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded">
+	<h4>Think you can help out?</h4>
+	<p class = "text-muted">Send a direct message to begin the conversation.</p>
+	<div class = "container border border-primary rounded">
+		<form method = "POST" action = "">
+			{% csrf_token %}
+			<label for="text_content">Write a brief introduction. Let them know why you can help.</label>
+			<textarea title = "text_content" class = "form-control" rows = 4></textarea>
+		</form>
+		<br>
+		<div class = "container">
+			<div class = "row">
+				<button type= "submit" class = "btn btn-primary">Submit</button>
+			</div>
+		</div>
+		<br>
+	</div>
+	<br>
+</div>
+
+
+{% endblock %}

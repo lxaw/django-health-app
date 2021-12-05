@@ -11,15 +11,18 @@
 <div class = "container border border-primary rounded">
 	<h4>Give some information on your problem.</h4>
 	<form method = "POST" action = "{% url 'communities:create_help_request' %}">
+		{% csrf_token %}
 		<h3>Title: </h3>
 		<div class = "form-group">
+			<label for = "title">Title your request.</label>
 			<textarea name = "title" id= "textareaProblemEntry" class = "form-control" rows = 1></textarea>
+			<label for = "text_content">Write about your issue.</label>
 			<textarea name = "text_content" id= "textareaProblemEntry" class = "form-control" rows = 3></textarea>
 		</div>
 
 		<br>
+		<label>Tags:</label>			
 		<div class = "container border border-primary rounded">
-			{% csrf_token %}
 			<br>
 			<div class = "row">
 				<div class = "col-4 text-center">

@@ -9,7 +9,7 @@
 <br>
 
 <div class = "container border border-primary rounded">
-	<div class = "div__communities-post">
+	<div class = "div__communities-post rounded">
 		<strong>Author: </strong>
 		<a href = "{% url 'communities:profile' modelPost.author.username %}">
 			{{modelPost.author}}
@@ -28,7 +28,7 @@
 	<div class = "div__communities-post-comment-container">
 
 		{% for modelComment in listmodelComments %}
-			<div class = "div__communities-post-comment" id = "div__communities-post-comment${{modelComment.id}}">
+			<div class = "div__communities-post-comment rounded" id = "div__communities-post-comment${{modelComment.id}}">
 				<strong>Author: </strong><a href = "{% url 'communities:profile' modelComment.author.username %}">{{modelComment.author}}</a>
 				<br>
 				<strong>Date: </strong>{{modelComment.pub_date}}
