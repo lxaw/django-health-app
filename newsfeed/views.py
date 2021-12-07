@@ -35,6 +35,21 @@ def viewIndex(request):
     return render(request,'newsfeed/index.html',context = context)
 
 @login_required
+def viewDetailByTag(request, tag):
+
+    # list of unfilled help requests
+    # right now it has every single request, in reality may want to limit
+    listUnfilledHelpRequests = []
+    for modelHelpRequest in HelpRequest.objects.all().order_by("-pub_date"):
+        if not modelHelpRequest.boolWasRespondedTo() and (tag in modelHelpRequest.get_parsed_tags()):
+            listUnfilledHelpRequests.append(modelHelpRequest)
+    context = {
+        "strSelectedTag":tag,
+        "listUnfilledHelpRequests":listUnfilledHelpRequests,
+    }
+    return render(request,'newsfeed/help_request_detail_by_tag.html',context)
+
+@login_required
 def viewDetail(request,username,slug):
     # View an individual help request
     modelHelpRequestAuthor = get_object_or_404(CustomUser,username = username)

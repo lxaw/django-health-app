@@ -9,6 +9,16 @@
 <br>
 
 <div class = "container border border-primary rounded">
+	<h1 class = "text-center">
+		<a href = "{% url 'communities:request_help' %}">
+			Request help.
+		</a>
+	</h1>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded">
 	<h4>
 		Recent Help Requests
 	</h4>
@@ -21,11 +31,26 @@
 					{{modelHelpRequest.author}}
 			</a> on {{modelHelpRequest.pub_date}}
 			<br>
-			<a href = "{{modelHelpRequest.get_absolute_url}}">
-				<strong>
-					"{{modelHelpRequest.title}}"
-				</strong>
-			</a>
+			<br>
+			<div class  ="container row">
+				<p>Title: </p>
+				<a href = "{{modelHelpRequest.get_absolute_url}}">
+					<strong>
+						"{{modelHelpRequest.title}}"
+					</strong>
+				</a>
+			</div>
+			<div class = "container">
+				<p>Related tags:</p>
+				{% for strTag in modelHelpRequest.get_parsed_tags %}
+					<span style= "background-color: aliceblue;" class ="rounded mr-3 p-1">
+						<a href = "{% url 'newsfeed:detail_tag' strTag %}" style = "text-decoration: none;">
+							{{strTag}}
+						</a>
+					</span>
+				{% endfor %}
+			</div>
+			<br>
 		</div>
 		<br>
 
@@ -38,14 +63,17 @@
 	<h4>
 		See what your followed users are posting.
 	</h4>
-	<br>
-	{% for modelPost in listLastNFollowedUserPosts %}
-		<div class = "newsfeed__new-post border border-primary" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
-			<a href = "{{modelPost.get_absolute_url}}">
-				User  {{modelPost.author}} uploaded a post at {{modelPost.pub_date}}
-			</a>
-		</div>
-	{% endfor %}
+	{% if listLastNFollowedUserPosts|length == 0 %}
+		<p>Looks like theres nothing yet!</p>
+	{% else %}
+		{% for modelPost in listLastNFollowedUserPosts %}
+			<div class = "newsfeed__new-post border border-primary" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
+				<a href = "{{modelPost.get_absolute_url}}">
+					User  {{modelPost.author}} uploaded a post at {{modelPost.pub_date}}
+				</a>
+			</div>
+		{% endfor %}
+	{% endif %}
 </div>
 
 <br>
@@ -55,9 +83,7 @@
 		Most recent posts today.
 	</h4>
 	{% if listRecentPost|length == 0 %}
-	<div>
-		Looks like there nothing yet!
-	</div>
+		<p>Looks like theres nothing yet!</p>
 	{% endif %}
 	{% for modelPost in listRecentPosts %}
 

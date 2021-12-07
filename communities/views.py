@@ -275,6 +275,14 @@ def viewCreateHelpRequest(request):
 		# save the model when all attributes edited
 		modelCreatedHelpRequest.save()
 
+		# create an alert for all users
+		# do we want to do this? Or just for certain users?
+		for modelLoopedUser in CustomUser.objects.all():
+			modelNotificationToLoopedUser = Notification(sender=request.user,recipient=modelLoopedUser,
+				message = "{} created help request \"{}\". See if you can help!".format(request.user.username,strTitle)
+			)
+			modelNotificationToLoopedUser.save()
+
 
 	return redirect('communities:index')
 

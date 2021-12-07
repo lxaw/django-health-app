@@ -9,7 +9,7 @@
 
 <br>
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded pt-3">
 	<p>Its a great {{strDayName}}!</p>
 </div>
 
@@ -17,25 +17,31 @@
 
 <div class = "container border border-primary rounded">
 	<h5>Notifications</h5>
+	{% if user.recipient.notification.all|length == 0 %}
+		<p>All caught up!</p>
+	{% else %}
 	<br>
-	{% for modelNotification in user.recipient_notification.all %}
-	<div class = "container border border-primary rounded">
-		Date: {{modelNotification.pub_date}}
+		{% for modelNotification in user.recipient_notification.all %}
+		<div class = "container border border rounded">
+			Date: <strong>{{modelNotification.pub_date}}</strong>
 
-		<br>
-		{% if modelNotification.sender %}
-			Sender: {{modelNotification.sender}}
-		{% endif %}
-		<div>
-			{{modelNotification.message}}
+			<br>
+			{% if modelNotification.sender %}
+				Sender: <strong>{{modelNotification.sender}}</strong>
+			{% endif %}
+			<div class = "border border rounded p-3">
+				{{modelNotification.message}}
+			</div>
+			<br>
+			<button class = "btn btn-outline-success" id = "btn__delete-notification" data-url="{% url 'core:notification_delete' modelNotification.id %}">
+				Got it!
+			</button>
+			<br>
+			<br>
 		</div>
-		<button id = "btn__delete-notification" data-url="{% url 'core:notification_delete' modelNotification.id %}">
-			Got it!
-		</button>
-
-	</div>
-	{% endfor %}
-	<br>
+		{% endfor %}
+		<br>
+	{% endif %}
 </div>
 
 <br>
