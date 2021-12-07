@@ -28,11 +28,15 @@ def viewAbout(request):
 
 def viewIndex(request):
 
+	# get a tip
 	listModelTips = []
 	for modelTip in TipOfDay.objects.all():
 		if request.user not in modelTip.responded_users.all():
 			# user has not yet responded to tip
 			listModelTips.append(modelTip)
+	
+	# get all their notifications
+	listModelNotifications = request.user.recipient_notification.all().order_by("-pub_date")
 	
 
 	dateToday = date.today()
@@ -44,6 +48,7 @@ def viewIndex(request):
 		'strDate':strDate,
 		'strDayName':strDayName,
 		'modelTip':listModelTips,
+		'listModelNotifications':listModelNotifications,
 	}
 
 	return render(request,'core/index.html',context = context)

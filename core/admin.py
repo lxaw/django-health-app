@@ -7,7 +7,8 @@ from .models import TipOfDay,Notification
 class TipOfDayAdmin(admin.ModelAdmin):
 	fieldsets = [
 		("Text Content",{"fields":['text_content']}),
-		("Tags",{"fields":['tags']})
+		("Tags",{"fields":['tags']}),
+		("Urls",{"fields":['url']}),
 	]
 	search_fields = ['tag','text_content']
 

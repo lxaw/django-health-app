@@ -3,11 +3,11 @@
 {% block content %}
 
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded p-3">
 	<h1 class = "text-hover">Here are your communities.</h1>
 	<h4>
 		<p id = "p__show-hide-create-post">Create Post</p>
-		<div class = "container border border-primary rounded" id = "div__create-post" style="display:none">
+		<div class = "container border rounded p-3" id = "div__create-post" style="display:none">
 			<form method = "POST" action = "{% url 'communities:create_post' %}">
 				{% csrf_token %}
 				{{formPostForm.as_p}}
@@ -19,9 +19,9 @@
 
 <br>
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded p-3">
 	<h1 class = "text-center">
-		<a href = "{% url 'communities:request_help' %}">
+		<a href = "{% url 'newsfeed:request_help' %}">
 			Request help.
 		</a>
 	</h1>
@@ -29,16 +29,15 @@
 
 <br>
 
-<div class = "container border border-primary rounded pb-4">
+<div class = "container border border-primary rounded p-3">
 	<div id = "div__communities-recent-post-container">
 		<h4 class = "pl-4">Recent posts:</h4>
 		<div class = "row">
 				{% for modelPost,listPostComments in dictModelPosts.items %}
 
-				<div class = "div__communities-post border rounded" id = "div__post${{modelPost.id}}">
+				<div class = "div__communities-post border rounded p-3" id = "div__post${{modelPost.id}}">
 
-					<div class = "container border rounded">
-						<br>
+					<div class = "container border rounded p-3">
 						<img style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img border border-dark" src = "{{modelPost.author.profile_picture.url}}">
 						<a href = "{% url 'communities:profile' modelPost.author.username %}">
 							{{modelPost.author}}
@@ -115,6 +114,15 @@
 							<input type = "submit" value = "Post" >
 						</form>
 					</div>
+					{% if user in modelPost.user_likes.all %}
+						<p class = "p__like-post text-danger" data-url = "{% url 'communities:like_unlike_post' modelPost.id %}">
+							Unlike Post
+						</p>
+					{% else %}
+						<p class = "p__like-post text-success" data-url = "{% url 'communities:like_unlike_post' modelPost.id %}">
+							Like Post
+						</p>
+					{% endif %}
 					{% if modelPost.author == user %}
 						<p style="color:rgb(185, 43, 43);" class = "btn__delete-post" data-url = "{% url 'communities:delete_post' modelPost.id %}">
 							Delete post?
@@ -137,6 +145,26 @@
 	* Functions
 	************************
 	*/
+	function like_post(strUrl,pClicker){
+
+		if(pClicker.innerText == "Like Post"){
+			// unlike
+			pClicker.classList.remove("text-success");
+			pClicker.classList.add("text-danger")
+			pClicker.innerText = "Unlike Post";
+		}
+		else{
+			// like
+			pClicker.classList.remove("text-danger");
+			pClicker.classList.add("text-success")
+			pClicker.innerText = "Like Post";
+		}
+
+		$.ajax({
+			url:strUrl,
+		})
+	}
+
 	function show_hide_comments(divCommentDiv,pClicker){
 		if(divCommentDiv.style.display == "none"){
 			divCommentDiv.style.display = "block";
@@ -155,14 +183,6 @@
 			pClicker.innerText = "Create a comment";
 		}
 	}
-	let arrPShowHideCreateComments = document.getElementsByClassName("p__show-hide-create-comment");
-	for(let p of arrPShowHideCreateComments){
-		let strModelPostId = p.getAttribute("data-id");
-		let divCommentCreateDiv = document.getElementById("div__create-comment$" + strModelPostId);
-		p.addEventListener('click',()=>{
-			show_hide_create_comment(divCommentCreateDiv,p);
-		})
-	}
 
 	function delete_post(strUrl){
 		/*
@@ -177,19 +197,6 @@
 		})
 	}
 
-	function update_post_likes(strUrl){
-		/*
-		Updates like on post
-		*/
-		let strPostId = strUrl.split('\/').pop();
-		let btn = document.getElementById("btn__like-post$" + strPostId)
-		$.ajax({
-			url:strUrl,
-			success: function(){
-				location.reload();
-			}
-		})
-	}
 	
 	function show_hide_create_post_field(divShowHide,pClicker){
 		/*
@@ -266,16 +273,6 @@
 			delete_post(strUrl);
 		})
 	}
-
-	// associating like buttons with function
-	let arrbtnsLike = document.getElementsByClassName("btn__like-post")
-	for(let btn of arrbtnsLike){
-		// get the id
-		let strUrl = btn.getAttribute("data-url");
-		btn.addEventListener("click",()=>{
-			update_post_likes(strUrl);
-		})
-	}
 	// associate p with show hide comments
 	let arrPShowHideComments = document.getElementsByClassName("p__show-hide-comments");
 	for(let p of arrPShowHideComments){
@@ -283,6 +280,23 @@
 			let strModelPostId = p.getAttribute("data-id");
 			let divCommentDiv = document.getElementById("div__hide-show-comments$" + strModelPostId);
 			show_hide_comments(divCommentDiv,p);
+		})
+	}
+	// associate p with delete comments
+	let arrPShowHideCreateComments = document.getElementsByClassName("p__show-hide-create-comment");
+	for(let p of arrPShowHideCreateComments){
+		let strModelPostId = p.getAttribute("data-id");
+		let divCommentCreateDiv = document.getElementById("div__create-comment$" + strModelPostId);
+		p.addEventListener('click',()=>{
+			show_hide_create_comment(divCommentCreateDiv,p);
+		})
+	}
+	// associate p with like post
+	let arrPLikePost = document.getElementsByClassName("p__like-post");
+	for(let p of arrPLikePost){
+		p.addEventListener("click",()=>{
+			// pass the url and the clicker itself
+			like_post(p.getAttribute("data-url"),p);
 		})
 	}
 

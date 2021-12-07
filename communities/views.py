@@ -33,11 +33,10 @@ from django.utils import timezone
 
 @login_required
 def viewIndex(request):
-	modelPost = Post()
 
 	# note that create post is handled in a different view
 	# we use form action to create the objects
-	formPostForm = PostForm(instance=modelPost)
+	formPostForm = PostForm()
 	formCommentForm = CommentForm()
 
 	
@@ -90,7 +89,7 @@ def viewCreatePost(request):
 	return redirect("communities:index")
 
 @login_required
-def viewLikePost(request,post_id):
+def viewLikeUnlikePost(request,post_id):
 	modelPost = get_object_or_404(Post,id=post_id)
 
 	if(modelPost.user_likes.filter(id=request.user.id).exists()):
@@ -100,6 +99,15 @@ def viewLikePost(request,post_id):
 		modelPost.user_likes.add(request.user)
 		# notify that they liked post
 		modelNotificationToReply = Notification(sender=request.user,recipient=modelPost.author, message="{} has liked your post \"{}\".".format(request.user.username,modelPost.title))
+		################
+		# Note:
+		# To link to post, need to make sure the url of notification
+		# matches how we decide to continue to do urls for posts.
+		# This is important as old notifications could give bad urls.
+		################
+		# building the url
+		strUrl = modelPost.author.username + " " + modelPost.slug
+		modelNotificationToReply.url = strUrl
 		# dont keep showing notification if press like and unlike 
 		
 		modelNotificationToReply.save()
@@ -175,7 +183,10 @@ def viewCreateComment(request,username,slug):
 					# put the parent id in the reply
 					modelReplyComment.parent = modelParentObj
 					# since reply, notify the person you reply to
-					modelNotificationToReply = Notification(sender=request.user,recipient=modelParentObj.author, message="{} has replied to your comment.".format(request.user.username))
+					modelNotificationToReply = Notification(sender=request.user,recipient=modelParentObj.author, message="{} has replied to your comment on post \"{}\".".format(request.user.username,modelPost.title))
+					# give it a url
+					modelNotification.related_model_id = modelPost.id
+
 					modelNotificationToReply.save()
 			
 			# Else, this is a normal comment
@@ -204,7 +215,6 @@ def viewDeletePost(request,post_id):
 	modelPostAuthor = modelPost.author
 
 	if request.user == modelPostAuthor:
-		messages.success(request, "Post successfully deleted.")
 		modelPost.delete()
 	
 	return redirect('communities:index')
@@ -216,7 +226,6 @@ def viewDeleteComment(request,comment_id):
 	modelCommentAuthor = modelComment.author
 
 	if request.user == modelCommentAuthor:
-		messages.success(request,"Comment successfully deleted.")
 		modelComment.delete()
 
 	return redirect(reverse("communities:post_detail",kwargs = {'username':modelParentPost.author.username,'slug':modelParentPost.slug}))
@@ -237,63 +246,3 @@ def viewAddRemoveFollow(request, username):
 
 	# this never runs if use ajax
 	return HttpResponseRedirect('/')
-
-@login_required
-def viewCreateHelpRequest(request):
-	# This is a list of all possible tags in the create help request form
-	listPossibleTags = ["nutrition","diet","routine"]
-
-	if request.method == "POST":
-		# get the user who wants help
-		modelUser = request.user
-		# get title for post
-		strTitle = request.POST['title']
-		# get the content
-		strTextContent = request.POST['text_content']
-
-		# get the tags and concat them
-		strConcatedTags = ""
-		for strPossibleTag in listPossibleTags:
-			if strPossibleTag in request.POST.keys():
-				strConcatedTags += (strPossibleTag) + "-"
-		if(strConcatedTags != ""):
-			# if not empty, remove the last "-"
-			strConcatedTags = strConcatedTags[:-1]
-
-		# create help request form so we can create object
-		formCreateHelpRequest = HelpRequestForm()
-		# commit = false so we can edit attributes	
-		modelCreatedHelpRequest = formCreateHelpRequest.save(commit = False)
-		# edit attributes
-		modelCreatedHelpRequest.author = modelUser
-		modelCreatedHelpRequest.title = strTitle
-		modelCreatedHelpRequest.text_content = strTextContent
-		# if tags, put them
-		if strConcatedTags != "":
-			modelCreatedHelpRequest.tags = strConcatedTags
-
-		# save the model when all attributes edited
-		modelCreatedHelpRequest.save()
-
-		# create an alert for all users
-		# do we want to do this? Or just for certain users?
-		for modelLoopedUser in CustomUser.objects.all():
-			modelNotificationToLoopedUser = Notification(sender=request.user,recipient=modelLoopedUser,
-				message = "{} created help request \"{}\". See if you can help!".format(request.user.username,strTitle)
-			)
-			modelNotificationToLoopedUser.save()
-
-
-	return redirect('communities:index')
-
-
-@login_required
-def viewRequestHelp(request):
-
-
-	context = {
-		"formCreateHelpRequest":HelpRequestForm,
-	}
-
-	return render(request, "communities/request_help.html",context)
-

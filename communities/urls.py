@@ -25,7 +25,7 @@ urlpatterns = [
 	##################
 	# URLS for Posts Actions (Like)
 	##################
-	path('like_post/<int:post_id>',communities_views.viewLikePost,name="like_post"),
+	path('like_post/<int:post_id>',communities_views.viewLikeUnlikePost,name="like_unlike_post"),
 
 
 	##################
@@ -45,11 +45,4 @@ urlpatterns = [
 	# URLS for Following
 	##################
 	path('following/add_remove_follow/<str:username>',communities_views.viewAddRemoveFollow,name="add_remove_follow"),
-	##################
-	# URLS for Ask for Help
-	##################
-	path('request_help',communities_views.viewRequestHelp,name="request_help"),
-
-	# creating a request for help
-	path('request_help/create',communities_views.viewCreateHelpRequest,name="create_help_request"),
 ]

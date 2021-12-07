@@ -2,15 +2,15 @@
 
 {% block content %}
 
-<div class = "container border border-primary rounded">
+<div class = "container text-center border border-primary rounded p-3">
 	<h1>Here is your newsfeed.</h1>
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded p-3">
 	<h1 class = "text-center">
-		<a href = "{% url 'communities:request_help' %}">
+		<a href = "{% url 'newsfeed:request_help' %}">
 			Request help.
 		</a>
 	</h1>
@@ -18,7 +18,7 @@
 
 <br>
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded p-3">
 	<h4>
 		Recent Help Requests
 	</h4>
@@ -32,12 +32,14 @@
 			</a> on {{modelHelpRequest.pub_date}}
 			<br>
 			<br>
-			<div class  ="container row">
-				<p>Title: </p>
-				<a href = "{{modelHelpRequest.get_absolute_url}}">
-					<strong>
-						"{{modelHelpRequest.title}}"
-					</strong>
+			<div class  ="container">
+				<a href = "{{modelHelpRequest.get_absolute_url}}" style="text-decoration: none;">
+					<div class = "container row">
+						<p>Title: </p>
+						<strong>
+							"{{modelHelpRequest.title}}"
+						</strong>
+					</div>
 				</a>
 			</div>
 			<div class = "container">
@@ -51,6 +53,11 @@
 				{% endfor %}
 			</div>
 			<br>
+			{% if request.user == modelHelpRequest.author %}
+				<p data-url = "{% url 'newsfeed:delete_help_request' modelHelpRequest.id %}" class = "p__delete-help-request mr-4 text-danger">
+					Delete?
+				</p>
+			{% endif %}
 		</div>
 		<br>
 
@@ -98,3 +105,34 @@
 
 
 {% endblock content %}
+
+
+{% block javascript %}
+
+<script>
+	/*
+	************************
+	* Functions
+	************************
+	*/
+	function delete_help_request(strUrl){
+
+		$.ajax({
+			url:strUrl,
+			success:function(){
+				location.reload();
+			}
+		})
+	}
+	
+	// associate p with delete request
+	let arrPDeleteHelpRequest = document.getElementsByClassName("p__delete-help-request");
+	for(let p of arrPDeleteHelpRequest){
+		p.addEventListener('click',()=>{
+			delete_help_request(p.getAttribute('data-url'));
+		})
+	}
+
+</script>
+
+{% endblock javascript %}

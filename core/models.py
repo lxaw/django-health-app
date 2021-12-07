@@ -17,9 +17,17 @@ class Notification(models.Model):
 	message = models.TextField(null=False)
 	read = models.BooleanField(default=False)
 	pub_date = models.DateTimeField(default=timezone.now)
+	# if you ever need to link to some model for urls
+	url_arguments = models.CharField(null=True,max_length=300)
 
 	def __str__(self):
 		return "Sender {} | Recipient: {}".format(self.sender,self.recipient)
+
+	def get_parsed_url_arguments(self):
+		return [i for i in self.url_arguments.split(" ")]
+
+	def get_url_argument_by_index(self,index):
+		return self.get_parsed_url_arguments()[index]
 
 class TipOfDay(models.Model):
 	text_content = models.CharField(max_length=300,null=False)
