@@ -29,12 +29,12 @@
 			{% if modelNotification.sender %}
 				Sender: <strong>{{modelNotification.sender}}</strong>
 			{% endif %}
-				<a href="{% url 'communities:post_detail' modelNotification.get_parsed_url_arguments.0 modelNotification.get_parsed_url_arguments.1 %}">
-					<div class = "border border rounded p-3">
-						{{modelNotification.message}}
-					</div>
-				</a>
-			</a>
+			<div class = "border border rounded p-3">
+				{{modelNotification.message}}
+			</div>
+			{% if modelNotification.related_reverse_args %}
+				<a href = {{modelNotification.get_absolute_url}}>Click to view.</a>
+			{% endif %}
 			<br>
 			<button class = "btn btn-outline-success" id = "btn__delete-notification" data-url="{% url 'core:notification_delete' modelNotification.id %}">
 				Got it!

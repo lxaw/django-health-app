@@ -106,9 +106,16 @@ def viewLikeUnlikePost(request,post_id):
 		# This is important as old notifications could give bad urls.
 		################
 		# building the url
-		strUrl = modelPost.author.username + " " + modelPost.slug
-		modelNotificationToReply.url = strUrl
+		related_reverse = "communities:post_detail"
+		related_reverse_args = "{}-{}".format(modelPost.author.username,modelPost.slug)
+		# link the related reverse name
+		modelNotificationToReply.related_reverse = related_reverse
+		# link the related reverse args
+		modelNotificationToReply.related_reverse_args = related_reverse_args
+
+		# 
 		# dont keep showing notification if press like and unlike 
+		# 
 		
 		modelNotificationToReply.save()
 	
@@ -184,8 +191,10 @@ def viewCreateComment(request,username,slug):
 					modelReplyComment.parent = modelParentObj
 					# since reply, notify the person you reply to
 					modelNotificationToReply = Notification(sender=request.user,recipient=modelParentObj.author, message="{} has replied to your comment on post \"{}\".".format(request.user.username,modelPost.title))
-					# give it a url
+					# give it a related model id
 					modelNotification.related_model_id = modelPost.id
+					# give it a related model name
+					modelNotification.related_model_name = "Post"
 
 					modelNotificationToReply.save()
 			
@@ -201,10 +210,13 @@ def viewCreateComment(request,username,slug):
 			# always notify the post owner
 			modelNotificationToParent = Notification(sender=request.user,recipient=modelPost.author,
 				message="{} has commented on your post \"{}\".".format(request.user.username,modelPost.title))
+
+			# link it to an id
+			modelNotificationToParent.related_model_id = modelPost.id
+			# link it to a related model
+			modelNotificationToParent.related_model_name = "Post"
 			
 			modelNotificationToParent.save()
-
-			# increment the user's notification count
 
 	#return redirect(reverse("communities:post_detail",kwargs = {'username':modelPost.author.username,'slug':modelPost.slug}))
 	return redirect('communities:index')

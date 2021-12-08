@@ -1,0 +1,34 @@
+<div class = "container border border-primary rounded">
+    <br>
+    <a href = "{% url 'communities:profile' modelHelpRequest.author.username %}">
+        <img alt = "a profile picture" style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img border border-dark" src = "{{modelHelpRequest.author.profile_picture.url}}">
+            {{modelHelpRequest.author}}
+    </a> on {{modelHelpRequest.pub_date}}
+    <br>
+    <br>
+    <div class  ="container">
+        <div class = "row">
+            <p>Title: </p>
+            <a href = "{{modelHelpRequest.get_absolute_url}}">
+                <strong>
+                    "{{modelHelpRequest.title}}"
+                </strong>
+            </a>
+        </div>
+    </div>
+    <div class = "container border rounded p-3">
+        {{modelHelpRequest.text_content}}
+    </div>
+    <br>
+    <div class = "container">
+        <p>Related tags:</p>
+        {% for strTag in modelHelpRequest.get_parsed_tags %}
+            <span style= "background-color: aliceblue;" class ="rounded mr-3 p-1">
+                <a href = "{% url 'newsfeed:detail_tag' strTag %}" style = "text-decoration: none;">
+                    {{strTag}}
+                </a>
+            </span>
+        {% endfor %}
+    </div>
+    <br>
+</div>

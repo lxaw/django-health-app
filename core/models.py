@@ -9,6 +9,11 @@ from django.utils import timezone
 ###########################
 from users.models import CustomUser
 
+##########################################
+# Dj url imports
+##########################################
+from django.urls import reverse
+
 # Create your models here.
 
 class Notification(models.Model):
@@ -18,16 +23,19 @@ class Notification(models.Model):
 	read = models.BooleanField(default=False)
 	pub_date = models.DateTimeField(default=timezone.now)
 	# if you ever need to link to some model for urls
-	url_arguments = models.CharField(null=True,max_length=300)
+	# store the related name for the reverse
+	related_reverse = models.CharField(max_length=300,null=True)
+	# store any arguments for the reverse
+	related_reverse_args = models.CharField(max_length=300,null=True)
 
 	def __str__(self):
 		return "Sender {} | Recipient: {}".format(self.sender,self.recipient)
-
-	def get_parsed_url_arguments(self):
-		return [i for i in self.url_arguments.split(" ")]
-
-	def get_url_argument_by_index(self,index):
-		return self.get_parsed_url_arguments()[index]
+	
+	def get_parsed_reverse_args(self):
+		return self.related_reverse_args.split("-")
+	
+	def get_absolute_url(self):
+		return reverse(self.related_reverse,args=self.get_parsed_reverse_args())
 
 class TipOfDay(models.Model):
 	text_content = models.CharField(max_length=300,null=False)
@@ -40,5 +48,3 @@ class TipOfDay(models.Model):
 
 	def __str__(self):
 		return "Tip #{}: {}".format(self.id,self.text_content)
-
-

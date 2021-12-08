@@ -19,6 +19,8 @@ class NotificationAdmin(admin.ModelAdmin):
 		("message",{"fields":['message']}),
 		("pub_date",{"fields":['pub_date']}),
 		("read",{"fields":['read']}),
+		('related_reverse',{"fields":['related_reverse']}),
+		('related_reverse_args',{"fields":['related_reverse_args']}),
 	]
 
 admin.site.register(TipOfDay,TipOfDayAdmin)

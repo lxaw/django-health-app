@@ -3,7 +3,7 @@
 {% block content %}
 
 
-<div class = "container border border-primary rounded p-3">
+<!-- <div class = "container border border-primary rounded p-3">
 	<h1 class = "text-hover">Here are your communities.</h1>
 	<h4>
 		<p id = "p__show-hide-create-post">Create Post</p>
@@ -15,6 +15,27 @@
 			</form>
 		</div>
 	</h4>
+</div> -->
+
+<div class = "container border border-primary rounded p-3">
+	<h1>Create a post.</h1>
+	<form method = "POST" action = "{% url 'communities:create_post' %}">
+		{% csrf_token %}
+		<h3>Title: </h3>
+		<div class = "form-group">
+			<textarea name = "title" class = "form-control" rows = 1></textarea>
+		</div>
+		<h3>Content: </h3>
+		<div class = "form-group">
+			<textarea name = "text_content" class = "form-control" rows = 1></textarea>
+		</div>
+		<br>
+		<div class = "container">
+			<div class = "row">
+				<button type = "submit" class = "btn btn-primary">Submit</button>
+			</div>
+		</div>
+	</form>
 </div>
 
 <br>
@@ -111,7 +132,8 @@
 								{{formCommentForm.body}}
 							</div>
 							<!-- {{formCommentForm.as_p}} -->
-							<input type = "submit" value = "Post" >
+							<br>
+							<button class = "btn btn-primary btn-sm" type = "submit">Post Comment</button>
 						</form>
 					</div>
 					{% if user in modelPost.user_likes.all %}
@@ -188,6 +210,9 @@
 		/*
 		Deletes a post.
 		*/
+		if(!confirm("Are you sure?")){
+			return;
+		}
 		let strPostId = strUrl.split("\/").pop();
 		let divPost = document.getElementById('div__post$' + strPostId);
 		divPost.style.display = "none"
@@ -258,12 +283,12 @@
 			delete_comment(strUrl);
 		})
 	}
-	// associate p show hide create post with func
-	let pShowHideCreatePost = document.getElementById("p__show-hide-create-post");
-	pShowHideCreatePost.addEventListener("click",()=>{
-		let divCreatePost = document.getElementById("div__create-post");
-		show_hide_create_post_field(divCreatePost,pShowHideCreatePost);
-	});
+	// // associate p show hide create post with func
+	// let pShowHideCreatePost = document.getElementById("p__show-hide-create-post");
+	// pShowHideCreatePost.addEventListener("click",()=>{
+	// 	let divCreatePost = document.getElementById("div__create-post");
+	// 	show_hide_create_post_field(divCreatePost,pShowHideCreatePost);
+	// });
 
 	// associating delete buttons with function
 	let arrbtnsDelete = document.getElementsByClassName("btn__delete-post");
