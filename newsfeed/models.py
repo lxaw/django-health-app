@@ -66,7 +66,7 @@ class HelpRequest(models.Model):
 	# return the url associated with it
 	# this is the url for viewing the request
 	def get_absolute_url(self):
-		return reverse('newsfeed:detail',kwargs={"slug":self.slug,
+		return reverse('newsfeed:detail_help_request',kwargs={"slug":self.slug,
 			"username":self.author.username}
 			)
 	

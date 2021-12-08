@@ -12,7 +12,7 @@ urlpatterns = [
 	# URLS for Ask for Help
 	##################
     # ex: /newfeed/help-request/lex/my-title
-    path('view-request/<str:username>/<slug:slug>',newsfeed_views.viewDetail,name="detail"),
+    path('view-request/<str:username>/<slug:slug>',newsfeed_views.viewDetail,name="detail_help_request"),
     # ex: /newsfeed/help-request/tag/my-tag 
     path('by-tag/tag/<str:tag>',newsfeed_views.viewDetailByTag,name="detail_tag"),
 	# ex: /newsfeed/request_help

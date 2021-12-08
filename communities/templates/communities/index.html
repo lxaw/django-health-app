@@ -2,21 +2,6 @@
 
 {% block content %}
 
-
-<!-- <div class = "container border border-primary rounded p-3">
-	<h1 class = "text-hover">Here are your communities.</h1>
-	<h4>
-		<p id = "p__show-hide-create-post">Create Post</p>
-		<div class = "container border rounded p-3" id = "div__create-post" style="display:none">
-			<form method = "POST" action = "{% url 'communities:create_post' %}">
-				{% csrf_token %}
-				{{formPostForm.as_p}}
-				<input type = "submit" value = "Save Post">
-			</form>
-		</div>
-	</h4>
-</div> -->
-
 <div class = "container border border-primary rounded p-3">
 	<h1>Create a post.</h1>
 	<form method = "POST" action = "{% url 'communities:create_post' %}">
@@ -27,7 +12,7 @@
 		</div>
 		<h3>Content: </h3>
 		<div class = "form-group">
-			<textarea name = "text_content" class = "form-control" rows = 1></textarea>
+			<textarea name = "text_content" class = "form-control" rows = 4></textarea>
 		</div>
 		<br>
 		<div class = "container">

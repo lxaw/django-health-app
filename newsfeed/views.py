@@ -137,6 +137,10 @@ def viewCreateHelpRequest(request):
 			modelNotificationToLoopedUser = Notification(sender=request.user,recipient=modelLoopedUser,
 				message = "{} created help request \"{}\". See if you can help!".format(request.user.username,strTitle)
 			)
+			# associate the reverse with the notification
+			modelNotificationToLoopedUser.related_reverse = "newsfeed:detail_help_request"
+			# associatie reverse arguments with notification
+			modelNotificationToLoopedUser.related_reverse_args = "{}-{}".format(modelCreatedHelpRequest.author.username,modelCreatedHelpRequest.slug)
 			modelNotificationToLoopedUser.save()
 
 

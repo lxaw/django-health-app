@@ -8,7 +8,7 @@
 </div>
 {% endif %}
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded p-3">
 <div style="align-items:flex-start;" class = "div__users-profile">
 	<div style="display:inline-flex" class = "div__users-profile-media">
 		<img class = "rounded-circle img__users-profile-img" src = "{{modelViewedUser.profile_picture.url}}">
@@ -35,7 +35,7 @@
 
 <br>
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded p-3">
 	<h3>About:</h3>
 	<p>
 		{{modelViewedUser.text_about}}
@@ -44,7 +44,7 @@
 
 <br>
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded p-3">
 <h4>Stats:</h4>
 <ul>
 	<li>
@@ -60,11 +60,11 @@
 </div>
 
 <br>
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded p-3">
 	<h4>All posts from {{modelViewedUser.username}}</h4>
 	{% for modelPost in listModelPosts %}
 	<a href = "{{modelPost.get_absolute_url}}">
-		<div class = "container border border-primary rounded">
+		<div class = "container border border-primary rounded p-3">
 			{{modelPost.title}}
 		</div>
 		<br>
