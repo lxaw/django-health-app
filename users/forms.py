@@ -2,7 +2,12 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 from django.contrib.auth.models import User
 
-from .models import CustomUser,KCalAmount
+
+#############################
+# Related models
+#############################
+from .models import CustomUser
+from food.models import Food
 
 
 #############################
@@ -31,20 +36,21 @@ class CustomUserChangeForm(UserChangeForm):
 		fields = ("email",)
 
 #############################
-# Forms for KCals
+# Forms for Foods
 #############################
 
-class KCalAmountForm(forms.ModelForm):
+class FoodForm(forms.ModelForm):
 
 	class Meta:
-		model = KCalAmount
+		model = Food
 
 		# what fields can alter in form
 		fields = [
-			"amount"
+			"kcals",
+			"name",
 		]
 		widgets = {
-			'amount':forms.TextInput(attrs={'cols':5,'rows':20,'placeholder':"Input a value."},)
+			'kcals':forms.TextInput(attrs={'cols':5,'rows':20,'placeholder':"Input a value."},)
 		}
 
 		exclude = ()

@@ -125,28 +125,3 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 	
 	def get_public_profile_url(self):
 		return reverse('communities:profile',kwargs={"username":self.username})
-
-
-############################
-# Models directly related to users
-############################
-
-class KCalAmount(models.Model):
-	# associate with a user
-	author = models.ForeignKey(CustomUser,on_delete = models.CASCADE)
-
-	amount = models.FloatField(default=0.0)
-	date = models.DateTimeField(default=timezone.now)
-
-	class Meta:
-		constraints = [
-			models.CheckConstraint(check=models.Q(amount__gt=float(0)),name="amount_gt_0")
-		]
-
-	def boolWithinXDays(self,intDays):
-		now = timezone.now()
-
-		return now - datetime.timedelta(days=intDays) <= self.date <= now
-	
-	def __str__(self):
-		return str(self.amount)

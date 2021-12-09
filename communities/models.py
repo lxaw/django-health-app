@@ -67,7 +67,7 @@ class Post(models.Model):
 			"username":self.author.username}
 			)
 	
-	def like_count(self):
+	def intGetLikeCount(self):
 		return self.user_likes.count()
 
 	def boolWithinXDays(self,intDays):

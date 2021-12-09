@@ -64,7 +64,7 @@
 		</div>
 		<div class = "col-sm col-md-5">
 			<!-- kcal info for grab by javascript -->
-			{{listKCals|json_script:"jsonKCals"}}
+			{{listFood|json_script:"jsonFoods"}}
 			<div class = "div__users-profile-chart-container">
 				<canvas id = "canvas__users-profile-chart__id"></canvas>
 			</div>
@@ -74,31 +74,41 @@
 
 <br>
 
-<div class = "container border border-primary rounded pt-1 pb-5">
-	<a href = "{% url 'users:upload_kcals' %}">
-		Upload your most recent meal.
+<div class = "container border border-primary rounded p-3 text-center">
+	<a href = "{% url 'users:upload_food' %}">
+		<h3>Upload your most recent meal.</h3>
 	</a>
-	<h2>Your History:</h2>
-	{% for modelKCal in setKCals %}
-		<div class = "div__kcal-entry">
-			<p><strong>Meal name: ?????</strong></p>
-			<p><strong>Date:</strong> {{modelKCal.date}}</p>
-			<p><strong>Kilocalorie count:</strong> {{modelKCal.amount}}</p>
-			<a href = "{% url 'users:delete_kcal' modelKCal.id %}" >
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded p-3">
+	<div class = "container text-center">
+		<h2>Your History:</h2>
+	</div>
+	{% for modelFood in setFood %}
+		<div class = "container border rounded p-3">
+			<p><strong>Meal name: </strong> {{modelFood.name}}</p>
+			<p><strong>Date:</strong> {{modelFood.date}}</p>
+			<p><strong>Kilocalorie count:</strong> {{modelFood.kcals}}</p>
+			<p class = "p__delete-food text-danger" data-url="{% url 'users:delete_food' modelFood.id %}" >
 				Delete?
 			</a>
 		</div>
+		<br>
 	{% endfor %}
 </div>
 
 <br>
 
 <div class = "container border border-primary rounded pb-5 pt-1">
-	<h4>Following: {{user.follows.count}}</h4>
+	<div class = "container p-3 text-center">
+		<h4>Follow count {{user.follows.count}}</h4>
+	</div>
 	{% for modelUser in listFollowedUsers %}
-		<div class = "border border-primary" style = "width:50%;padding:10px;margin-bottom:10px;border-radius:5px;">
-			<img class = "rounded-circle img__users-profile-img" src = "{{modelUser.profile_picture.url}}">
+		<div class = "border rounded p-3">
 			<a href = "{{modelUser.get_public_profile_url}}">
+				<img class = "rounded-circle img__users-profile-img" src = "{{modelUser.profile_picture.url}}">
 				{{modelUser.username}}
 			</a>
 		</div>
@@ -111,15 +121,47 @@
 
 {% block javascript %}
 <script>
-var arrKCals = JSON.parse(document.getElementById('jsonKCals').textContent);
+/*
+*************************
+* For working with ajax
+*************************
+*/
+function delete_food(strUrl){
+	// confirm before
+	if(!confirm("Are you sure?")){
+		return;
+	}
+
+	$.ajax({
+		url:strUrl,
+		success:function(){
+			location.reload()
+		}
+	})
+}
+
+let arrpDeleteFood = document.getElementsByClassName("p__delete-food");
+for(let p of arrpDeleteFood){
+	p.addEventListener("click",()=>{
+		delete_food(p.getAttribute("data-url"));
+	})
+}
+
+
+/*
+*************************
+* For working with graphs
+*************************
+*/
+var arrFoods = JSON.parse(document.getElementById('jsonFoods').textContent);
 
 var arrLabels = [];
 var arrData = [];
 
 // populate the arrays
-for(let kcalobjKCal of arrKCals){
-	arrLabels.push(kcalobjKCal.date);
-	arrData.push(kcalobjKCal.amount);
+for(let objFood of arrFoods){
+	arrLabels.push(objFood.date);
+	arrData.push(objFood.kcals);
 }
 
 var ctx = document.getElementById('canvas__users-profile-chart__id').getContext('2d');

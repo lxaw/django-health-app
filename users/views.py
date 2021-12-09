@@ -1,10 +1,10 @@
-#################################
-# Django models
-#################################
-from django.shortcuts import render, redirect,get_object_or_404
+#####################################
+# HTML routing imports
+#####################################
+from django.shortcuts import render, redirect,get_object_or_404,HttpResponseRedirect
 
 # forms
-from .forms import UserRegisterForm, KCalAmountForm
+from .forms import UserRegisterForm, FoodForm
 
 # messages on registration / log in
 from django.contrib import messages
@@ -16,10 +16,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 
 #################################
-# SocialPOD Models
+# Model imports
 #################################
 
-from .models import KCalAmount
+from food.models import Food
 
 #################################
 # Package installs
@@ -82,23 +82,32 @@ def viewProfile(request):
 
 	# performing calculations
 	# In reality, we may want the more important / longer calculations to be performed and stored in the model
-	# Standard deviation
 
-	arrfloatKCals = [i.amount for i in user.kcalamount_set.all()]
+	# arr of food kcal values
+	arrfloatFood = []
+	# stddev
+	floatStd = 0.0
+	# mean
+	floatMean = 0.0
+	# med
+	floatMedian = 0.0
+	# list of foodmodels
+	listFoods = []
 
-	# Calculating user stats
-	floatStd = np.std(arrfloatKCals)
-	floatMean = np.mean(arrfloatKCals)
-	floatMedian = np.median(arrfloatKCals)
+	if user.uploaded_meals.all():
+		arrfloatFood = [i.kcals for i in user.uploaded_meals.all()]
 
-	# for serialization
-	listKCals = []
-	for modelKCal in user.kcalamount_set.all():
-		dictTemplate = {}
-		dictTemplate["date"] = modelKCal.date.strftime("%-j")
-		dictTemplate["amount"] = modelKCal.amount
-		listKCals.append(dictTemplate)
-	
+		# Calculating user stats
+		floatStd = np.std(arrfloatFood)
+		floatMean = np.mean(arrfloatFood)
+		floatMedian = np.median(arrfloatFood)
+		# for serialization
+		listFood = []
+		for modelFood in user.uploaded_meals.all():
+			dictTemplate = {}
+			dictTemplate["date"] = modelFood.date.strftime("%-j")
+			dictTemplate["kcals"] = modelFood.kcals
+			listFood.append(dictTemplate)
 
 	# followed users
 	listFollowedUsers = list(user.follows.all())
@@ -115,14 +124,14 @@ def viewProfile(request):
 			"intDaysActive":user.int_days_active,
 			"intUsersHelped":user.int_users_helped,
 			"strDateJoined":user.date_joined,
-			"intKCalUploadCount":user.kcalamount_set.count(),
+			"intFoodUploadCount":user.uploaded_meals.count(),
 			# user stats
 			"floatStd":floatStd,
 			"floatMean":floatMean,
 			"floatMedian":floatMedian,
 		},
-		"setKCals":user.kcalamount_set.all(),
-		"listKCals":listKCals,
+		"setFood":user.uploaded_meals.all(),
+		"listFood":listFood,
 		# followed users
 		"listFollowerUsers":listFollowerUsers,
 		"listFollowedUsers":listFollowedUsers,
@@ -131,62 +140,50 @@ def viewProfile(request):
 	return render(request,'users/profile.html',context = context)
 
 #################################
-# Views relating to user KCal amounts
+# Views relating to user Food amounts
 #################################
 
 @login_required
-def viewUploadKCals(request):
+def viewUploadFood(request):
 	# get the user
 	user = request.user
 
-	modelKCalInstance = KCalAmount()
-	formKCalForm = KCalAmountForm(instance = modelKCalInstance)
+	formFoodForm = FoodForm()
 
 	if request.method == "POST":
 
-		formKCalForm = KCalAmountForm(request.POST)
+		formFoodForm = FoodForm(request.POST)
 
-		if formKCalForm.is_valid() and formKCalForm.cleaned_data['amount'] > 0:
-			print('here')
-			modelKCalCreated = formKCalForm.save(commit=False)
+		if formFoodForm.is_valid() and formFoodForm.cleaned_data['kcals'] > 0:
+			modelFoodCreated = formFoodForm.save(commit=False)
 
-			modelKCalCreated.author = user
-			modelKCalCreated.save()
+			modelFoodCreated.author = user
+			modelFoodCreated.save()
 
 			return redirect('users:profile')
 		else:
 
-			messages.error(request,"Invalid KCal amount inputted.")
+			messages.error(request,"Invalid Food amount inputted.")
 			return redirect('users:profile')
 
 	context = {
-		"formKCalForm":formKCalForm,
+		"formFoodForm":formFoodForm,
 	}
 
-	return render(request,'users/upload_kcals.html',context)
+	return render(request,'users/upload_food.html',context)
 
 @login_required
-def viewDeleteKCal(request,pk):
-	modelKCalInstance = get_object_or_404(KCalAmount,pk=pk)
+def viewDeleteFood(request,id):
+	modelFoodInstance = get_object_or_404(Food,id=id)
 
-	user = request.user
-	if modelKCalInstance.author != user:
-		return HttpResponseForbidden("Not your kcals!")
+	# check if the current user is author, if not dont do anything
+	if request.user != modelFoodInstance.author:
+		return HttpResponseRedirect('/')
 
-	context = {
-		'modelKCalInstance':modelKCalInstance,
-	}
+	# delete the Food amount
+	# NOTE:
+	# be sure to check that this will not affect
+	# any user attributes in the future.
+	modelFoodInstance.delete()
 
-	if request.method == "POST":
-		# delete the KCal amount
-		# NOTE:
-		# be sure to check that this will not affect
-		# any user attributes in the future.
-		modelKCalInstance.delete()
-
-		messages.success(request,"KCal value successfully deleted.")
-
-		# redirect to profile
-		return redirect("users:profile")
-
-	return render(request,'users/delete_kcal.html',context)
+	return HttpResponseRedirect('/')

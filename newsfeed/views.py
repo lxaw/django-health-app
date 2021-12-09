@@ -29,26 +29,36 @@ from newsfeed.forms import HelpRequestForm
 
 @login_required
 def viewIndex(request):
+	intWithinDays = 7
 
     # list of all recent posts
-    listRecentPosts = []
-    for modelPost in Post.objects.all().order_by('-pub_date'):
-        if modelPost.boolWithinXDays(1) and modelPost.author != request.user:
-            listRecentPosts.append(modelPost)
+	listRecentPosts = []
+	for modelPost in Post.objects.all().order_by('-pub_date'):
+		if modelPost.boolWithinXDays(1) and modelPost.author != request.user:
+			listRecentPosts.append(modelPost)
     
     # list of unfilled help requests
     # right now it has every single request, in reality may want to limit
-    listUnfilledHelpRequests = []
-    for modelHelpRequest in HelpRequest.objects.all().order_by("-pub_date"):
-        if not modelHelpRequest.boolWasRespondedTo():
-            listUnfilledHelpRequests.append(modelHelpRequest)
+	listUnfilledHelpRequests = []
+	for modelHelpRequest in HelpRequest.objects.all().order_by("-pub_date"):
+		if not modelHelpRequest.boolWasRespondedTo():
+			listUnfilledHelpRequests.append(modelHelpRequest)
 
+	listLastNFollowedUserPosts = []
+	# loop thru followed users, get their recent posts
+	for modelUser in request.user.follows.all():
+		# loop thru their posts
+		for modelPost in modelUser.created_post_set.all():
+			# if within, append
+			if modelPost.boolWithinXDays(intWithinDays):
+				listLastNFollowedUserPosts.append(modelPost)
 
-    context = {
+	context = {
         "listRecentPosts":listRecentPosts,
         "listUnfilledHelpRequests":listUnfilledHelpRequests,
+		"listLastNFollowedUserPosts":listLastNFollowedUserPosts,
     }
-    return render(request,'newsfeed/index.html',context = context)
+	return render(request,'newsfeed/index.html',context = context)
 
 @login_required
 def viewDetailByTag(request, tag):
@@ -140,10 +150,9 @@ def viewCreateHelpRequest(request):
 			# associate the reverse with the notification
 			modelNotificationToLoopedUser.related_reverse = "newsfeed:detail_help_request"
 			# associatie reverse arguments with notification
-			modelNotificationToLoopedUser.related_reverse_args = "{}-{}".format(modelCreatedHelpRequest.author.username,modelCreatedHelpRequest.slug)
+			modelNotificationToLoopedUser.related_reverse_args = "{}${}".format(modelCreatedHelpRequest.author.username,modelCreatedHelpRequest.slug)
 			modelNotificationToLoopedUser.save()
 
 
 
 	return redirect('newsfeed:index')
-    

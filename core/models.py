@@ -32,7 +32,7 @@ class Notification(models.Model):
 		return "Sender {} | Recipient: {}".format(self.sender,self.recipient)
 	
 	def get_parsed_reverse_args(self):
-		return self.related_reverse_args.split("-")
+		return self.related_reverse_args.split("$")
 	
 	def get_absolute_url(self):
 		return reverse(self.related_reverse,args=self.get_parsed_reverse_args())

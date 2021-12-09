@@ -107,7 +107,7 @@ def viewLikeUnlikePost(request,post_id):
 		################
 		# building the url
 		related_reverse = "communities:post_detail"
-		related_reverse_args = "{}-{}".format(modelPost.author.username,modelPost.slug)
+		related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
 		# link the related reverse name
 		modelNotificationToReply.related_reverse = related_reverse
 		# link the related reverse args
@@ -192,9 +192,9 @@ def viewCreateComment(request,username,slug):
 					# since reply, notify the person you reply to
 					modelNotificationToReply = Notification(sender=request.user,recipient=modelParentObj.author, message="{} has replied to your comment on post \"{}\".".format(request.user.username,modelPost.title))
 					# give it a related model id
-					modelNotification.related_model_id = modelPost.id
+					modelNotificationToReply.related_model_id = modelPost.id
 					# give it a related model name
-					modelNotification.related_model_name = "Post"
+					modelNotificationToReply.related_model_name = "Post"
 
 					modelNotificationToReply.save()
 			
@@ -211,10 +211,10 @@ def viewCreateComment(request,username,slug):
 			modelNotificationToParent = Notification(sender=request.user,recipient=modelPost.author,
 				message="{} has commented on your post \"{}\".".format(request.user.username,modelPost.title))
 
-			# link it to an id
-			modelNotificationToParent.related_model_id = modelPost.id
-			# link it to a related model
-			modelNotificationToParent.related_model_name = "Post"
+			# link to a reverse
+			modelNotificationToParent.related_reverse = "communities:post_detail"
+			# give the arguments to the reverse
+			modelNotificationToParent.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
 			
 			modelNotificationToParent.save()
 
