@@ -3,10 +3,8 @@
 
 {% block content %}
 
-<div style="align-items:flex-start;" 
-	class = "container border border-dark rounded pt-2  div__users-profile-banner"
->
-	<div style="display:inline-flex" class = "div__users-profile-media">
+<div style="align-items:flex-start;" class = "container border rounded p-3">
+	<div style="display:inline-flex" >
 		<img class = "rounded-circle img__users-profile-img" src = "{{user.profile_picture.url}}">
 		<div class = "div__users-profile-media-account">
 			<h2 class = "account-heading">
@@ -24,7 +22,7 @@
 
 <br>
 
-<div class = "container border border-primary rounded pb-5 pt-1">
+<div class = "container border border-primary rounded p-3">
 	<div class = "row">
 		<div class = "col-sm col-md-4">
 			<h2>Your information:</h2>
@@ -57,7 +55,7 @@
 <br>
 <br>
 
-<div class = "container border border-primary rounded pt-1 pb-5">
+<div class = "container border border-primary rounded p-3">
 	<h2 class = "text-center">Your Graphs:</h2>
 	<br>
 	<div class = "row">

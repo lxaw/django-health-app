@@ -7,7 +7,8 @@ from .models import TipOfDay,Notification
 class TipOfDayAdmin(admin.ModelAdmin):
 	fieldsets = [
 		("Text Content",{"fields":['text_content']}),
-		("Tags",{"fields":['tags']})
+		("Tags",{"fields":['tags']}),
+		("Urls",{"fields":['url']}),
 	]
 	search_fields = ['tag','text_content']
 
@@ -18,6 +19,8 @@ class NotificationAdmin(admin.ModelAdmin):
 		("message",{"fields":['message']}),
 		("pub_date",{"fields":['pub_date']}),
 		("read",{"fields":['read']}),
+		('related_reverse',{"fields":['related_reverse']}),
+		('related_reverse_args',{"fields":['related_reverse_args']}),
 	]
 
 admin.site.register(TipOfDay,TipOfDayAdmin)

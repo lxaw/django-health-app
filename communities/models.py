@@ -31,7 +31,7 @@ from users.models import CustomUser
 
 class Post(models.Model):
 	# associate with user
-	author = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+	author = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name = "created_post_set")
 	# associate with a title
 	title = models.CharField(max_length=200,null=False)
 	# associate with text
@@ -41,7 +41,7 @@ class Post(models.Model):
 	pub_date = models.DateTimeField(default=timezone.now)
 
 	# associate with the users that have commented / posted / whatever
-	responded_users = models.ManyToManyField(CustomUser,related_name='responded_users_set')
+	responded_users = models.ManyToManyField(CustomUser)
 
 	# associate with likes
 	user_likes = models.ManyToManyField(CustomUser, related_name="user_likes")

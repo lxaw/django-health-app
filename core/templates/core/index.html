@@ -1,7 +1,7 @@
 {% extends "core/base.html" %}
 {% block content %}
 
-<div class = "container border border-primary rounded div__home-tip-of-day">
+<div class = "container border border-primary rounded p-3 div__home-tip-of-day">
 	Tip of The Day:
 	<br>
 	{{modelTip}}
@@ -9,33 +9,41 @@
 
 <br>
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded pt-3">
 	<p>Its a great {{strDayName}}!</p>
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded p-3">
 	<h5>Notifications</h5>
+	{% if listModelNotifications|length == 0 %}
+		<p>All caught up!</p>
+	{% else %}
 	<br>
-	{% for modelNotification in user.recipient_notification.all %}
-	<div class = "container border border-primary rounded">
-		Date: {{modelNotification.pub_date}}
+		{% for modelNotification in listModelNotifications %}
+		<div class = "container border border rounded p-3">
+			Date: <strong>{{modelNotification.pub_date}}</strong>
 
-		<br>
-		{% if modelNotification.sender %}
-			Sender: {{modelNotification.sender}}
-		{% endif %}
-		<div>
-			{{modelNotification.message}}
+			<br>
+			{% if modelNotification.sender %}
+				Sender: <strong>{{modelNotification.sender}}</strong>
+			{% endif %}
+			<div class = "border border rounded p-3">
+				{{modelNotification.message}}
+			</div>
+			{% if modelNotification.related_reverse_args %}
+				<a href = {{modelNotification.get_absolute_url}}>Click to view.</a>
+			{% endif %}
+			<br>
+			<button class = "btn btn-outline-success" id = "btn__delete-notification" data-url="{% url 'core:notification_delete' modelNotification.id %}">
+				Got it!
+			</button>
 		</div>
-		<button id = "btn__delete-notification" data-url="{% url 'core:notification_delete' modelNotification.id %}">
-			Got it!
-		</button>
-
-	</div>
-	{% endfor %}
-	<br>
+		<br>
+		{% endfor %}
+		<br>
+	{% endif %}
 </div>
 
 <br>

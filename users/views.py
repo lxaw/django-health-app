@@ -147,6 +147,7 @@ def viewUploadKCals(request):
 		formKCalForm = KCalAmountForm(request.POST)
 
 		if formKCalForm.is_valid() and formKCalForm.cleaned_data['amount'] > 0:
+			print('here')
 			modelKCalCreated = formKCalForm.save(commit=False)
 
 			modelKCalCreated.author = user

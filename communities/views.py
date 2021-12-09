@@ -24,47 +24,34 @@ from .models import Post,Comment
 # Necessary forms
 #####################################
 from .forms import PostForm, CommentForm
+from newsfeed.forms import HelpRequestForm
 #####################################
 # Outside imports
 #####################################
 from django.utils import timezone
 
+
 @login_required
 def viewIndex(request):
-	modelPost = Post()
 
-	formPostForm = PostForm(instance=modelPost)
+	# note that create post is handled in a different view
+	# we use form action to create the objects
+	formPostForm = PostForm()
+	formCommentForm = CommentForm()
 
-	if request.method == "POST":
-
-		# fill with post data
-		formPostForm = PostForm(request.POST)
-
-		modelCreatedPost = formPostForm.save(commit=False)
-
-		formPostForm = PostForm(request.POST)
-
-		if formPostForm.is_valid():
-			# save the object
-			user = request.user
-
-			modelCreatedPost.author = user
-
-			modelCreatedPost.save()
-
-			# show message that post created
-			messages.success(request, "Post created.")
-
-			# redirect
-			return redirect('communities:index')
 	
 	# order the posts
-	listModelPosts = Post.objects.all().order_by('-pub_date')
+	# Create a dictionary of {Post:Post comments sorted}
+	dictModelPosts = {}
+	for modelPost in Post.objects.all().order_by('-pub_date'):
+		dictModelPosts[modelPost] = modelPost.comments.filter(active=True).order_by("pub_date")
 
 	context = {
-		"listModelPosts":listModelPosts,
+		"dictModelPosts":dictModelPosts,
 		"formPostForm":formPostForm,
+		"formCommentForm":formCommentForm,
 	}
+
 	return render(request,'communities/index.html',context = context)
 
 @login_required
@@ -99,10 +86,10 @@ def viewCreatePost(request):
 	context = {
 		"formPostForm":formPostForm,
 	}
-	return render(request, 'communities/create_post.html',context)
+	return redirect("communities:index")
 
 @login_required
-def viewLikePost(request,post_id):
+def viewLikeUnlikePost(request,post_id):
 	modelPost = get_object_or_404(Post,id=post_id)
 
 	if(modelPost.user_likes.filter(id=request.user.id).exists()):
@@ -112,7 +99,23 @@ def viewLikePost(request,post_id):
 		modelPost.user_likes.add(request.user)
 		# notify that they liked post
 		modelNotificationToReply = Notification(sender=request.user,recipient=modelPost.author, message="{} has liked your post \"{}\".".format(request.user.username,modelPost.title))
+		################
+		# Note:
+		# To link to post, need to make sure the url of notification
+		# matches how we decide to continue to do urls for posts.
+		# This is important as old notifications could give bad urls.
+		################
+		# building the url
+		related_reverse = "communities:post_detail"
+		related_reverse_args = "{}-{}".format(modelPost.author.username,modelPost.slug)
+		# link the related reverse name
+		modelNotificationToReply.related_reverse = related_reverse
+		# link the related reverse args
+		modelNotificationToReply.related_reverse_args = related_reverse_args
+
+		# 
 		# dont keep showing notification if press like and unlike 
+		# 
 		
 		modelNotificationToReply.save()
 	
@@ -139,9 +142,11 @@ def viewPostDetail(request, slug,username):
 @login_required
 def viewProfile(request, username):
 	modelUser = get_object_or_404(CustomUser, username = username)
+	listModelPosts = modelUser.created_post_set.all().order_by("-pub_date")
 
 	context = {
 		"modelViewedUser": modelUser,
+		"listModelPosts":listModelPosts,
 	}
 
 	return render(request, "communities/profile.html",context)
@@ -185,7 +190,12 @@ def viewCreateComment(request,username,slug):
 					# put the parent id in the reply
 					modelReplyComment.parent = modelParentObj
 					# since reply, notify the person you reply to
-					modelNotificationToReply = Notification(sender=request.user,recipient=modelParentObj.author, message="{} has replied to your comment.".format(request.user.username))
+					modelNotificationToReply = Notification(sender=request.user,recipient=modelParentObj.author, message="{} has replied to your comment on post \"{}\".".format(request.user.username,modelPost.title))
+					# give it a related model id
+					modelNotification.related_model_id = modelPost.id
+					# give it a related model name
+					modelNotification.related_model_name = "Post"
+
 					modelNotificationToReply.save()
 			
 			# Else, this is a normal comment
@@ -200,12 +210,16 @@ def viewCreateComment(request,username,slug):
 			# always notify the post owner
 			modelNotificationToParent = Notification(sender=request.user,recipient=modelPost.author,
 				message="{} has commented on your post \"{}\".".format(request.user.username,modelPost.title))
+
+			# link it to an id
+			modelNotificationToParent.related_model_id = modelPost.id
+			# link it to a related model
+			modelNotificationToParent.related_model_name = "Post"
 			
 			modelNotificationToParent.save()
 
-			# increment the user's notification count
-
-	return redirect(reverse("communities:post_detail",kwargs = {'username':modelPost.author.username,'slug':modelPost.slug}))
+	#return redirect(reverse("communities:post_detail",kwargs = {'username':modelPost.author.username,'slug':modelPost.slug}))
+	return redirect('communities:index')
 
 @login_required
 def viewDeletePost(request,post_id):
@@ -213,7 +227,6 @@ def viewDeletePost(request,post_id):
 	modelPostAuthor = modelPost.author
 
 	if request.user == modelPostAuthor:
-		messages.success(request, "Post successfully deleted.")
 		modelPost.delete()
 	
 	return redirect('communities:index')
@@ -225,7 +238,6 @@ def viewDeleteComment(request,comment_id):
 	modelCommentAuthor = modelComment.author
 
 	if request.user == modelCommentAuthor:
-		messages.success(request,"Comment successfully deleted.")
 		modelComment.delete()
 
 	return redirect(reverse("communities:post_detail",kwargs = {'username':modelParentPost.author.username,'slug':modelParentPost.slug}))
@@ -244,15 +256,5 @@ def viewAddRemoveFollow(request, username):
 			# unfollow
 			modelCurrentUser.follows.remove(modelUserToBeFollowed)
 
-	
 	# this never runs if use ajax
 	return HttpResponseRedirect('/')
-
-@login_required
-def viewRequestHelp(request):
-
-	context = {
-	}
-
-	return render(request, "communities/request_help.html",context)
-

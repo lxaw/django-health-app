@@ -2,7 +2,20 @@
 
 {% block content %}
 
-
+<div class = "container border rounded p-3">
+	<form method = "POST" action = "{% url 'users:upload_kcals' %}">
+		{% csrf_token %}
+		<h4>Enter your meal information.</h4>
+		<div class = "form-group">
+			<label for = "food_name">What type of food was it?</label>
+			<textarea name = "food_name" class = "form-control"></textarea>
+			<label for = "kcal_amount">How many calories was it?</label>
+			<textarea name = "kcal_amount" class = "form-control"></textarea>
+		</div>
+		<button class = "btn btn-primary">Submit</button>
+	</form>
+</div>
+<!-- 
 <h1>Enter today's KCal amount.</h1>
 <form method = "POST">
 	{{formKCalForm.non_field_errors}}
@@ -16,6 +29,6 @@
 
 	<input type="submit" value = "save">
 
-</form>
+</form> -->
 
 {% endblock content %}

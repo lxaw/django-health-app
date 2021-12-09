@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<div class = "container border border-primary rounded">
+	<h1 class = "text-center">
+		Help requests related to "{{strSelectedTag}}"
+	</h1>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded">
+	<h4>
+		Recent Help Requests
+	</h4>
+	{% for modelHelpRequest in listUnfilledHelpRequests %}
+
+		{% include 'newsfeed/help_request_template.html' %}
+		<br>
+
+	{% endfor %}
+</div>
+
+{% endblock %}

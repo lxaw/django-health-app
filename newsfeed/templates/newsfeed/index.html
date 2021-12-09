@@ -2,24 +2,58 @@
 
 {% block content %}
 
-<div class = "container border border-primary rounded">
+<div class = "container text-center border border-primary rounded p-3">
 	<h1>Here is your newsfeed.</h1>
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded p-3">
+	<h1 class = "text-center">
+		<a href = "{% url 'newsfeed:request_help' %}">
+			Request help.
+		</a>
+	</h1>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded p-3">
+	<h4>
+		Recent Help Requests
+	</h4>
+	{% for modelHelpRequest in listUnfilledHelpRequests %}
+
+			{% include "newsfeed/help_request_template.html" %}
+			<br>
+			{% if request.user == modelHelpRequest.author %}
+				<p data-url = "{% url 'newsfeed:delete_help_request' modelHelpRequest.id %}" class = "p__delete-help-request mr-4 text-danger">
+					Delete?
+				</p>
+			{% endif %}
+		</div>
+		<br>
+
+	{% endfor %}
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded p-3">
 	<h4>
 		See what your followed users are posting.
 	</h4>
-	<br>
-	{% for modelPost in listLastNFollowedUserPosts %}
-		<div class = "newsfeed__new-post border border-primary" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
-			<a href = "{{modelPost.get_absolute_url}}">
-				User  {{modelPost.author}} uploaded a post at {{modelPost.pub_date}}
-			</a>
-		</div>
-	{% endfor %}
+	{% if listLastNFollowedUserPosts|length == 0 %}
+		<p class = "text-muted">Looks like theres nothing yet!</p>
+	{% else %}
+		{% for modelPost in listLastNFollowedUserPosts %}
+			<div class = "newsfeed__new-post border border-primary" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
+				<a href = "{{modelPost.get_absolute_url}}">
+					User  {{modelPost.author}} uploaded a post at {{modelPost.pub_date}}
+				</a>
+			</div>
+		{% endfor %}
+	{% endif %}
 </div>
 
 <br>
@@ -28,7 +62,9 @@
 	<h4>
 		Most recent posts today.
 	</h4>
-	<br>
+	{% if listRecentPost|length == 0 %}
+		<p class = "text-muted">Looks like theres nothing yet!</p>
+	{% endif %}
 	{% for modelPost in listRecentPosts %}
 
 		<div class = "newsfeed__new-post border border-primary" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
@@ -42,3 +78,34 @@
 
 
 {% endblock content %}
+
+
+{% block javascript %}
+
+<script>
+	/*
+	************************
+	* Functions
+	************************
+	*/
+	function delete_help_request(strUrl){
+
+		$.ajax({
+			url:strUrl,
+			success:function(){
+				location.reload();
+			}
+		})
+	}
+	
+	// associate p with delete request
+	let arrPDeleteHelpRequest = document.getElementsByClassName("p__delete-help-request");
+	for(let p of arrPDeleteHelpRequest){
+		p.addEventListener('click',()=>{
+			delete_help_request(p.getAttribute('data-url'));
+		})
+	}
+
+</script>
+
+{% endblock javascript %}

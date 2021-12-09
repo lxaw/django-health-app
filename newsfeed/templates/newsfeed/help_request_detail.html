@@ -1,0 +1,33 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class = "container border border-primary rounded p-3">
+	{% include "newsfeed/help_request_template.html" %}
+	<br>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded p-3">
+	<h4>Think you can help out?</h4>
+	<p class = "text-muted">Send a direct message to begin the conversation.</p>
+	<div class = "container border border-primary rounded p-3">
+		<form method = "POST" action = "">
+			{% csrf_token %}
+			<label class = "text-muted" for="text_content">Write a brief introduction. Let them know why you can help.</label>
+			<textarea name='text_content' class = "form-control" rows = 4></textarea>
+		</form>
+		<br>
+		<div class = "container">
+			<div class = "row">
+				<button type= "submit" class = "btn btn-primary">Submit</button>
+			</div>
+		</div>
+		<br>
+	</div>
+	<br>
+</div>
+
+
+{% endblock %}
