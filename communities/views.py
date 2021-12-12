@@ -33,6 +33,14 @@ from django.utils import timezone
 
 @login_required
 def viewIndex(request):
+	###################################
+	# Inputs:
+	# request
+	# Outputs:
+	# render
+	# Utility:
+	# view called for index
+	###################################
 
 	# note that create post is handled in a different view
 	# we use form action to create the objects
@@ -56,6 +64,14 @@ def viewIndex(request):
 
 @login_required
 def viewCreatePost(request):
+	###################################
+	# Inputs:
+	# request
+	# Outputs:
+	# redirect
+	# Utility:
+	# view called to create a post
+	###################################
 	modelPost = Post()
 
 	formPostForm = PostForm(instance=modelPost)
@@ -90,6 +106,14 @@ def viewCreatePost(request):
 
 @login_required
 def viewLikeUnlikePost(request,post_id):
+	###################################
+	# Inputs:
+	# request, int
+	# Outputs:
+	# redirect
+	# Utility:
+	# view to like or unlike a post
+	###################################
 	modelPost = get_object_or_404(Post,id=post_id)
 
 	if(modelPost.user_likes.filter(id=request.user.id).exists()):
@@ -107,7 +131,7 @@ def viewLikeUnlikePost(request,post_id):
 		################
 		# building the url
 		related_reverse = "communities:post_detail"
-		related_reverse_args = "{}-{}".format(modelPost.author.username,modelPost.slug)
+		related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
 		# link the related reverse name
 		modelNotificationToReply.related_reverse = related_reverse
 		# link the related reverse args
@@ -123,6 +147,14 @@ def viewLikeUnlikePost(request,post_id):
 
 @login_required
 def viewPostDetail(request, slug,username):
+	###################################
+	# Inputs:
+	# request, str slug, str username
+	# Outputs:
+	# render
+	# Utility:
+	# view for see post by user
+	###################################
 	modelPostAuthor = get_object_or_404(CustomUser, username=username)
 	modelPost = get_object_or_404(Post,slug=slug,author=modelPostAuthor)
 
@@ -141,6 +173,14 @@ def viewPostDetail(request, slug,username):
 
 @login_required
 def viewProfile(request, username):
+	###################################
+	# Inputs:
+	# request, str username
+	# Outputs:
+	# render
+	# Utility:
+	# view called for public profile
+	###################################
 	modelUser = get_object_or_404(CustomUser, username = username)
 	listModelPosts = modelUser.created_post_set.all().order_by("-pub_date")
 
@@ -158,6 +198,14 @@ def viewProfile(request, username):
 ############
 @login_required
 def viewCreateComment(request,username,slug):
+	###################################
+	# Inputs:
+	# request, str username, str slug
+	# Outputs:
+	# redirect
+	# Utility:
+	# view to create comments (or replies)
+	###################################
 	# get the author
 	modelPostAuthor = get_object_or_404(CustomUser,username = username)
 	# get the post
@@ -192,9 +240,9 @@ def viewCreateComment(request,username,slug):
 					# since reply, notify the person you reply to
 					modelNotificationToReply = Notification(sender=request.user,recipient=modelParentObj.author, message="{} has replied to your comment on post \"{}\".".format(request.user.username,modelPost.title))
 					# give it a related model id
-					modelNotification.related_model_id = modelPost.id
+					modelNotificationToReply.related_model_id = modelPost.id
 					# give it a related model name
-					modelNotification.related_model_name = "Post"
+					modelNotificationToReply.related_model_name = "Post"
 
 					modelNotificationToReply.save()
 			
@@ -211,10 +259,10 @@ def viewCreateComment(request,username,slug):
 			modelNotificationToParent = Notification(sender=request.user,recipient=modelPost.author,
 				message="{} has commented on your post \"{}\".".format(request.user.username,modelPost.title))
 
-			# link it to an id
-			modelNotificationToParent.related_model_id = modelPost.id
-			# link it to a related model
-			modelNotificationToParent.related_model_name = "Post"
+			# link to a reverse
+			modelNotificationToParent.related_reverse = "communities:post_detail"
+			# give the arguments to the reverse
+			modelNotificationToParent.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
 			
 			modelNotificationToParent.save()
 
@@ -223,6 +271,14 @@ def viewCreateComment(request,username,slug):
 
 @login_required
 def viewDeletePost(request,post_id):
+	###################################
+	# Inputs:
+	# request, int
+	# Outputs:
+	# redirect
+	# Utility:
+	# view to delete posts
+	###################################
 	modelPost = get_object_or_404(Post, id = post_id)
 	modelPostAuthor = modelPost.author
 
@@ -233,6 +289,14 @@ def viewDeletePost(request,post_id):
 
 @login_required
 def viewDeleteComment(request,comment_id):
+	###################################
+	# Inputs:
+	# request, int
+	# Outputs:
+	# HttpResponseRedirect
+	# Utility:
+	# view to delete comments
+	###################################
 	modelComment = get_object_or_404(Comment,id = comment_id)
 	modelParentPost = modelComment.post
 	modelCommentAuthor = modelComment.author
@@ -244,6 +308,14 @@ def viewDeleteComment(request,comment_id):
 
 @login_required
 def viewAddRemoveFollow(request, username):
+	###################################
+	# Inputs:
+	# request, str username
+	# Outputs:
+	# HttpResponseRedirect
+	# Utility:
+	# add or remove follow a user
+	###################################
 	modelUserToBeFollowed = get_object_or_404(CustomUser,username=username)
 
 	modelCurrentUser = request.user

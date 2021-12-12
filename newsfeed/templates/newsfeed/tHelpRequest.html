@@ -31,4 +31,9 @@
         {% endfor %}
     </div>
     <br>
+    {% if request.user == modelHelpRequest.author %}
+        <p data-url = "{% url 'newsfeed:delete_help_request' modelHelpRequest.id %}" class = "p__delete-help-request mr-4 text-danger">
+            Delete?
+        </p>
+    {% endif %}
 </div>

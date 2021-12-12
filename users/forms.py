@@ -2,7 +2,12 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 from django.contrib.auth.models import User
 
-from .models import CustomUser,KCalAmount
+
+#############################
+# Related models
+#############################
+from .models import CustomUser
+from food.models import Food
 
 
 #############################
@@ -10,41 +15,56 @@ from .models import CustomUser,KCalAmount
 #############################
 
 class UserRegisterForm(UserCreationForm):
+	###################################
+	# Form to fill when registering users
+	###################################
 	email = forms.EmailField()
 
 	class Meta:
+		# what model to create
 		model = CustomUser
+		# what fields that are to be filled
 		fields = ['username','email','phone_number','password1','password2']
 
 
 
 class CustomUserCreationForm(UserCreationForm):
+	###################################
+	# Form to create a new custom user
+	###################################
 
 	class Meta:
 		model = CustomUser
 		fields = ("email",)
 
 class CustomUserChangeForm(UserChangeForm):
+	###################################
+	# Form to change items in custom user
+	###################################
 
 	class Meta:
 		model = CustomUser
 		fields = ("email",)
 
 #############################
-# Forms for KCals
+# Forms for Foods
 #############################
 
-class KCalAmountForm(forms.ModelForm):
+class FoodForm(forms.ModelForm):
+	###################################
+	# Form to create food object
+	###################################
 
 	class Meta:
-		model = KCalAmount
+		model = Food
 
 		# what fields can alter in form
 		fields = [
-			"amount"
+			"kcals",
+			"name",
 		]
 		widgets = {
-			'amount':forms.TextInput(attrs={'cols':5,'rows':20,'placeholder':"Input a value."},)
+			'kcals':forms.TextInput(attrs={'cols':5,'rows':20,'placeholder':"Input a value."},)
 		}
 
 		exclude = ()

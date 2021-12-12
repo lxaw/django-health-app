@@ -19,7 +19,17 @@ from datetime import date
 import random
 
 # Create your views here.
+
+
 def viewAbout(request):
+	###################################
+	# Inputs:
+	# request
+	# Outputs:
+	# render
+	# Utility:
+	# view for about page
+	###################################
 	intParticipantCount = CustomUser.objects.filter(is_staff = False, is_developer = False).count()
 	context = {
 		'intTotalParticipantCount': intParticipantCount,
@@ -27,6 +37,14 @@ def viewAbout(request):
 	return render(request,'core/about.html',context = context)
 
 def viewIndex(request):
+	###################################
+	# Inputs:
+	# request
+	# Outputs:
+	# render
+	# Utility:
+	# view called for index (home) page
+	###################################
 
 	# get a tip
 	listModelTips = []
@@ -55,6 +73,14 @@ def viewIndex(request):
 
 @login_required
 def viewDeleteNotification(request,notification_id):
+	###################################
+	# Inputs:
+	# request, int
+	# Outputs:
+	# render
+	# Utility:
+	# view called for delete a notification
+	###################################
 	modelNotification = get_object_or_404(Notification, id = notification_id)
 	modelNotificationRecipient = modelNotification.recipient
 

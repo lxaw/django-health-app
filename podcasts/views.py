@@ -5,6 +5,15 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def viewIndex(request):
+	###################################
+	# Inputs:
+	# request
+	# Outputs:
+    # render
+	# Utility:
+	# Delete a food item
+    # Index view for the podcast page
+    ###################################
     context = {
 
     }

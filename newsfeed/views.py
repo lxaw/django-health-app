@@ -29,29 +29,57 @@ from newsfeed.forms import HelpRequestForm
 
 @login_required
 def viewIndex(request):
+	###################################
+	# Inputs:
+	# request
+	# Outputs:
+	# render
+	# Utility:
+	# view called when go to index page of newsfeed
+	###################################
+
+	# variable for how many days 
+	intWithinDays = 7
 
     # list of all recent posts
-    listRecentPosts = []
-    for modelPost in Post.objects.all().order_by('-pub_date'):
-        if modelPost.boolWithinXDays(1) and modelPost.author != request.user:
-            listRecentPosts.append(modelPost)
+	listRecentPosts = []
+	for modelPost in Post.objects.all().order_by('-pub_date'):
+		if modelPost.boolWithinXDays(1) and modelPost.author != request.user:
+			listRecentPosts.append(modelPost)
     
     # list of unfilled help requests
     # right now it has every single request, in reality may want to limit
-    listUnfilledHelpRequests = []
-    for modelHelpRequest in HelpRequest.objects.all().order_by("-pub_date"):
-        if not modelHelpRequest.boolWasRespondedTo():
-            listUnfilledHelpRequests.append(modelHelpRequest)
+	listUnfilledHelpRequests = []
+	for modelHelpRequest in HelpRequest.objects.all().order_by("-pub_date"):
+		if not modelHelpRequest.boolWasRespondedTo():
+			listUnfilledHelpRequests.append(modelHelpRequest)
 
+	listLastNFollowedUserPosts = []
+	# loop thru followed users, get their recent posts
+	for modelUser in request.user.follows.all():
+		# loop thru their posts
+		for modelPost in modelUser.created_post_set.all():
+			# if within, append
+			if modelPost.boolWithinXDays(intWithinDays):
+				listLastNFollowedUserPosts.append(modelPost)
 
-    context = {
+	context = {
         "listRecentPosts":listRecentPosts,
         "listUnfilledHelpRequests":listUnfilledHelpRequests,
+		"listLastNFollowedUserPosts":listLastNFollowedUserPosts,
     }
-    return render(request,'newsfeed/index.html',context = context)
+	return render(request,'newsfeed/index.html',context = context)
 
 @login_required
 def viewDetailByTag(request, tag):
+	###################################
+	# Inputs:
+	# request, str tag
+	# Outputs:
+	# render
+	# Utility:
+	# view called when looking at help requests by tag
+	###################################
 
     # list of unfilled help requests
     # right now it has every single request, in reality may want to limit
@@ -67,6 +95,15 @@ def viewDetailByTag(request, tag):
 
 @login_required
 def viewDetail(request,username,slug):
+	###################################
+	# Inputs:
+	# request, str username, str slug
+	# Outputs:
+	# render
+	# Utility:
+	# view called when seeing an individual help reqeust
+	###################################
+
     # View an individual help request
     modelHelpRequestAuthor = get_object_or_404(CustomUser,username = username)
     modelHelpRequest = get_object_or_404(HelpRequest,slug=slug,author=modelHelpRequestAuthor)
@@ -79,12 +116,35 @@ def viewDetail(request,username,slug):
 
 @login_required
 def viewRequestHelp(request):
+	###################################
+	# Inputs:
+	# request
+	# Outputs:
+	# render
+	# Utility:
+	# view called when requesting help
+	###################################
 
 	return render(request, "newsfeed/request_help.html")
+
+#######################################################
+#
+# Utility views
+#
+#######################################################
 
 # delete help request
 @login_required
 def viewDeleteHelpRequest(request, id):
+	###################################
+	# Inputs:
+	# request, int id
+	# Outputs:
+	# redirect
+	# Utility:
+	# delete a help request
+	###################################
+
 	modelHelpRequest = get_object_or_404(HelpRequest,id=id)
 	modelHelpRequestAuthor = modelHelpRequest.author
 
@@ -96,6 +156,15 @@ def viewDeleteHelpRequest(request, id):
 
 @login_required
 def viewCreateHelpRequest(request):
+	###################################
+	# Inputs:
+	# request
+	# Outputs:
+	# render
+	# Utility:
+	# view called when requesting help
+	###################################
+
 	# This is a list of all possible tags in the create help request form
 	listPossibleTags = ["nutrition","diet","routine"]
 
@@ -140,10 +209,7 @@ def viewCreateHelpRequest(request):
 			# associate the reverse with the notification
 			modelNotificationToLoopedUser.related_reverse = "newsfeed:detail_help_request"
 			# associatie reverse arguments with notification
-			modelNotificationToLoopedUser.related_reverse_args = "{}-{}".format(modelCreatedHelpRequest.author.username,modelCreatedHelpRequest.slug)
+			modelNotificationToLoopedUser.related_reverse_args = "{}${}".format(modelCreatedHelpRequest.author.username,modelCreatedHelpRequest.slug)
 			modelNotificationToLoopedUser.save()
 
-
-
 	return redirect('newsfeed:index')
-    

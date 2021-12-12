@@ -4,14 +4,13 @@ from django.forms import TextInput, Textarea
 
 from .models import CustomUser
 
-from .models import KCalAmount
-# Register your models here.
-
-
+###################################
 # This all deals with what the admin page shows for custom user class.
+###################################
+
 class CustomUserAdminConfig(UserAdmin):
 	# fields able to search by
-	search_fields = ('email','username',)
+	search_fields = ('email','username')
 	# ordering of users
 	ordering = ('date_joined',)
 	# filtering by characteristics

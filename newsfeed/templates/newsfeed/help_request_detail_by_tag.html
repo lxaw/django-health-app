@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded p-3">
 	<h1 class = "text-center">
 		Help requests related to "{{strSelectedTag}}"
 	</h1>
@@ -10,13 +10,13 @@
 
 <br>
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded p-3">
 	<h4>
 		Recent Help Requests
 	</h4>
 	{% for modelHelpRequest in listUnfilledHelpRequests %}
 
-		{% include 'newsfeed/help_request_template.html' %}
+		{% include 'newsfeed/tHelpRequest.html' %}
 		<br>
 
 	{% endfor %}

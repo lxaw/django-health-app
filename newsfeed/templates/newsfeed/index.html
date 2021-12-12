@@ -24,14 +24,8 @@
 	</h4>
 	{% for modelHelpRequest in listUnfilledHelpRequests %}
 
-			{% include "newsfeed/help_request_template.html" %}
+			{% include "newsfeed/tHelpRequest.html" %}
 			<br>
-			{% if request.user == modelHelpRequest.author %}
-				<p data-url = "{% url 'newsfeed:delete_help_request' modelHelpRequest.id %}" class = "p__delete-help-request mr-4 text-danger">
-					Delete?
-				</p>
-			{% endif %}
-		</div>
 		<br>
 
 	{% endfor %}
@@ -58,7 +52,7 @@
 
 <br>
 
-<div class = "container border border-primary rounded">
+<div class = "container border border-primary rounded p-3">
 	<h4>
 		Most recent posts today.
 	</h4>
@@ -89,6 +83,9 @@
 	************************
 	*/
 	function delete_help_request(strUrl){
+		if(!confirm("Are you sure?")){
+			return;
+		}
 
 		$.ajax({
 			url:strUrl,

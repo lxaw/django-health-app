@@ -16,7 +16,7 @@ urlpatterns = [
 	# ex: /users/profile/
 	path('profile/',users_views.viewProfile,name='profile'),
 	# ex: /users/upload_kcals/
-	path('upload_kcals',users_views.viewUploadKCals,name='upload_kcals'),
+	path('upload_food',users_views.viewUploadFood,name='upload_food'),
 	# ex: /users/delete_kcal/7/
-	path('delete_kcal/<int:pk>',users_views.viewDeleteKCal,name='delete_kcal'),
+	path('delete_kcal/<int:id>',users_views.viewDeleteFood,name='delete_food'),
 ]
