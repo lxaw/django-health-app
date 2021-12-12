@@ -4,7 +4,10 @@ from django.forms import TextInput, Textarea
 
 from .models import CustomUser
 
+###################################
 # This all deals with what the admin page shows for custom user class.
+###################################
+
 class CustomUserAdminConfig(UserAdmin):
 	# fields able to search by
 	search_fields = ('email','username')

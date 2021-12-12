@@ -32,6 +32,9 @@ class CustomUserManager(BaseUserManager):
 		# this is a required field by Django, cannot change name.
 		other_fields.setdefault("is_superuser",True)
 
+		##############################################
+		# Defaults that run when create superuser
+		##############################################
 		other_fields.setdefault("is_staff",True)
 		other_fields.setdefault("is_active",True)
 		other_fields.setdefault("is_developer",True)
@@ -48,6 +51,9 @@ class CustomUserManager(BaseUserManager):
 		return self.create_user(email,username,password,**other_fields)
 
 	def create_user(self,email,username,password,phone_number,**other_fields):
+		##############################################
+		# Function that is called when users are created
+		##############################################
 		# normalize the email by lowercasing domain part
 
 		if not username:
@@ -69,6 +75,9 @@ class CustomUserManager(BaseUserManager):
 		return user
 
 class CustomUser(AbstractBaseUser,PermissionsMixin):
+	##############################################
+	# User models
+	##############################################
 	# Authentication of user
 	email = models.EmailField(gettext_lazy('email address'),unique = True)
 	username = models.CharField(max_length=150,unique = True)
@@ -121,7 +130,15 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 	REQUIRED_FIELDS = ["email","phone_number"]
 
 	def __str__(self):
+		###################
+		# String function when printing models
+		# Default for what shows when a model is displayed
+		###################
 		return self.username
 	
 	def get_public_profile_url(self):
+		####################################
+		# Returns a reverse to the public
+		# profile page of a user
+		####################################
 		return reverse('communities:profile',kwargs={"username":self.username})

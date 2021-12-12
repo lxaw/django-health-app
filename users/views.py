@@ -38,6 +38,14 @@ def strParsePhoneNumber(strEntry):
 #################################
 
 def viewRegister(request):
+	###################################
+	# Inputs:
+	# request
+	# Outputs:
+	# render
+	# Utility:
+	# View called when registering user
+	###################################
 	if request.method == "POST":
 		# check the phone number
 		phone_number = request.POST.get("phone_number")
@@ -76,6 +84,14 @@ def viewRegister(request):
 
 @login_required
 def viewProfile(request):
+	###################################
+	# Inputs:
+	# request
+	# Outputs:
+	# render
+	# Utility:
+	# view personal profile (only visible to the user themself)
+	###################################
 
 	user = request.user
 
@@ -145,6 +161,14 @@ def viewProfile(request):
 
 @login_required
 def viewUploadFood(request):
+	###################################
+	# Inputs:
+	# request
+	# Outputs:
+	# render
+	# Utility:
+	# Upload a food item
+	###################################
 	# get the user
 	user = request.user
 
@@ -174,6 +198,14 @@ def viewUploadFood(request):
 
 @login_required
 def viewDeleteFood(request,id):
+	###################################
+	# Inputs:
+	# request, int id
+	# Outputs:
+	# HttpResponse
+	# Utility:
+	# Delete a food item
+	###################################
 	modelFoodInstance = get_object_or_404(Food,id=id)
 
 	# check if the current user is author, if not dont do anything
