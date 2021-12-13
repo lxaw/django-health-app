@@ -15,7 +15,7 @@ from django.contrib import messages
 from core.models import Notification
 
 # newsfeed models
-from newsfeed.models import HelpRequest
+from newsfeed.models import HelpRequest,HelpRequestOffer
 
 # communities models
 from communities.models import Post
@@ -25,7 +25,7 @@ from users.models import CustomUser
 ############################
 # Necessary Forms
 ############################
-from newsfeed.forms import HelpRequestForm
+from newsfeed.forms import HelpRequestForm,HelpRequestOfferForm
 
 @login_required
 def viewIndex(request):
@@ -94,7 +94,7 @@ def viewDetailByTag(request, tag):
     return render(request,'newsfeed/help_request_detail_by_tag.html',context)
 
 @login_required
-def viewDetail(request,username,slug):
+def viewDetailHelpRequest(request,username,slug):
 	###################################
 	# Inputs:
 	# request, str username, str slug
@@ -108,9 +108,13 @@ def viewDetail(request,username,slug):
     modelHelpRequestAuthor = get_object_or_404(CustomUser,username = username)
     modelHelpRequest = get_object_or_404(HelpRequest,slug=slug,author=modelHelpRequestAuthor)
 
+	# get all the offers
+    listmodelHelpRequestOffers = modelHelpRequest.help_request_offer_set.all()
+
     context = {
         "modelHelpRequest":modelHelpRequest,
         "modelHelpRequestAuthor":modelHelpRequestAuthor,
+		"listmodelHelpRequestOffers":listmodelHelpRequestOffers,
     }
     return render(request,"newsfeed/help_request_detail.html",context)
 
@@ -213,3 +217,53 @@ def viewCreateHelpRequest(request):
 			modelNotificationToLoopedUser.save()
 
 	return redirect('newsfeed:index')
+
+def viewCreateHelpRequestOffer(request,id):
+	modelHelpRequest = get_object_or_404(HelpRequest,id=id)
+
+	# make sure that the help request author
+	# is not the same person giving themselves advice!
+	if request.user == modelHelpRequest.author:
+		messages.error(request,"Cannot give yourself an offer to help.")
+		return redirect("newsfeed:index")
+
+	if request.method == "POST":
+
+		formHelpRequestOfferForm = HelpRequestOfferForm()
+		# commit = false so can edit attributes
+		modelCreatedHelpRequestOffer = formHelpRequestOfferForm.save(commit=False)
+		
+		# edit attributes
+		# give an author
+		modelCreatedHelpRequestOffer.author = request.user
+		# give it its text
+		strTextContent = request.POST['text_content']
+		modelCreatedHelpRequestOffer.text_content = strTextContent
+		# give it its help request
+		modelCreatedHelpRequestOffer.help_request = modelHelpRequest
+		# now save
+		modelCreatedHelpRequestOffer.save()
+
+		# create notification to user for help request
+		modelNotification = Notification(sender=request.user,recipient=modelHelpRequest.author,
+			message = "User \"{}\" has offered help for request \"{}\"".format(request.user.username,modelHelpRequest.title)
+		)
+		# give a related reverse
+		modelNotification.related_reverse = "newsfeed:detail_help_request_offer"
+		# give arguments for the reverse
+		modelNotification.related_reverse_args = "{}".format(modelCreatedHelpRequestOffer.id)
+		# send the notification
+		modelNotification.save()
+	
+	return redirect("newsfeed:index")
+
+def viewDetailHelpRequestOffer(request,id):
+	modelHelpRequestOffer = get_object_or_404(HelpRequestOffer,id=id)
+	modelHelpRequest = modelHelpRequestOffer.help_request
+
+	context = {
+		"modelHelpRequestOffer":modelHelpRequestOffer,
+		"modelHelpRequest":modelHelpRequest,
+	}
+
+	return render(request,"newsfeed/help_request_offer_detail.html",context = context)

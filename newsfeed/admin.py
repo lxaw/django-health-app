@@ -1,10 +1,11 @@
 from django.contrib import admin
 
-from newsfeed.models import HelpRequest
+from newsfeed.models import HelpRequest,HelpRequestOffer
 
 # Register your models here.
 
 class HelpRequestAdmin(admin.ModelAdmin):
+	# Registering the HelpRequest model with admin page
 
 	fieldsets = [
 		('Title',{'fields':["title"]}),
@@ -14,4 +15,17 @@ class HelpRequestAdmin(admin.ModelAdmin):
 		("Date",{"fields":['pub_date']}),
 		("Slug",{'fields':['slug']}),
 	]
+
+class HelpRequestOfferAdmin(admin.ModelAdmin):
+	# Registering the HelpRequestOffer model with admin page
+
+	fieldsets = [
+		("Author",{"fields":['author']}),
+		("Text Content",{"fields":['text_content']}),
+		("Date",{"fields":["pub_date"]}),
+		("Help Request",{"fields":["help_request"]}),
+		("Is Accepted?",{"fields":["is_accepted"]}),
+	]
+
 admin.site.register(HelpRequest,HelpRequestAdmin)
+admin.site.register(HelpRequestOffer,HelpRequestOfferAdmin)

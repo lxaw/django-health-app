@@ -80,3 +80,29 @@ class HelpRequest(models.Model):
 	
 	def __str__(self):
 		return self.title
+
+##########################################
+# Models related to yes no accept requests
+##########################################
+
+class HelpRequestOffer(models.Model):
+	# associate with user
+	author = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="help_request_offer_set")
+	# text associated with the message
+	text_content = models.CharField(max_length=300)
+	# store date of poub
+	pub_date = models.DateTimeField(default=timezone.now)
+	# associate with a request for help
+	help_request = models.ForeignKey(HelpRequest,on_delete=models.CASCADE,related_name="help_request_offer_set")
+	# if accepted go true
+	is_accepted = models.BooleanField(default=False)
+
+	def get_absolute_url(self):
+		return reverse('newsfeed:detail_help_request_offer',kwargs={'id':self.id})
+
+	def boolIsAccepted(self):
+		# check if someone accepted offer
+		return self.is_accepted
+	
+	def __str__(self):
+		return "Help offer by \"{}\" for \"{}\"".format(self.author.username,self.help_request.title)
