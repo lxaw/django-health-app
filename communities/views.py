@@ -166,7 +166,7 @@ def viewPostDetail(request, slug,username):
 
 	context = {
 		"modelPost":modelPost,
-		"listmodelComments":listmodelComments,
+		"listPostComments":listmodelComments,
 		"formCommentForm":formCommentForm,
 	}
 	return render(request, 'communities/post_detail.html',context)
