@@ -98,7 +98,8 @@ class HelpRequestOffer(models.Model):
 	is_accepted = models.BooleanField(default=False)
 
 	def get_absolute_url(self):
-		return reverse('newsfeed:detail_help_request_offer',kwargs={'id':self.id})
+		return reverse('newsfeed:detail_help_request_offer',kwargs={'username':self.help_request.author.username,
+		"slug":self.help_request.slug,"id":self.id})
 
 	def boolIsAccepted(self):
 		# check if someone accepted offer

@@ -218,8 +218,9 @@ def viewCreateHelpRequest(request):
 
 	return redirect('newsfeed:index')
 
-def viewCreateHelpRequestOffer(request,id):
-	modelHelpRequest = get_object_or_404(HelpRequest,id=id)
+def viewCreateHelpRequestOffer(request,username,slug):
+	modelAuthor = get_object_or_404(CustomUser,username=username)
+	modelHelpRequest = get_object_or_404(HelpRequest, author=modelAuthor,slug=slug)
 
 	# make sure that the help request author
 	# is not the same person giving themselves advice!
@@ -251,13 +252,13 @@ def viewCreateHelpRequestOffer(request,id):
 		# give a related reverse
 		modelNotification.related_reverse = "newsfeed:detail_help_request_offer"
 		# give arguments for the reverse
-		modelNotification.related_reverse_args = "{}".format(modelCreatedHelpRequestOffer.id)
+		modelNotification.related_reverse_args = "{username}${slug}${id}".format(username=modelAuthor.username,slug=modelHelpRequest.slug,id=modelCreatedHelpRequestOffer.id)
 		# send the notification
 		modelNotification.save()
 	
 	return redirect("newsfeed:index")
 
-def viewDetailHelpRequestOffer(request,id):
+def viewDetailHelpRequestOffer(request,username,slug,id):
 	modelHelpRequestOffer = get_object_or_404(HelpRequestOffer,id=id)
 	modelHelpRequest = modelHelpRequestOffer.help_request
 
@@ -267,3 +268,20 @@ def viewDetailHelpRequestOffer(request,id):
 	}
 
 	return render(request,"newsfeed/help_request_offer_detail.html",context = context)
+
+def viewAcceptHelpRequestOffer(request,username,slug,id):
+	print('a')
+
+	context = {
+
+	}
+
+	return render(request,'newsfeed/help_request_accept.html',context=context)
+
+def viewRejectHelpRequestOffer(request,username,slug,id):
+
+	context = {
+
+	}
+	
+	return render(request,'newsfeed/help_request_reject.html',context=context)

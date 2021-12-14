@@ -21,8 +21,15 @@ urlpatterns = [
 	path('request-help/create/',newsfeed_views.viewCreateHelpRequest,name="create_help_request"),
 	# delete help request
 	path('request-help/delete/<int:id>/',newsfeed_views.viewDeleteHelpRequest,name="delete_help_request"),
+	##################
+	# URLS for Help Request Offers
+	##################
 	# creating a help request offer
-	path('request-help/offer/<int:id>/',newsfeed_views.viewCreateHelpRequestOffer,name="create_help_request_offer"),
+	path('request-help/<str:username>/<slug:slug>/offer/create/',newsfeed_views.viewCreateHelpRequestOffer,name="create_help_request_offer"),
 	# viewing a help request offer
-	path('request-help/offer/detail/<int:id>/',newsfeed_views.viewDetailHelpRequestOffer,name="detail_help_request_offer")
+	path('request-help/<str:username>/<slug:slug>/offer/<int:id>/detail/',newsfeed_views.viewDetailHelpRequestOffer,name="detail_help_request_offer"),
+	# accept a help request offer
+	path('request-help/<str:username>/<slug:slug>/offer/<int:id>/accept/',newsfeed_views.viewAcceptHelpRequestOffer,name="accept_help_request_offer"),
+	# reject help request offer
+	path('request-help/<str:username>/<slug:slug>/offer/<int:id>/reject/',newsfeed_views.viewRejectHelpRequestOffer,name="reject_help_request_offer"),
 ]

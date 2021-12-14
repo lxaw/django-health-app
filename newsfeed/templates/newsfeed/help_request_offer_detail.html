@@ -13,10 +13,23 @@
 <br>
 
 <div class = "container border border-primary rounded p-3">
+	<h3>{{modelHelpRequestOffer.author.username}}'s community history:</h3>
+	<div class = "container boroder rounded">
+		put stuff on how their stats like percentage accepted / percentage helped
+	</div>	
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded p-3">
 	<h4>Accept offer?</h4>
 	<div class = "container row">
-		<button class = "btn btn-primary">Accept</button>
-		<button class = "btn btn-danger">Reject</button>
+		<a href = "{% url 'newsfeed:accept_help_request_offer' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
+			<button id = "btn__accept" class = "btn btn-outline-success mr-3">Accept</button>
+		</a>
+		<a href = "{% url 'newsfeed:reject_help_request_offer' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
+			<button id = "btn__reject" class = "btn btn-outline-danger">Reject</button>
+		</a>
 	</div>
 </div>
 
