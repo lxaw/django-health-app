@@ -4,6 +4,24 @@
 
 <div class = "container border border-primary rounded p-3">
 	<h4>Accepted offer</h4>
+	<div class = "container border border-primary rounded p-3">
+		<p>
+			You have accepted user <strong>{{modelUserOfferer}}</strong>'s offer to help you.
+			Check your DM's to start a conversation.
+		</p>
+	</div>
+	<br>
+	<a href = "{{modelHelpRequest.get_absolute_url}}">
+		<h5>Back to your request</h5>
+	</a>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded p-3">
+	<a href = "">
+		See your DM's.
+	</a>
 </div>
 
 {% endblock %}

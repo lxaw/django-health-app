@@ -219,3 +219,12 @@ def viewDeleteFood(request,id):
 	modelFoodInstance.delete()
 
 	return HttpResponseRedirect('/')
+
+@login_required
+def viewIndexDMs(request):
+	
+	context = {
+
+	}
+
+	return render(request,"users/dms.html",context=context)

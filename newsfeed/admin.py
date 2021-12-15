@@ -14,6 +14,8 @@ class HelpRequestAdmin(admin.ModelAdmin):
 		('Tags',{"fields":['tags']}),
 		("Date",{"fields":['pub_date']}),
 		("Slug",{'fields':['slug']}),
+		("Accepted User",{"fields":['accepted_user']}),
+		("Accept Date",{"fields":['accept_date']}),
 	]
 
 class HelpRequestOfferAdmin(admin.ModelAdmin):

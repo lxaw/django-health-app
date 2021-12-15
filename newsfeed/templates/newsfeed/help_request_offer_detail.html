@@ -2,6 +2,13 @@
 
 {% block content %}
 
+{% if modelHelpRequest.boolWasRespondedTo %}
+
+<div class = "container border border-primary rounded p-3">
+	<h4>This request has been filled by user <strong>{{modelHelpRequestOffer.author.username}} on {{modelHelpRequest.accept_date}}.</strong></h4>
+</div>
+
+{% else %}
 <div class = "container border border-primary rounded p-3">
 	<h3>Help Offer for "{{modelHelpRequest.title}}"</h3>
 	<h5>Author: <a href = "{{modelHelpRequestOffer.author.get_public_profile_url}}">{{modelHelpRequestOffer.author}}</a></h5>
@@ -14,7 +21,7 @@
 
 <div class = "container border border-primary rounded p-3">
 	<h3>{{modelHelpRequestOffer.author.username}}'s community history:</h3>
-	<div class = "container boroder rounded">
+	<div class = "container border rounded">
 		put stuff on how their stats like percentage accepted / percentage helped
 	</div>	
 </div>
@@ -24,13 +31,14 @@
 <div class = "container border border-primary rounded p-3">
 	<h4>Accept offer?</h4>
 	<div class = "container row">
-		<a href = "{% url 'newsfeed:accept_help_request_offer' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
+		<a href = "{% url 'newsfeed:accept-help-request-offer' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
 			<button id = "btn__accept" class = "btn btn-outline-success mr-3">Accept</button>
 		</a>
-		<a href = "{% url 'newsfeed:reject_help_request_offer' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
+		<a href = "{% url 'newsfeed:reject-help-request-offer' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
 			<button id = "btn__reject" class = "btn btn-outline-danger">Reject</button>
 		</a>
 	</div>
 </div>
+{% endif %}
 
 {% endblock content %}

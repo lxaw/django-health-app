@@ -24,7 +24,7 @@
         <p>Related tags:</p>
         {% for strTag in modelHelpRequest.get_parsed_tags %}
             <span style= "background-color: aliceblue;" class ="rounded mr-3 p-1">
-                <a href = "{% url 'newsfeed:detail_tag' strTag %}" style = "text-decoration: none;">
+                <a href = "{% url 'newsfeed:index-by-tag' strTag %}" style = "text-decoration: none;">
                     {{strTag}}
                 </a>
             </span>
@@ -32,7 +32,7 @@
     </div>
     <br>
     {% if request.user == modelHelpRequest.author %}
-        <p data-url = "{% url 'newsfeed:delete_help_request' modelHelpRequest.id %}" class = "p__delete-help-request mr-4 text-danger">
+        <p data-url = "{% url 'newsfeed:delete-help-request' modelHelpRequest.id %}" class = "p__delete-help-request mr-4 text-danger">
             Delete?
         </p>
     {% endif %}

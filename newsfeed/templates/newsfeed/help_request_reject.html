@@ -4,6 +4,16 @@
 
 <div class = "container border border-primary rounded p-3">
 	<h4>Rejected offer</h4>
+	<div class = "container border border-primary rounded p-3">
+		<p>
+			You have rejected user <strong>{{modelUserOfferer}}</strong>'s offer to help.
+			Your request for help is still able to accept offers.
+		</p>
+	</div>
+	<br>
+	<a href = "{{modelHelpRequest.get_absolute_url}}">
+		<h5>Back to your request</h5>
+	</a>
 </div>
 
 
