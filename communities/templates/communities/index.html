@@ -4,7 +4,7 @@
 
 <div class = "container border border-primary rounded p-3">
 	<h1>Create a post.</h1>
-	<form method = "POST" action = "{% url 'communities:create_post' %}">
+	<form method = "POST" action = "{% url 'communities:post-create' %}">
 		{% csrf_token %}
 		<h3>Title: </h3>
 		<div class = "form-group">
@@ -27,7 +27,7 @@
 
 <div class = "container border border-primary rounded p-3">
 	<h1 class = "text-center">
-		<a href = "{% url 'newsfeed:request-help' %}">
+		<a href = "{% url 'newsfeed:help-request-prepare' %}">
 			Request help.
 		</a>
 	</h1>
@@ -40,14 +40,14 @@
 	<div class = "container">
 			{% for modelPost,listPostComments in dictModelPosts.items %}
 
-				{% include 'communities/tPost.html' %}
+				{% include 'communities/t/tPost.html' %}
 				<br>
 
 			{% endfor %}
 	</div>
 </div>
 
-{% include 'communities/jPostActions.html' %}
+{% include 'communities/t/jPostActions.html' %}
 
 
 {% endblock content %}

@@ -16,10 +16,16 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 
 #################################
+# Form imports
+#################################
+from .forms import SearchUserForm
+
+#################################
 # Model imports
 #################################
 
 from food.models import Food
+from .models import CustomUser
 
 #################################
 # Package installs
@@ -227,4 +233,32 @@ def viewIndexDMs(request):
 
 	}
 
-	return render(request,"users/dms.html",context=context)
+	return render(request,"users/dm_index.html",context=context)
+
+@login_required
+def viewPrepareDM(request):
+	formSearchUserForm = SearchUserForm
+
+	
+	if "query" in request.GET:
+		boolSearched = True
+		strSearchStr = request.GET['query']
+
+		# search for user
+		listmodelMatchedUsers = CustomUser.objects.filter(username__contains=strSearchStr)
+
+		context = {
+			"formSearchUserForm":formSearchUserForm,
+			"boolSearched":boolSearched,
+			"strSearchStr":strSearchStr,
+			"listmodelMatchedUsers":listmodelMatchedUsers,
+		}
+
+		return render(request,'users/dm_prepare.html',context=context)
+	else:
+		# no query yet
+
+		context = {
+			"formSearchUserForm":formSearchUserForm,
+		}
+		return render(request,'users/dm_prepare.html',context=context)

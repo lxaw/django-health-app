@@ -31,10 +31,10 @@
 <div class = "container border border-primary rounded p-3">
 	<h4>Accept offer?</h4>
 	<div class = "container row">
-		<a href = "{% url 'newsfeed:accept-help-request-offer' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
+		<a href = "{% url 'newsfeed:help-request-offer-accept' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
 			<button id = "btn__accept" class = "btn btn-outline-success mr-3">Accept</button>
 		</a>
-		<a href = "{% url 'newsfeed:reject-help-request-offer' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
+		<a href = "{% url 'newsfeed:help-request-offer-accept' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
 			<button id = "btn__reject" class = "btn btn-outline-danger">Reject</button>
 		</a>
 	</div>

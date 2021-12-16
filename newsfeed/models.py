@@ -72,7 +72,7 @@ class HelpRequest(models.Model):
 	# return the url associated with it
 	# this is the url for viewing the request
 	def get_absolute_url(self):
-		return reverse('newsfeed:detail-help-request',kwargs={"slug":self.slug,
+		return reverse('newsfeed:help-request-detail',kwargs={"slug":self.slug,
 			"username":self.author.username}
 			)
 	
@@ -104,7 +104,7 @@ class HelpRequestOffer(models.Model):
 	is_accepted = models.BooleanField(default=False)
 
 	def get_absolute_url(self):
-		return reverse('newsfeed:detail-help-request-offer',kwargs={'username':self.help_request.author.username,
+		return reverse('newsfeed:help-request-offer-detail',kwargs={'username':self.help_request.author.username,
 		"slug":self.help_request.slug,"id":self.id})
 
 	def boolIsAccepted(self):

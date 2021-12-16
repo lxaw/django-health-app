@@ -12,14 +12,14 @@
 	<div class = "container row">
 		<div class = "col-sm border rounded p-3 mr-3">
 			<h1 class = "text-center">
-				<a href = "{% url 'newsfeed:request-help' %}">
+				<a href = "{% url 'newsfeed:help-request-prepare' %}">
 					Request help.
 				</a>
 			</h1>
 		</div>
 		<div class = "col-sm border rounded p-3">
 			<h1 class = "text-center">
-				<a href ="{% url 'newsfeed:detail-archive' %}">
+				<a href ="{% url 'newsfeed:help-request-archive-detail' %}">
 					Or view your requests.
 				</a>
 			</h1>
@@ -35,7 +35,7 @@
 	</h4>
 	{% for modelHelpRequest in listUnfilledHelpRequests %}
 
-			{% include "newsfeed/tHelpRequest.html" %}
+			{% include "newsfeed/t/tHelpRequest.html" %}
 			<br>
 		<br>
 

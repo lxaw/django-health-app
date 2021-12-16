@@ -2,6 +2,14 @@
 
 {% block content %}
 <div class = "container border border-primary rounded p-3">
+	<a href = "{% url 'users:dm-prepare' %}">
+		<h5 class = "text-center">Create a DM</h5>
+	</a>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded p-3">
 	<h5 class = "text-center">Your Direct-Messages</h5>
 </div>
 {% endblock %}

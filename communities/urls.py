@@ -16,25 +16,25 @@ urlpatterns = [
 	# URLS for Posts
 	##################
 	# CREATING A POST
-	path('create_post',communities_views.viewCreatePost,name="create_post"),
+	path('create_post',communities_views.viewCreatePost,name="post-create"),
 	# DELETING A POST
-	path('posts/delete_post/<int:post_id>',communities_views.viewDeletePost,name="delete_post"),
+	path('posts/delete_post/<int:post_id>',communities_views.viewDeletePost,name="post-delete"),
 	# VIEWING A POST
-	path('posts/view/<str:username>/<slug:slug>',communities_views.viewPostDetail,name="post_detail"),
+	path('posts/view/<str:username>/<slug:slug>',communities_views.viewPostDetail,name="post-detail"),
 
 	##################
 	# URLS for Posts Actions (Like)
 	##################
-	path('like_post/<int:post_id>',communities_views.viewLikeUnlikePost,name="like_unlike_post"),
+	path('like_post/<int:post_id>',communities_views.viewLikeUnlikePost,name="post-like-unlike"),
 
 
 	##################
 	# URLS for Posts Comments
 	##################
 	# ex: /communities/posts/username/slug-my-post-title/create_comment/
-	path('posts/<str:username>/<slug:slug>/create_comment',communities_views.viewCreateComment,name="create_comment"),
+	path('posts/<str:username>/<slug:slug>/create_comment',communities_views.viewCreateComment,name="comment-create"),
 	# ex: /communities/posts/username/slug-my-post-title/delete_comment/
-	path('posts/delete_comment/<int:comment_id>',communities_views.viewDeleteComment,name="delete_comment"),
+	path('posts/delete_comment/<int:comment_id>',communities_views.viewDeleteComment,name="comment-delete"),
 
 	##################
 	# URLS for Public Profiles
@@ -44,5 +44,5 @@ urlpatterns = [
 	##################
 	# URLS for Following
 	##################
-	path('following/add_remove_follow/<str:username>',communities_views.viewAddRemoveFollow,name="add_remove_follow"),
+	path('following/add_remove_follow/<str:username>',communities_views.viewAddRemoveFollow,name="follow-add-remove"),
 ]

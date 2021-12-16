@@ -10,7 +10,7 @@
 <div class = "container border border-primary rounded p-3">
 	<h4 class = "text-center">Your pending requests</h4>
 	{% for modelHelpRequest in listmodelPendingRequests %}
-		{% include "newsfeed/tHelpRequest.html" %}
+		{% include "newsfeed/t/tHelpRequest.html" %}
 	{% endfor%}
 </div>
 
@@ -19,7 +19,7 @@
 <div class = "container border border-primary rounded p-3">
 	<h4 class = "text-center">Your older requests</h4>
 	{% for modelHelpRequest in listmodelAcceptedRequests %}
-		{% include "newsfeed/tHelpRequest.html" %}
+		{% include "newsfeed/t/tHelpRequest.html" %}
 		<br>
 	{% endfor%}
 </div>

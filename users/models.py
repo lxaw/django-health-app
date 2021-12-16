@@ -142,3 +142,23 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 		# profile page of a user
 		####################################
 		return reverse('communities:profile',kwargs={"username":self.username})
+
+class DirectMessage(models.Model):
+	# sender
+	sender = models.ForeignKey(CustomUser,on_delete = models.CASCADE,related_name = "dm_sender_set")
+	# recipient
+	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name = "dm_recipient_set")
+	# when it was sent
+	pub_date = models.DateTimeField(default=timezone.now)
+	# if a dm on a dm
+	parent = models.ForeignKey('self',null=True,blank = True,related_name = "dm_reply_set",on_delete=models.CASCADE)
+
+	text = models.TextField()
+
+	def __str__(self):
+		return self.text
+	
+	def boolIsReply(self):
+		if(self.parent):
+			return True
+		return False

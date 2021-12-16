@@ -1,0 +1,47 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class = "container border border-primary rounded p-3">
+	<h2 class = "text-center">Create a DM.</h2>
+</div>
+
+<br>
+
+{% if boolSearched %}
+	<div class = "container border border-primary rounded p-3">
+		<h3>You searched for "{{strSearchStr}}"</h3>
+	</div>
+	<br>
+	<div class = "container border border-primary rounded p-3">
+		{% if listmodelMatchedUsers|length == 0 %}
+			<p>No matches for {{strSearchStr}}</p>
+		{% else %}
+			{% for modelUser in listmodelMatchedUsers %}
+				{% include "communities/t/tPublicProfileThumb.html" %}
+			{% endfor %}
+		{% endif %}
+	</div>
+
+	<br>
+
+	<div class = "container border border-primary rounded p-3">
+		<form method = "GET">
+			{{formSearchUserForm}}
+			<button class = "btn btn-outline-success" type='submit'>
+				Search
+			</button>
+		</form>
+	</div>
+{% else %}
+	<div class = "container border border-primary rounded p-3">
+		<form method = "GET">
+			{{formSearchUserForm}}
+			<button class = "btn btn-outline-success" type='submit'>
+				Search
+			</button>
+		</form>
+	</div>
+{% endif %}
+
+{% endblock %}

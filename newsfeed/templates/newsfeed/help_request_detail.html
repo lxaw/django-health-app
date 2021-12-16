@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class = "container border border-primary rounded p-3">
-	{% include "newsfeed/tHelpRequest.html" %}
+	{% include "newsfeed/t/tHelpRequest.html" %}
 	<br>
 </div>
 
@@ -11,9 +11,13 @@
 
 	{% if modelHelpRequest.boolWasRespondedTo %}
 		<div class = "container border border-primary rounded p-3">
-			<p>To be helped by user <strong>{{modelHelpRequest.accepted_user.username}}</strong></p>
+			<p>To be helped by user <strong>{{modelHelpRequest.accepted_user.username}}.</strong></p>
 			<a href = "{{modelHelpRequest.accepted_user.get_public_profile_url}}">
 				View <strong>{{modelHelpRequest.accepted_user.username}}</strong>'s profile.
+			</a>
+			<br>
+			<a href = "">
+				Or direct message them.
 			</a>
 		</div>
 	{% else %}
@@ -22,7 +26,7 @@
 				<h4>Think you can help out?</h4>
 				<p class = "text-muted">Send a direct message to begin the conversation.</p>
 				<div class = "container border border-primary rounded p-3">
-					<form method = "POST" action = "{% url 'newsfeed:create_help_request_offer' modelHelpRequest.author.username modelHelpRequest.slug %}">
+					<form method = "POST" action = "{% url 'newsfeed:help-request-offer-create' modelHelpRequest.author.username modelHelpRequest.slug %}">
 						{% csrf_token %}
 						<label class = "text-muted" for="text_content">Write a brief introduction. Let them know why you can help.</label>
 						<textarea name='text_content' class = "form-control" rows = 4></textarea>

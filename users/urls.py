@@ -19,7 +19,8 @@ urlpatterns = [
 	path('upload_food',users_views.viewUploadFood,name='upload_food'),
 	# ex: /users/delete_kcal/7/
 	path('delete_kcal/<int:id>',users_views.viewDeleteFood,name='delete_food'),
-	# ex: /users/dms/
-	path('dms',users_views.viewIndexDMs,name="dms_index"),
-
+	# ex: /users/dm/index
+	path('dm/index',users_views.viewIndexDMs,name="dm-index"),
+	# ex: /users/dm/prepare/
+	path('dm/prepare/',users_views.viewPrepareDM,name="dm-prepare"),
 ]

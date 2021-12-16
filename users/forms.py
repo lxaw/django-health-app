@@ -9,6 +9,11 @@ from django.contrib.auth.models import User
 from .models import CustomUser
 from food.models import Food
 
+#############################
+# Forms for searching
+#############################
+class SearchUserForm(forms.Form):
+	query = forms.CharField(label="Search",max_length=50)
 
 #############################
 # Forms for User Creation / Change
