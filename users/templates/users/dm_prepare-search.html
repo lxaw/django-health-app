@@ -10,15 +10,25 @@
 
 {% if boolSearched %}
 	<div class = "container border border-primary rounded p-3">
-		<h3>You searched for "{{strSearchStr}}"</h3>
+		<h3 class = "text-center">You searched for "{{strSearchStr}}".</h3>
+		<p class = "text-center">There {{listmodelMatchedUsers|pluralize:"is,are"}} {{listmodelMatchedUsers|length}} match{{listmodelMatchedUsers|pluralize:",es"}}.</p>
 	</div>
 	<br>
 	<div class = "container border border-primary rounded p-3">
 		{% if listmodelMatchedUsers|length == 0 %}
-			<p>No matches for {{strSearchStr}}</p>
+			<p class = "text-center">
+				Please try again.
+			</p>
 		{% else %}
+			<div>
+				<p>Click on a user to select them.</p>
+			</div>
 			{% for modelUser in listmodelMatchedUsers %}
-				{% include "communities/t/tPublicProfileThumb.html" %}
+				<a href = "{% url 'users:dm-prepare-text' modelUser.username %}">
+					{% include "communities/t/tPublicProfileThumb.html" %}
+				</a>
+				<br>
+
 			{% endfor %}
 		{% endif %}
 	</div>
@@ -26,7 +36,7 @@
 	<br>
 
 	<div class = "container border border-primary rounded p-3">
-		<form method = "GET">
+		<form method = "GET" autocomplete="off">
 			{{formSearchUserForm}}
 			<button class = "btn btn-outline-success" type='submit'>
 				Search
@@ -35,7 +45,7 @@
 	</div>
 {% else %}
 	<div class = "container border border-primary rounded p-3">
-		<form method = "GET">
+		<form method = "GET" autocomplete="off">
 			{{formSearchUserForm}}
 			<button class = "btn btn-outline-success" type='submit'>
 				Search

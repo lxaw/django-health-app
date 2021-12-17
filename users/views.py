@@ -236,7 +236,7 @@ def viewIndexDMs(request):
 	return render(request,"users/dm_index.html",context=context)
 
 @login_required
-def viewPrepareDM(request):
+def viewDmPrepareSearch(request):
 	formSearchUserForm = SearchUserForm
 
 	
@@ -245,7 +245,12 @@ def viewPrepareDM(request):
 		strSearchStr = request.GET['query']
 
 		# search for user
-		listmodelMatchedUsers = CustomUser.objects.filter(username__contains=strSearchStr)
+		listmodelMatchedUsers = []
+		for modelUser in CustomUser.objects.filter(username__contains=strSearchStr):
+			# can't search for self
+			if modelUser != request.user:
+				listmodelMatchedUsers.append(modelUser)
+				
 
 		context = {
 			"formSearchUserForm":formSearchUserForm,
@@ -254,11 +259,25 @@ def viewPrepareDM(request):
 			"listmodelMatchedUsers":listmodelMatchedUsers,
 		}
 
-		return render(request,'users/dm_prepare.html',context=context)
+		return render(request,'users/dm_prepare-search.html',context=context)
 	else:
 		# no query yet
 
 		context = {
 			"formSearchUserForm":formSearchUserForm,
 		}
-		return render(request,'users/dm_prepare.html',context=context)
+		return render(request,'users/dm_prepare-search.html',context=context)
+
+@login_required
+def viewDmPrepareText(request,username):
+	######################
+	# Inputs:
+	# request, username of the user to be dm'd by request.user
+	######################
+	modelSelectedUser = get_object_or_404(CustomUser,username=username)
+
+	context = {
+		"modelSelectedUser":modelSelectedUser,
+	}
+
+	return render(request,'users/dm_prepare-text.html',context=context)

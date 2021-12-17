@@ -26,6 +26,12 @@ from users.models import CustomUser
 ############################
 from newsfeed.forms import HelpRequestForm,HelpRequestOfferForm
 
+############################
+# import notification dictionary so that
+# we can use the reverses easily
+############################
+from core.notification_reverses.reverses import dictNotificationReverses
+
 @login_required
 def viewIndex(request):
 	###################################
@@ -212,7 +218,8 @@ def viewCreateHelpRequest(request):
 					message = "{} created help request \"{}\". See if you can help!".format(request.user.username,strTitle)
 				)
 				# associate the reverse with the notification
-				modelNotificationToLoopedUser.related_reverse = "newsfeed:help-request-detail"
+				modelNotificationToLoopedUser.related_reverse = dictNotificationReverses["newsfeed"]["help-request"]["detail"]
+				# modelNotificationToLoopedUser.related_reverse = "newsfeed:help-request-detail"
 				# associatie reverse arguments with notification
 				modelNotificationToLoopedUser.related_reverse_args = "{}${}".format(modelCreatedHelpRequest.author.username,modelCreatedHelpRequest.slug)
 				modelNotificationToLoopedUser.save()
@@ -251,7 +258,8 @@ def viewCreateHelpRequestOffer(request,username,slug):
 			message = "User \"{}\" has offered help for request \"{}\"".format(request.user.username,modelHelpRequest.title)
 		)
 		# give a related reverse
-		modelNotification.related_reverse = "newsfeed:detail-help-request-offer"
+		modelNotification.related_reverse = dictNotificationReverses["newsfeed"]["help-request-offer"]['detail']
+		# modelNotification.related_reverse = "newsfeed:help-request-offer-detail"
 		# give arguments for the reverse
 		modelNotification.related_reverse_args = "{username}${slug}${id}".format(username=modelAuthor.username,slug=modelHelpRequest.slug,id=modelCreatedHelpRequestOffer.id)
 		# send the notification
