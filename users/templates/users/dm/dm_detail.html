@@ -1,0 +1,41 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class = "container border border-primary rounded p-3">
+	<h2 class = "text-center">Your message history with {{modelSelectedUser.username}}</h2>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded p-3">
+	{% if qsAllDms|length == 0 %}
+		<p class = "text-center">Nothing yet!</p>
+	{% else %}
+		{% for modelDm in qsAllDms %}
+		<div class = "container border border-primary rounded p-3">
+			<p>Author: {{modelDm.sender}}</p>
+			<p>Sent on: {{modelDm.pub_date}}</p>
+			<p>{{modelDm.text}}</p>
+		</div>
+		<br>
+		{% endfor %}
+
+	{% endif %}
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded p-3">
+	<form method = "POST" action = "{% url 'users:dm-create' modelSelectedUser.username %}">
+		{% csrf_token %}
+		<div class = "form-group">
+			<label for = "taDmContent">Write your message to <strong>{{modelSelectedUser.username}}</strong>.</label>
+			<textarea class = "form-control" name = "text" id = "taDmContent"></textarea>
+		</div>
+		<button class = "btn btn-outline-success">
+			Submit
+		</button>
+	</form>
+</div>
+
+{% endblock %}

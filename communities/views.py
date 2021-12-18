@@ -244,7 +244,6 @@ def viewCreateComment(request,username,slug):
 					modelNotificationToReply.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
 
 					modelNotificationToReply.save()
-			
 			# Else, this is a normal comment
 			# create but dont save to db
 			modelNewComment = formCommentForm.save(commit = False)
@@ -280,6 +279,9 @@ def viewDeletePost(request,post_id):
 	modelPost = get_object_or_404(Post, id = post_id)
 	modelPostAuthor = modelPost.author
 
+	###########
+	# always check if the user that is calling the function is the user who owns the thing
+	###########
 	if request.user == modelPostAuthor:
 		modelPost.delete()
 	
@@ -302,7 +304,7 @@ def viewDeleteComment(request,comment_id):
 	if request.user == modelCommentAuthor:
 		modelComment.delete()
 
-	return redirect(reverse("communities:post_detail",kwargs = {'username':modelParentPost.author.username,'slug':modelParentPost.slug}))
+	return redirect(reverse("communities:post-detail",kwargs = {'username':modelParentPost.author.username,'slug':modelParentPost.slug}))
 
 @login_required
 def viewAddRemoveFollow(request, username):

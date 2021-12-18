@@ -12,4 +12,16 @@
 		<h5 class = "text-center">Create a DM</h5>
 	</a>
 </div>
+
+<br>
+
+<div class = "container border border-primary rounded p-3">
+	{% for modelUser in listmodelDmedUsers %}
+		<a href = "{% url 'users:dm-detail' modelUser.username %}">
+			{% include 'users/t/tDmThumb.html' %}
+		</a>
+		<br>
+	{% endfor %}
+</div>
+
 {% endblock %}

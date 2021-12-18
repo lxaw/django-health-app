@@ -24,7 +24,7 @@
 				<p>Click on a user to select them.</p>
 			</div>
 			{% for modelUser in listmodelMatchedUsers %}
-				<a href = "{% url 'users:dm-prepare-text' modelUser.username %}">
+				<a href = "{% url 'users:dm-detail' modelUser.username %}">
 					{% include "communities/t/tPublicProfileThumb.html" %}
 				</a>
 				<br>

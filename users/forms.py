@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 #############################
 # Related models
 #############################
-from .models import CustomUser
+from .models import CustomUser,DirectMessage
 from food.models import Food
 
 #############################
@@ -72,4 +72,17 @@ class FoodForm(forms.ModelForm):
 			'kcals':forms.TextInput(attrs={'cols':5,'rows':20,'placeholder':"Input a value."},)
 		}
 
+		exclude = ()
+
+#############################
+# Forms for DMs
+#############################
+class DirectMessageForm(forms.ModelForm):
+	# form to create a dm
+	class Meta:
+		model = DirectMessage
+
+		fields = [
+			'text',
+		]
 		exclude = ()

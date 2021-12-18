@@ -23,6 +23,8 @@ urlpatterns = [
 	path('dm/index',users_views.viewIndexDMs,name="dm-index"),
 	# ex: /users/dm/prepare/
 	path('dm/prepare/',users_views.viewDmPrepareSearch,name="dm-prepare"),
-	# ex: /users/dm/prepare/bob/
-	path('dm/prepare/<str:username>/',users_views.viewDmPrepareText,name="dm-prepare-text"),
+	# ex: /users/dm/bob/detail/
+	path('dm/<str:username>/detail/',users_views.viewDmDetail,name="dm-detail"),
+	# ex: /users/bob/dm/create/
+	path('dm/<str:username>/create/',users_views.viewCreateDm,name="dm-create"),
 ]

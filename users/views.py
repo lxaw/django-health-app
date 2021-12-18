@@ -1,10 +1,10 @@
 #####################################
 # HTML routing imports
 #####################################
-from django.shortcuts import render, redirect,get_object_or_404,HttpResponseRedirect
+from django.shortcuts import render, reverse, redirect,get_object_or_404,HttpResponseRedirect
 
 # forms
-from .forms import UserRegisterForm, FoodForm
+from .forms import UserRegisterForm, FoodForm, DirectMessageForm
 
 # messages on registration / log in
 from django.contrib import messages
@@ -226,14 +226,28 @@ def viewDeleteFood(request,id):
 
 	return HttpResponseRedirect('/')
 
+################################
+# Views related to DMs
+################################
+
 @login_required
 def viewIndexDMs(request):
-	
-	context = {
+	listmodelDmedUsers = []
+	# all the distinct users you have dm'ed
+	qsSentDmUserIds= request.user.dm_sender_set.all().values_list('recipient_id',flat=True).distinct()
+	qsRecievedDmUserIds = request.user.dm_recipient_set.all().values_list('sender_id',flat=True).distinct()
 
+	qsAllDmedUserIds = qsSentDmUserIds.union(qsRecievedDmUserIds)
+
+	for intId in qsAllDmedUserIds:
+		modelLoopedUser = get_object_or_404(CustomUser,id=intId)
+		listmodelDmedUsers.append(modelLoopedUser)
+
+	context = {
+		"listmodelDmedUsers":listmodelDmedUsers,
 	}
 
-	return render(request,"users/dm_index.html",context=context)
+	return render(request,"users/dm/dm_index.html",context=context)
 
 @login_required
 def viewDmPrepareSearch(request):
@@ -259,25 +273,60 @@ def viewDmPrepareSearch(request):
 			"listmodelMatchedUsers":listmodelMatchedUsers,
 		}
 
-		return render(request,'users/dm_prepare-search.html',context=context)
+		return render(request,'users/dm/dm_prepare-search.html',context=context)
 	else:
 		# no query yet
 
 		context = {
 			"formSearchUserForm":formSearchUserForm,
 		}
-		return render(request,'users/dm_prepare-search.html',context=context)
+		return render(request,'users/dm/dm_prepare-search.html',context=context)
 
 @login_required
-def viewDmPrepareText(request,username):
+def viewDmDetail(request,username):
 	######################
 	# Inputs:
 	# request, username of the user to be dm'd by request.user
 	######################
 	modelSelectedUser = get_object_or_404(CustomUser,username=username)
 
+	# get all the messages sent between you and user
+	qsSentDms = request.user.dm_sender_set.all().filter(recipient_id=modelSelectedUser.id)
+	qsRecievedDms = request.user.dm_recipient_set.all().filter(sender_id=modelSelectedUser.id)
+
+	qsAllDms = qsSentDms.union(qsRecievedDms).order_by('pub_date')
+
 	context = {
 		"modelSelectedUser":modelSelectedUser,
+		"qsAllDms":qsAllDms,
 	}
 
-	return render(request,'users/dm_prepare-text.html',context=context)
+	return render(request,'users/dm/dm_detail.html',context=context)
+
+@login_required
+def viewCreateDm(request,username):
+	######################
+	# Inputs:
+	# request, str username of the dm'ed user
+	######################
+
+	modelOtherUser = get_object_or_404(CustomUser,username=username)
+
+	if request.method == "POST":
+		# form for dm
+		formDmForm = DirectMessageForm(data=request.POST)
+
+		if formDmForm.is_valid():
+			# commit = false so can continue editing fields
+			modelCreatedDm = formDmForm.save(commit=False)
+			# input all other fields besides text
+			modelCreatedDm.sender = request.user
+			modelCreatedDm.recipient = modelOtherUser
+			modelCreatedDm.save()
+			messages.success(request,"Direct message sent.")
+
+		else:
+			messages.error(request,"Please input text.")
+			return redirect(reverse("users:dm-detail",kwargs={"username":username}))
+	
+	return redirect(reverse("users:dm-detail",kwargs={"username":username}))

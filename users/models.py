@@ -150,8 +150,6 @@ class DirectMessage(models.Model):
 	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name = "dm_recipient_set")
 	# when it was sent
 	pub_date = models.DateTimeField(default=timezone.now)
-	# if a dm on a dm
-	parent = models.ForeignKey('self',null=True,blank = True,related_name = "dm_reply_set",on_delete=models.CASCADE)
 
 	text = models.TextField()
 
