@@ -16,7 +16,8 @@
 				View <strong>{{modelHelpRequest.accepted_user.username}}</strong>'s profile.
 			</a>
 			<br>
-			<a href = "">
+			<br>
+			<a href = "{% url 'users:dm-detail' modelHelpRequest.accepted_user %}">
 				Or direct message them.
 			</a>
 		</div>

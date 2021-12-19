@@ -114,7 +114,7 @@ def viewProfile(request):
 	# med
 	floatMedian = 0.0
 	# list of foodmodels
-	listFoods = []
+	listFood = []
 
 	if user.uploaded_meals.all():
 		arrfloatFood = [i.kcals for i in user.uploaded_meals.all()]
@@ -124,7 +124,6 @@ def viewProfile(request):
 		floatMean = np.mean(arrfloatFood)
 		floatMedian = np.median(arrfloatFood)
 		# for serialization
-		listFood = []
 		for modelFood in user.uploaded_meals.all():
 			dictTemplate = {}
 			dictTemplate["date"] = modelFood.date.strftime("%-j")
@@ -288,16 +287,16 @@ def viewDmDetail(request,username):
 	# Inputs:
 	# request, username of the user to be dm'd by request.user
 	######################
-	modelSelectedUser = get_object_or_404(CustomUser,username=username)
+	modelUser = get_object_or_404(CustomUser,username=username)
 
 	# get all the messages sent between you and user
-	qsSentDms = request.user.dm_sender_set.all().filter(recipient_id=modelSelectedUser.id)
-	qsRecievedDms = request.user.dm_recipient_set.all().filter(sender_id=modelSelectedUser.id)
+	qsSentDms = request.user.dm_sender_set.all().filter(recipient_id=modelUser.id)
+	qsRecievedDms = request.user.dm_recipient_set.all().filter(sender_id=modelUser.id)
 
 	qsAllDms = qsSentDms.union(qsRecievedDms).order_by('pub_date')
 
 	context = {
-		"modelSelectedUser":modelSelectedUser,
+		"modelUser":modelUser,
 		"qsAllDms":qsAllDms,
 	}
 

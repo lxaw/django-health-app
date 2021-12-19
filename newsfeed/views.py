@@ -302,8 +302,9 @@ def viewAcceptHelpRequestOffer(request,username,slug,id):
 	modelHelpRequest = get_object_or_404(HelpRequest,author=modelUserRequestee,slug=slug)
 	# mark the help request as fulfilled (ie add offerer to responded_users)
 	modelHelpRequest.accepted_user = modelUserOfferer
-	# keep track of when it was accepted
-	modelHelpRequest.accept_date = timezone.now
+	print('here')
+	# # keep track of when it was accepted
+	modelHelpRequest.accept_date = timezone.now()
 	modelHelpRequest.save()
 
 	context = {

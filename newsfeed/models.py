@@ -41,10 +41,10 @@ class HelpRequest(models.Model):
 	pub_date = models.DateTimeField(default=timezone.now)
 
 	# store date of last accepted user
-	accept_date = models.DateTimeField(null=True)
+	accept_date = models.DateTimeField(null=True,blank=True)
 
 	# associate with the user that is to help 
-	accepted_user = models.ForeignKey(CustomUser,null=True,on_delete=models.CASCADE,related_name = "responded_help_request_set")
+	accepted_user = models.ForeignKey(CustomUser,null=True,blank=True,on_delete=models.CASCADE,related_name = "responded_help_request_set")
 
 	# slug field
 	slug = models.SlugField(null=False)
