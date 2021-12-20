@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 ###########################
 # Necessary models
 ###########################
-from .models import TipOfDay, Notification
+from .models import TipOfDay,NotificationPost,NotificationHelpRequest
 from users.models import CustomUser
 
 ###########################
@@ -54,7 +54,7 @@ def viewIndex(request):
 			listModelTips.append(modelTip)
 	
 	# get all their notifications
-	listModelNotifications = request.user.recipient_notification.all().order_by("-pub_date")
+	qsModelNotificationPost = request.user.recipient_notification_post_set.all().order_by("-pub_date")
 	
 
 	dateToday = date.today()
@@ -64,7 +64,7 @@ def viewIndex(request):
 		'strTitle':'index',
 		'strDate':strDate,
 		'modelTip':listModelTips,
-		'listModelNotifications':listModelNotifications,
+		'qsModelNotificationPost':qsModelNotificationPost,
 	}
 
 	return render(request,'core/index.html',context = context)

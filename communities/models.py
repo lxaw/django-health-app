@@ -35,7 +35,7 @@ class Post(models.Model):
 	# associate with a title
 	title = models.CharField(max_length=200,null=False)
 	# associate with text
-	text_content = models.CharField(max_length = 300)
+	text = models.CharField(max_length = 300)
 
 	# store date of publication
 	pub_date = models.DateTimeField(default=timezone.now)
@@ -84,7 +84,7 @@ class Comment(models.Model):
 	# associate with user
 	author = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
 	
-	body = models.TextField()
+	text = models.TextField()
 
 	pub_date = models.DateTimeField(default=timezone.now)
 

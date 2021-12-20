@@ -10,8 +10,6 @@ from django.utils import timezone
 ############################
 # Necessary Models
 ############################
-# core models
-from core.models import Notification
 
 # newsfeed models
 from newsfeed.models import HelpRequest,HelpRequestOffer
@@ -25,12 +23,6 @@ from users.models import CustomUser
 # Necessary Forms
 ############################
 from newsfeed.forms import HelpRequestForm,HelpRequestOfferForm
-
-############################
-# import notification dictionary so that
-# we can use the reverses easily
-############################
-from core.notification_reverses.reverses import dictNotificationReverses
 
 @login_required
 def viewIndex(request):
@@ -96,7 +88,7 @@ def viewIndexByTag(request, tag):
         "strSelectedTag":tag,
         "listUnfilledHelpRequests":listUnfilledHelpRequests,
     }
-    return render(request,'newsfeed/help_request_detail_by_tag.html',context)
+    return render(request,'newsfeed/help_request/help_request_detail_by_tag.html',context)
 
 @login_required
 def viewDetailHelpRequest(request,username,slug):
@@ -114,14 +106,14 @@ def viewDetailHelpRequest(request,username,slug):
     modelHelpRequest = get_object_or_404(HelpRequest,slug=slug,author=modelHelpRequestAuthor)
 
 	# get all the offers
-    listmodelHelpRequestOffers = modelHelpRequest.help_request_offer_set.all()
+    listmodelHelpRequestOffers = modelHelpRequest.help_request/help_request_offer_set.all()
 
     context = {
         "modelHelpRequest":modelHelpRequest,
         "modelHelpRequestAuthor":modelHelpRequestAuthor,
 		"listmodelHelpRequestOffers":listmodelHelpRequestOffers,
     }
-    return render(request,"newsfeed/help_request_detail.html",context)
+    return render(request,"newsfeed/help_request/help_request_detail.html",context)
 
 @login_required
 def viewRequestHelp(request):
@@ -183,7 +175,7 @@ def viewCreateHelpRequest(request):
 		# get title for post
 		strTitle = request.POST['title']
 		# get the content
-		strTextContent = request.POST['text_content']
+		strTextContent = request.POST['text']
 
 		# get the tags and concat them
 		strConcatedTags = ""
@@ -201,7 +193,7 @@ def viewCreateHelpRequest(request):
 		# edit attributes
 		modelCreatedHelpRequest.author = modelUser
 		modelCreatedHelpRequest.title = strTitle
-		modelCreatedHelpRequest.text_content = strTextContent
+		modelCreatedHelpRequest.text = strTextContent
 		# if tags, put them
 		if strConcatedTags != "":
 			modelCreatedHelpRequest.tags = strConcatedTags
@@ -214,15 +206,16 @@ def viewCreateHelpRequest(request):
 		for modelLoopedUser in CustomUser.objects.all():
 			# dont send yourself a notification
 			if modelLoopedUser != request.user:
-				modelNotificationToLoopedUser = Notification(sender=request.user,recipient=modelLoopedUser,
-					message = "{} created help request \"{}\". See if you can help!".format(request.user.username,strTitle)
-				)
-				# associate the reverse with the notification
-				modelNotificationToLoopedUser.related_reverse = dictNotificationReverses["newsfeed"]["help-request"]["detail"]
-				# modelNotificationToLoopedUser.related_reverse = "newsfeed:help-request-detail"
-				# associatie reverse arguments with notification
-				modelNotificationToLoopedUser.related_reverse_args = "{}${}".format(modelCreatedHelpRequest.author.username,modelCreatedHelpRequest.slug)
-				modelNotificationToLoopedUser.save()
+				# modelNotificationToLoopedUser = Notification(sender=request.user,recipient=modelLoopedUser,
+				# 	message = "{} created help request \"{}\". See if you can help!".format(request.user.username,strTitle)
+				# )
+				# # associate the reverse with the notification
+				# modelNotificationToLoopedUser.related_reverse = dictNotificationReverses["newsfeed"]["help-request"]["detail"]
+				# # modelNotificationToLoopedUser.related_reverse = "newsfeed:help-request-detail"
+				# # associatie reverse arguments with notification
+				# modelNotificationToLoopedUser.related_reverse_args = "{}${}".format(modelCreatedHelpRequest.author.username,modelCreatedHelpRequest.slug)
+				# modelNotificationToLoopedUser.save()
+				print('h')
 
 	return redirect('newsfeed:index')
 
@@ -246,24 +239,24 @@ def viewCreateHelpRequestOffer(request,username,slug):
 		# give an author
 		modelCreatedHelpRequestOffer.author = request.user
 		# give it its text
-		strTextContent = request.POST['text_content']
-		modelCreatedHelpRequestOffer.text_content = strTextContent
+		strTextContent = request.POST['text']
+		modelCreatedHelpRequestOffer.text = strTextContent
 		# give it its help request
 		modelCreatedHelpRequestOffer.help_request = modelHelpRequest
 		# now save
 		modelCreatedHelpRequestOffer.save()
 
 		# create notification to user for help request
-		modelNotification = Notification(sender=request.user,recipient=modelHelpRequest.author,
-			message = "User \"{}\" has offered help for request \"{}\"".format(request.user.username,modelHelpRequest.title)
-		)
-		# give a related reverse
-		modelNotification.related_reverse = dictNotificationReverses["newsfeed"]["help-request-offer"]['detail']
-		# modelNotification.related_reverse = "newsfeed:help-request-offer-detail"
-		# give arguments for the reverse
-		modelNotification.related_reverse_args = "{username}${slug}${id}".format(username=modelAuthor.username,slug=modelHelpRequest.slug,id=modelCreatedHelpRequestOffer.id)
-		# send the notification
-		modelNotification.save()
+		# modelNotification = Notification(sender=request.user,recipient=modelHelpRequest.author,
+		# 	message = "User \"{}\" has offered help for request \"{}\"".format(request.user.username,modelHelpRequest.title)
+		# )
+		# # give a related reverse
+		# modelNotification.related_reverse = dictNotificationReverses["newsfeed"]["help-request-offer"]['detail']
+		# # modelNotification.related_reverse = "newsfeed:help-request-offer-detail"
+		# # give arguments for the reverse
+		# modelNotification.related_reverse_args = "{username}${slug}${id}".format(username=modelAuthor.username,slug=modelHelpRequest.slug,id=modelCreatedHelpRequestOffer.id)
+		# # send the notification
+		# modelNotification.save()
 	
 	return redirect("newsfeed:index")
 
@@ -281,7 +274,7 @@ def viewDetailHelpRequestOffer(request,username,slug,id):
 		"modelHelpRequest":modelHelpRequest,
 	}
 
-	return render(request,"newsfeed/help_request_offer_detail.html",context = context)
+	return render(request,"newsfeed/help_request/help_request_offer_detail.html",context = context)
 
 def viewAcceptHelpRequestOffer(request,username,slug,id):
 	###############################
@@ -312,7 +305,7 @@ def viewAcceptHelpRequestOffer(request,username,slug,id):
 		"modelHelpRequest":modelHelpRequest,
 	}
 
-	return render(request,'newsfeed/help_request_accept.html',context=context)
+	return render(request,'newsfeed/help_request/help_request_accept.html',context=context)
 
 def viewRejectHelpRequestOffer(request,username,slug,id):
 	###############################
@@ -338,7 +331,7 @@ def viewRejectHelpRequestOffer(request,username,slug,id):
 		"modelHelpRequest":modelHelpRequest,
 	}
 	
-	return render(request,'newsfeed/help_request_reject.html',context=context)
+	return render(request,'newsfeed/help_request/help_request_reject.html',context=context)
 
 def viewDetailArchive(request):
 	# shows user's old help requests / current ones
@@ -360,4 +353,4 @@ def viewDetailArchive(request):
 		"listmodelPendingRequests": listmodelPendingRequests,
 		"listmodelAcceptedRequests": listmodelAcceptedRequests,
 	}
-	return render(request,'newsfeed/help_request_archive.html',context = context)
+	return render(request,'newsfeed/help_request/help_request_archive.html',context = context)

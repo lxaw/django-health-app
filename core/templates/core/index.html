@@ -19,11 +19,11 @@
 
 <div class = "container border border-primary rounded p-3">
 	<h3 class = "text-center">Notifications</h3>
-	{% if listModelNotifications|length == 0 %}
+	{% if qsModelNotificationPost|length == 0 %}
 		<p class = "text-center">All caught up!</p>
 	{% else %}
 	<br>
-		{% for modelNotification in listModelNotifications %}
+		{% for modelNotification in qsModelNotificationPost %}
 		<div class = "container border border rounded p-3">
 			Date: <strong>{{modelNotification.pub_date}}</strong>
 
@@ -32,11 +32,13 @@
 				Sender: <strong>{{modelNotification.sender}}</strong>
 			{% endif %}
 			<div class = "border border rounded p-3">
-				{{modelNotification.message}}
+				{{modelNotification.text}}
 			</div>
-			{% if modelNotification.related_reverse_args %}
-				<a href = {{modelNotification.get_absolute_url}}>Click to view.</a>
-			{% endif %}
+			<div>
+				<a href = "{{modelNotification.post.get_absolute_url}}">
+					See post.
+				</a>
+			</div>
 			<br>
 			<button class = "btn btn-outline-success" id = "btn__delete-notification" data-url="{% url 'core:notification_delete' modelNotification.id %}">
 				Got it!

@@ -10,7 +10,7 @@
 			{{modelPost.title}}
 		</strong>
 		<br>
-		{{modelPost.text_content}}
+		{{modelPost.text}}
 		<br>
 	</div>
 
@@ -34,13 +34,13 @@
 				</a>
 				{% endif %}
 				<div>
-					{{modelComment.body|linebreaks}}
+					{{modelComment.text|linebreaks}}
 				</div>
 				<form style = "display:none" id = "form__comment-reply${{modelComment.id}}" class = "form__comment-reply" action = "{% url 'communities:comment-create' modelPost.author.username modelPost.slug %}" method = "POST">
 					{% csrf_token %}
 					{{formCommentForm.non_field_errors}}
-						{{formCommentForm.body.errors}}	
-						{{formCommentForm.body}}
+						{{formCommentForm.text.errors}}	
+						{{formCommentForm.text}}
 					<input type = "hidden" name = "intParentId" value = "{{modelComment.id}}">
 					<br>
 					<input class = "input__reply-to-comment" data-comment-author="{{modelComment.author.username}}" type="submit" value = "Reply">
@@ -70,8 +70,8 @@
 			{% csrf_token %}
 			{{formCommentForm.non_field_errors}}
 			<div>
-				{{formCommentForm.body.errors}}
-				{{formCommentForm.body}}
+				{{formCommentForm.text.errors}}
+				{{formCommentForm.text}}
 			</div>
 			<!-- {{formCommentForm.as_p}} -->
 			<br>

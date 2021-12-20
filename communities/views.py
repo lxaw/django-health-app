@@ -17,8 +17,9 @@ from django.contrib import messages
 # Necessary models
 #####################################
 from users.models import CustomUser
-from core.models import Notification
 from .models import Post,Comment
+# notifications
+from core.models import NotificationPost
 
 #####################################
 # Necessary forms
@@ -29,12 +30,6 @@ from newsfeed.forms import HelpRequestForm
 # Outside imports
 #####################################
 from django.utils import timezone
-
-#####################################
-# import reverse dictionary to use reverses 
-# more easily for notifications
-#####################################
-from core.notification_reverses.reverses import dictNotificationReverses
 
 @login_required
 def viewIndex(request):
@@ -127,22 +122,22 @@ def viewLikeUnlikePost(request,post_id):
 
 		modelPost.user_likes.add(request.user)
 		# notify that they liked post
-		modelNotification = Notification(sender=request.user,recipient=modelPost.author, message="{} has liked your post \"{}\".".format(request.user.username,modelPost.title))
-		################
-		# Note:
-		# To link to post, need to make sure the url of notification
-		# matches how we decide to continue to do urls for posts.
-		# This is important as old notifications could give bad urls.
-		################
-		# building the url
-		modelNotification.related_reverse = dictNotificationReverses["communities"]['post']['detail']
-		modelNotification.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
+		# modelNotification = Notification(sender=request.user,recipient=modelPost.author, message="{} has liked your post \"{}\".".format(request.user.username,modelPost.title))
+		# ################
+		# # Note:
+		# # To link to post, need to make sure the url of notification
+		# # matches how we decide to continue to do urls for posts.
+		# # This is important as old notifications could give bad urls.
+		# ################
+		# # building the url
+		# modelNotification.related_reverse = dictNotificationReverses["communities"]['post']['detail']
+		# modelNotification.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
 
-		# 
-		# dont keep showing notification if press like and unlike 
-		# 
+		# # 
+		# # dont keep showing notification if press like and unlike 
+		# # 
 		
-		modelNotification.save()
+		# modelNotification.save()
 	
 	return redirect('communities:index')
 
@@ -239,11 +234,13 @@ def viewCreateComment(request,username,slug):
 					# put the parent id in the reply
 					modelReplyComment.parent = modelParentObj
 					# since reply, notify the person you reply to
-					modelNotificationToReply = Notification(sender=request.user,recipient=modelParentObj.author, message="{} has replied to your comment on post \"{}\".".format(request.user.username,modelPost.title))
-					modelNotificationToReply.related_reverse = dictNotificationReverses["communities"]["post"]["detail"]
-					modelNotificationToReply.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
-
+					modelNotificationToReply = NotificationPost()
+					modelNotificationToReply.sender = request.user
+					modelNotificationToReply.recipient = modelParentObj.author
+					modelNotificationToReply.text = "{} has replied to your comment on post {}.".format(request.user.username,modelPost.title)
+					modelNotificationToReply.post = modelPost
 					modelNotificationToReply.save()
+
 			# Else, this is a normal comment
 			# create but dont save to db
 			modelNewComment = formCommentForm.save(commit = False)
@@ -254,15 +251,13 @@ def viewCreateComment(request,username,slug):
 
 			# create a notification for the other users
 			# always notify the post owner
-			modelNotificationToParent = Notification(sender=request.user,recipient=modelPost.author,
-				message="{} has commented on your post \"{}\".".format(request.user.username,modelPost.title))
-
-			# link to a reverse
-			modelNotificationToParent.related_reverse = dictNotificationReverses["communities"]["post"]["detail"]
-			# give the arguments to the reverse
-			modelNotificationToParent.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
-			
+			modelNotificationToParent = NotificationPost()
+			modelNotificationToParent.sender = request.user
+			modelNotificationToParent.recipient = modelPost.author
+			modelNotificationToParent.text= "{} has commented on your post {}.".format(request.user.username,modelPost.title)
+			modelNotificationToParent.post = modelPost
 			modelNotificationToParent.save()
+			
 
 	return redirect('communities:index')
 

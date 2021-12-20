@@ -17,13 +17,13 @@ class PostForm(forms.ModelForm):
 		# the editable fields by user
 		fields = [
 			"title",
-			"text_content",
+			"text",
 		]
 		exclude = ()
 
 		# change size of form
 		widgets = {
-			'text_content':forms.Textarea(attrs={'rows':10,'cols':50,
+			'text':forms.Textarea(attrs={'rows':10,'cols':50,
 			'style':'resize:none'}),
 		}
 
@@ -32,9 +32,9 @@ class CommentForm(forms.ModelForm):
 	class Meta:
 		model = Comment
 		fields = [
-			'body',
+			'text',
 		]
 		widgets = {
-			'body':forms.Textarea(attrs={'rows':2,'cols':20,
+			'text':forms.Textarea(attrs={'rows':2,'cols':20,
 			'style':'resize:none'}),
 		}
