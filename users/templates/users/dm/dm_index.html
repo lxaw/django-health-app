@@ -16,7 +16,7 @@
 <br>
 
 <div class = "container border border-primary rounded p-3">
-	{% for modelUser in listmodelDmedUsers %}
+	{% for modelUser in dictUserDmDict.keys %}
 		<a href = "{% url 'users:dm-detail' modelUser.username %}">
 			{% include 'users/t/tDmThumb.html' %}
 		</a>

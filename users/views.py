@@ -233,17 +233,35 @@ def viewDeleteFood(request,id):
 def viewIndexDMs(request):
 	listmodelDmedUsers = []
 	# all the distinct users you have dm'ed
-	qsSentDmUserIds= request.user.dm_sender_set.all().values_list('recipient_id',flat=True).distinct()
-	qsRecievedDmUserIds = request.user.dm_recipient_set.all().values_list('sender_id',flat=True).distinct()
 
-	qsAllDmedUserIds = qsSentDmUserIds.union(qsRecievedDmUserIds)
+	# format:
+	# {"user":lastDm's pubdate}
+	dictUserDmDict = {}
 
-	for intId in qsAllDmedUserIds:
-		modelLoopedUser = get_object_or_404(CustomUser,id=intId)
-		listmodelDmedUsers.append(modelLoopedUser)
+	for modelDm in request.user.dm_sender_set.all().order_by('-pub_date'):
+		if modelDm.recipient not in dictUserDmDict:
+			# add it
+			dictUserDmDict[modelDm.recipient] = modelDm.pub_date
+
+	# now loop thru recipient dms, only append to list if 
+	# user not in dmDict or if user in but the dm pub date is sooner
+	# if dm pub date sooner, just switch out the dm model date
+	modelUserSender = None
+	for modelDm in request.user.dm_recipient_set.all().order_by('-pub_date'):
+		modelUserSender = modelDm.sender
+		if modelUserSender not in dictUserDmDict:
+			dictUserDmDict[modelDm.recipient] = modelDm.pub_date
+		else:
+			# if the date of the last dm is less than what was recorded, update
+			if dictUserDmDict[modelUserSender] < modelDm.pub_date:
+				dictUserDmDict[modelUserSender] = modelDm.pub_date
+	
+	# now sort the dictionary by value
+	dictUserDmDict = dict(sorted(dictUserDmDict.items(),key=lambda item: item[1],reverse=True))
+	print(dictUserDmDict)
 
 	context = {
-		"listmodelDmedUsers":listmodelDmedUsers,
+		"dictUserDmDict":dictUserDmDict,
 	}
 
 	return render(request,"users/dm/dm_index.html",context=context)
