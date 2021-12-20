@@ -1,0 +1,67 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+{% if modelHelpRequest.boolWasRespondedTo %}
+
+<div class = "container border border-primary rounded p-3">
+	<h4>This request has been filled by user <strong>{{modelHelpRequestOffer.author.username}} on {{modelHelpRequest.accept_date}}.</strong></h4>
+</div>
+
+{% else %}
+<div class = "container border border-primary rounded p-3">
+	<h3>Help Offer for "{{modelHelpRequest.title}}"</h3>
+	<h5>Author: <a href = "{{modelHelpRequestOffer.author.get_public_profile_url}}">{{modelHelpRequestOffer.author}}</a></h5>
+	<div class = "container border rounded p-3">
+		{{modelHelpRequestOffer.text_content}}
+	</div>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded p-3">
+	<h3>{{modelHelpRequestOffer.author.username}}'s community history:</h3>
+	<div class = "container border rounded">
+		put stuff on how their stats like percentage accepted / percentage helped
+	</div>	
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded p-3">
+	<h4>Accept offer?</h4>
+	<div class = "container row">
+		<a href = "{% url 'newsfeed:help-request-offer-accept' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
+			<button id = "btn__accept" class = "btn btn-outline-success mr-3">Accept</button>
+		</a>
+		<a href = "{% url 'newsfeed:help-request-offer-accept' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
+			<button id = "btn__reject" class = "btn btn-outline-danger">Reject</button>
+		</a>
+	</div>
+</div>
+{% endif %}
+
+{% endblock content %}
+
+{% block javascript %}
+<script>
+
+function accept_validate(strUrl){
+
+}
+function reject_validate(strUrl){
+
+}
+
+let btnAcceptBtn = document.getElementById("btn__accept");
+let btnRejectBtn = document.getElementById('btn__reject');
+
+btnAcceptBtn.addEventListener("click",()=>{
+	accept_validate(btnAcceptBtn.getAttribute("data-url"));
+})
+btnRejectBtn.addEventListener("click",()=>{
+	reject_validate(btnRejectBtn.getAttribute('data-url'));
+})
+
+</script>
+{% endblock javascript %}

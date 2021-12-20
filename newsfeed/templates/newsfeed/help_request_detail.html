@@ -3,31 +3,65 @@
 {% block content %}
 
 <div class = "container border border-primary rounded p-3">
-	{% include "newsfeed/tHelpRequest.html" %}
+	{% include "newsfeed/t/tHelpRequest.html" %}
 	<br>
 </div>
+<br>
+
+	{% if modelHelpRequest.boolWasRespondedTo %}
+		<div class = "container border border-primary rounded p-3">
+			<p>To be helped by user <strong>{{modelHelpRequest.accepted_user.username}}.</strong></p>
+			<a href = "{{modelHelpRequest.accepted_user.get_public_profile_url}}">
+				View <strong>{{modelHelpRequest.accepted_user.username}}</strong>'s profile.
+			</a>
+			<br>
+			<br>
+			<a href = "{% url 'users:dm-detail' modelHelpRequest.accepted_user %}">
+				Or direct message them.
+			</a>
+		</div>
+	{% else %}
+		{% if request.user != modelHelpRequest.author %}
+			<div class = "container border border-primary rounded p-3">
+				<h4>Think you can help out?</h4>
+				<p class = "text-muted">Send a direct message to begin the conversation.</p>
+				<div class = "container border border-primary rounded p-3">
+					<form method = "POST" action = "{% url 'newsfeed:help-request-offer-create' modelHelpRequest.author.username modelHelpRequest.slug %}">
+						{% csrf_token %}
+						<label class = "text-muted" for="text_content">Write a brief introduction. Let them know why you can help.</label>
+						<textarea name='text_content' class = "form-control" rows = 4></textarea>
+						<br>
+						<div class = "container">
+							<div class = "row">
+								<button type= "submit" class = "btn btn-primary">Submit</button>
+							</div>
+						</div>
+					</form>
+					<br>
+				</div>
+				<br>
+			</div>
+		{% else %}
+		<div class = "container border border-primary rounded p-3">
+			<h4>Your Offers</h4>
+			{% if listmodelHelpRequestOffers|length == 0 %}
+			<p>No offers yet.</p>
+			{% else %}
+				{% for modelHelpRequestOffer in listmodelHelpRequestOffers %}
+					<div class = "container border border-primary rounded p-3">
+						<a href = "{{modelHelpRequestOffer.get_absolute_url}}">
+							<p>Offer by {{modelHelpRequest.author}} on {{modelHelpRequest.pub_date}}</p>
+						</a>
+					</div>
+				{% endfor %}
+			{% endif %}
+		</div>
+	{% endif %}
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
-	<h4>Think you can help out?</h4>
-	<p class = "text-muted">Send a direct message to begin the conversation.</p>
-	<div class = "container border border-primary rounded p-3">
-		<form method = "POST" action = "">
-			{% csrf_token %}
-			<label class = "text-muted" for="text_content">Write a brief introduction. Let them know why you can help.</label>
-			<textarea name='text_content' class = "form-control" rows = 4></textarea>
-		</form>
-		<br>
-		<div class = "container">
-			<div class = "row">
-				<button type= "submit" class = "btn btn-primary">Submit</button>
-			</div>
-		</div>
-		<br>
-	</div>
-	<br>
-</div>
+
+{% endif %}
 
 
 {% endblock %}

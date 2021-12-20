@@ -1,24 +1,26 @@
 {% extends "core/base.html" %}
 {% block content %}
 
-<div class = "container border border-primary rounded p-3 div__home-tip-of-day">
-	Tip of The Day:
+<div class = "container border border-primary rounded p-3">
+	<h4 class = "text-center">Tip of the day for {{strDate}}:</h4>
 	<br>
 	{{modelTip}}
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded pt-3">
-	<p>Its a great {{strDayName}}!</p>
+<div class = "container border border-primary rounded p-3">
+	<a href = "{% url 'users:dm-index' %}">
+		<h3 class = "text-center">Your DMs</h3>
+	</a>
 </div>
 
 <br>
 
 <div class = "container border border-primary rounded p-3">
-	<h5>Notifications</h5>
+	<h3 class = "text-center">Notifications</h3>
 	{% if listModelNotifications|length == 0 %}
-		<p>All caught up!</p>
+		<p class = "text-center">All caught up!</p>
 	{% else %}
 	<br>
 		{% for modelNotification in listModelNotifications %}

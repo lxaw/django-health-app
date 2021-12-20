@@ -59,12 +59,10 @@ def viewIndex(request):
 
 	dateToday = date.today()
 	strDate = dateToday.strftime("%B %d, %Y")
-	strDayName = dateToday.strftime("%A")
 
 	context = {
 		'strTitle':'index',
 		'strDate':strDate,
-		'strDayName':strDayName,
 		'modelTip':listModelTips,
 		'listModelNotifications':listModelNotifications,
 	}

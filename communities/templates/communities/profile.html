@@ -17,7 +17,7 @@
 				{{modelViewedUser.username}}
 			</h2>
 			
-			<p data-url = "{% url 'communities:add_remove_follow' modelViewedUser.username %}" id = "p__follow-unfollow-user">
+			<p data-url = "{% url 'communities:follow-add-remove' modelViewedUser.username %}" id = "p__follow-unfollow-user">
 			{% if modelViewedUser != user and modelViewedUser in user.follows.all %}
 			<span class = "text-danger">
 				Unfollow {{modelViewedUser.username}}?

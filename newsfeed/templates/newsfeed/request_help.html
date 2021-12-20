@@ -2,27 +2,28 @@
 
 {% block content %}
 
-<div class = "container border border-primary rounded">
-	<h1>What would you like help with?</h1>
+<div class = "container border border-primary rounded p-3">
+	<h1 class = "text-center">What would you like help with?</h1>
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded">
-	<h4>Give some information on your problem.</h4>
-	<form method = "POST" action = "{% url 'newsfeed:create_help_request' %}">
+<div class = "container border border-primary rounded p-3">
+	<h4 class = "text-center">Give some information on your problem.</h4>
+	<form method = "POST" action = "{% url 'newsfeed:help-request-create' %}">
 		{% csrf_token %}
-		<h3>Title: </h3>
 		<div class = "form-group">
 			<label for = "title">Title your request.</label>
-			<textarea name = "title" id= "textareaProblemEntry" class = "form-control" rows = 1></textarea>
+			<textarea name = "title" id= "textareaProblemTitle" class = "form-control" rows = 1></textarea>
+			<small id = "textareaProblemTitleHelp" class= "form-text text-muted">Write a meaningful title that captures the core of the problem.</small>
 			<label for = "text_content">Write about your issue.</label>
 			<textarea name = "text_content" id= "textareaProblemEntry" class = "form-control" rows = 3></textarea>
+			<small id = "textareaProblemEntryHelp" class= "form-text text-muted">Summarize your problem so others can help.</small>
 		</div>
 
 		<br>
 		<label>Tags:</label>			
-		<div class = "container border border-primary rounded">
+		<div class = "container border rounded">
 			<br>
 			<div class = "row">
 				<div class = "col-4 text-center">
@@ -40,6 +41,7 @@
 			</div>
 			<br>
 		</div>
+			<small id = "tagsHelp" class= "form-text text-muted">Choose tags related to your problem.</small>
 		<br>
 		<div class = "container">
 			<div class = "row">

@@ -30,6 +30,11 @@ from newsfeed.forms import HelpRequestForm
 #####################################
 from django.utils import timezone
 
+#####################################
+# import reverse dictionary to use reverses 
+# more easily for notifications
+#####################################
+from core.notification_reverses.reverses import dictNotificationReverses
 
 @login_required
 def viewIndex(request):
@@ -122,7 +127,7 @@ def viewLikeUnlikePost(request,post_id):
 
 		modelPost.user_likes.add(request.user)
 		# notify that they liked post
-		modelNotificationToReply = Notification(sender=request.user,recipient=modelPost.author, message="{} has liked your post \"{}\".".format(request.user.username,modelPost.title))
+		modelNotification = Notification(sender=request.user,recipient=modelPost.author, message="{} has liked your post \"{}\".".format(request.user.username,modelPost.title))
 		################
 		# Note:
 		# To link to post, need to make sure the url of notification
@@ -130,18 +135,14 @@ def viewLikeUnlikePost(request,post_id):
 		# This is important as old notifications could give bad urls.
 		################
 		# building the url
-		related_reverse = "communities:post_detail"
-		related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
-		# link the related reverse name
-		modelNotificationToReply.related_reverse = related_reverse
-		# link the related reverse args
-		modelNotificationToReply.related_reverse_args = related_reverse_args
+		modelNotification.related_reverse = dictNotificationReverses["communities"]['post']['detail']
+		modelNotification.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
 
 		# 
 		# dont keep showing notification if press like and unlike 
 		# 
 		
-		modelNotificationToReply.save()
+		modelNotification.save()
 	
 	return redirect('communities:index')
 
@@ -166,7 +167,7 @@ def viewPostDetail(request, slug,username):
 
 	context = {
 		"modelPost":modelPost,
-		"listmodelComments":listmodelComments,
+		"listPostComments":listmodelComments,
 		"formCommentForm":formCommentForm,
 	}
 	return render(request, 'communities/post_detail.html',context)
@@ -239,13 +240,10 @@ def viewCreateComment(request,username,slug):
 					modelReplyComment.parent = modelParentObj
 					# since reply, notify the person you reply to
 					modelNotificationToReply = Notification(sender=request.user,recipient=modelParentObj.author, message="{} has replied to your comment on post \"{}\".".format(request.user.username,modelPost.title))
-					# give it a related model id
-					modelNotificationToReply.related_model_id = modelPost.id
-					# give it a related model name
-					modelNotificationToReply.related_model_name = "Post"
+					modelNotificationToReply.related_reverse = dictNotificationReverses["communities"]["post"]["detail"]
+					modelNotificationToReply.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
 
 					modelNotificationToReply.save()
-			
 			# Else, this is a normal comment
 			# create but dont save to db
 			modelNewComment = formCommentForm.save(commit = False)
@@ -260,13 +258,12 @@ def viewCreateComment(request,username,slug):
 				message="{} has commented on your post \"{}\".".format(request.user.username,modelPost.title))
 
 			# link to a reverse
-			modelNotificationToParent.related_reverse = "communities:post_detail"
+			modelNotificationToParent.related_reverse = dictNotificationReverses["communities"]["post"]["detail"]
 			# give the arguments to the reverse
 			modelNotificationToParent.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
 			
 			modelNotificationToParent.save()
 
-	#return redirect(reverse("communities:post_detail",kwargs = {'username':modelPost.author.username,'slug':modelPost.slug}))
 	return redirect('communities:index')
 
 @login_required
@@ -282,6 +279,9 @@ def viewDeletePost(request,post_id):
 	modelPost = get_object_or_404(Post, id = post_id)
 	modelPostAuthor = modelPost.author
 
+	###########
+	# always check if the user that is calling the function is the user who owns the thing
+	###########
 	if request.user == modelPostAuthor:
 		modelPost.delete()
 	
@@ -304,7 +304,7 @@ def viewDeleteComment(request,comment_id):
 	if request.user == modelCommentAuthor:
 		modelComment.delete()
 
-	return redirect(reverse("communities:post_detail",kwargs = {'username':modelParentPost.author.username,'slug':modelParentPost.slug}))
+	return redirect(reverse("communities:post-detail",kwargs = {'username':modelParentPost.author.username,'slug':modelParentPost.slug}))
 
 @login_required
 def viewAddRemoveFollow(request, username):

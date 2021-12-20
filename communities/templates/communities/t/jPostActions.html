@@ -1,0 +1,161 @@
+{% block javascript %}
+
+<script>
+	/*
+	************************
+	* Functions
+	************************
+	*/
+	function like_post(strUrl,pClicker){
+
+		if(pClicker.innerText == "Like Post"){
+			// unlike
+			pClicker.classList.remove("text-success");
+			pClicker.classList.add("text-danger")
+			pClicker.innerText = "Unlike Post";
+		}
+		else{
+			// like
+			pClicker.classList.remove("text-danger");
+			pClicker.classList.add("text-success")
+			pClicker.innerText = "Like Post";
+		}
+
+		$.ajax({
+			url:strUrl,
+		})
+	}
+
+	function show_hide_comments(divCommentDiv,pClicker){
+		if(divCommentDiv.style.display == "none"){
+			divCommentDiv.style.display = "block";
+			pClicker.innerText = "Hide comments";
+		}else{
+			divCommentDiv.style.display = "none";
+			pClicker.innerText = "Show comments";
+		}
+	}
+	function show_hide_create_comment(divCommentDiv,pClicker){
+		if(divCommentDiv.style.display == "none"){
+			divCommentDiv.style.display = "block";
+			pClicker.innerText = "Hide create comment";
+		}else{
+			divCommentDiv.style.display = "none";
+			pClicker.innerText = "Create a comment";
+		}
+	}
+
+	function delete_post(strUrl){
+		/*
+		Deletes a post.
+		*/
+		if(!confirm("Are you sure?")){
+			return;
+		}
+		let strPostId = strUrl.split("\/").pop();
+		let divPost = document.getElementById('div__post$' + strPostId);
+		divPost.style.display = "none"
+
+		$.ajax({
+			url:strUrl,
+		})
+	}
+
+	
+	function show_hide_create_post_field(divShowHide,pClicker){
+		/*
+		Show and hide the create post
+		*/
+		if(divShowHide.style.display == "none"){
+			divShowHide.style.display = "block";
+			pClicker.innerText = "Cancel";
+		}
+		else{
+			divShowHide.style.display = "none";
+			pClicker.innerText = "Create Post";
+		}
+	}
+	function delete_comment(strUrl){
+		/*
+		Deletes a comment
+		*/
+		let strCommentId = strUrl.split("\/").pop();
+		let strDiv = "div__communities-post-comment$" + strCommentId;
+		let divComment = document.getElementById(strDiv);
+
+		$.ajax({
+			url:strUrl,
+			success:function(){
+				location.reload();
+			}
+		})
+	}
+	function show_hide_reply_field(btn){
+		/*
+		Shows and hide reply field
+		*/
+		let strId = btn.getAttribute('data-id');
+		let formCommentForm = document.getElementById('form__comment-reply$' + strId);
+		if(formCommentForm.style.display == "none"){
+			formCommentForm.style.display = "block";
+			btn.innerText = "Close reply";
+		}
+		else{
+			formCommentForm.style.display = "none";
+			btn.innerText = "Reply";
+		}
+	}
+	// associatione btn with reply to comment
+	let arrbtnReplyComment = document.getElementsByClassName('btn__reply-to-comment');
+	for(let btn of arrbtnReplyComment){
+		btn.addEventListener('click',()=>{
+			show_hide_reply_field(btn);
+		})
+	}
+
+	// association buttons with delete comments
+	let arrbtnDeleteComment = document.getElementsByClassName("btn__delete-comment");
+	for(let btn of arrbtnDeleteComment){
+		// get the id
+		let strUrl = btn.getAttribute('data-url');
+		btn.addEventListener("click",()=>{
+			delete_comment(strUrl);
+		})
+	}
+	// associating delete buttons with function
+	let arrbtnsDelete = document.getElementsByClassName("btn__delete-post");
+	for(let btn of arrbtnsDelete){
+		let strUrl = btn.getAttribute('data-url');
+		btn.addEventListener('click',()=>{
+			delete_post(strUrl);
+		})
+	}
+	// associate p with show hide comments
+	let arrPShowHideComments = document.getElementsByClassName("p__show-hide-comments");
+	for(let p of arrPShowHideComments){
+		p.addEventListener("click",()=>{
+			let strModelPostId = p.getAttribute("data-id");
+			let divCommentDiv = document.getElementById("div__hide-show-comments$" + strModelPostId);
+			show_hide_comments(divCommentDiv,p);
+		})
+	}
+	// associate p with delete comments
+	let arrPShowHideCreateComments = document.getElementsByClassName("p__show-hide-create-comment");
+	for(let p of arrPShowHideCreateComments){
+		let strModelPostId = p.getAttribute("data-id");
+		let divCommentCreateDiv = document.getElementById("div__create-comment$" + strModelPostId);
+		p.addEventListener('click',()=>{
+			show_hide_create_comment(divCommentCreateDiv,p);
+		})
+	}
+	// associate p with like post
+	let arrPLikePost = document.getElementsByClassName("p__like-post");
+	for(let p of arrPLikePost){
+		p.addEventListener("click",()=>{
+			// pass the url and the clicker itself
+			like_post(p.getAttribute("data-url"),p);
+		})
+	}
+
+</script>
+{% endblock javascript %}
