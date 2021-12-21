@@ -16,11 +16,13 @@ urlpatterns = [
 	# URLS for Posts
 	##################
 	# CREATING A POST
-	path('create_post',communities_views.viewCreatePost,name="post-create"),
+	path('posts/create_post',communities_views.viewPostCreate,name="post-create"),
 	# DELETING A POST
-	path('posts/delete_post/<int:post_id>',communities_views.viewDeletePost,name="post-delete"),
+	path('posts/delete_post/<int:post_id>',communities_views.viewPostDelete,name="post-delete"),
 	# VIEWING A POST
 	path('posts/view/<str:username>/<slug:slug>',communities_views.viewPostDetail,name="post-detail"),
+	# prepare a post
+	path('posts/prepare/',communities_views.viewPostPrepare,name="post-prepare"),
 
 	##################
 	# URLS for Posts Actions (Like)

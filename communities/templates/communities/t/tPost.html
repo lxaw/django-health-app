@@ -1,11 +1,19 @@
 <div class = "container border rounded p-3" id = "div__post${{modelPost.id}}">
 
-	<div class = "container border rounded p-3">
-		<img style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img border border-dark" src = "{{modelPost.author.profile_picture.url}}">
-		<a href = "{% url 'communities:profile' modelPost.author.username %}">
-			{{modelPost.author}}
-		</a> on {{modelPost.pub_date}}
-		<br>
+	<div>
+		<div class = "d-flex flex-row">
+			<img style="height:10%;width:10%"  class = "rounded-circle" src = "{{modelPost.author.profile_picture.url}}">
+			<div class = "ml-3">
+				<p class = "mb-0">
+					<a href = "{% url 'communities:profile' modelPost.author.username %}">
+						{{modelPost.author}}
+					</a>
+				</p>
+				<p class = "mt-0 text-muted">
+					{{modelPost.pub_date}}
+				</p>
+			</div>
+		</div>
 		<strong>
 			{{modelPost.title}}
 		</strong>
@@ -13,6 +21,7 @@
 		{{modelPost.text}}
 		<br>
 	</div>
+	<hr>
 
 	{% if modelPost.comments.count != 0 %}
 		<p id = "p__view-comments-post${{modelPost.id}}" class = "p__show-hide-comments text-muted" data-id = "{{modelPost.id}}">
@@ -20,51 +29,32 @@
 		</p>
 		<div style= "display:none" id = "div__hide-show-comments${{modelPost.id}}">
 			{% for modelComment in listPostComments %}
-			<div class = "div__comunities-post-comment border rounded container">
-				<br>
-				<img style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img border border-dark" src = "{{modelComment.author.profile_picture.url}}">
-				<a href ="{% url 'communities:profile' modelComment.author.username %}">
-					{{modelComment.author}}
-				</a>
-				on {{modelComment.pub_date}}
-				<br>
-				{% if modelComment.boolIsReply %}
-				<a href = "{% url 'communities:profile' modelComment.parent.author.username %}">
-					@{{modelComment.parent.author}}
-				</a>
-				{% endif %}
-				<div>
-					{{modelComment.text|linebreaks}}
-				</div>
-				<form style = "display:none" id = "form__comment-reply${{modelComment.id}}" class = "form__comment-reply" action = "{% url 'communities:comment-create' modelPost.author.username modelPost.slug %}" method = "POST">
-					{% csrf_token %}
-					{{formCommentForm.non_field_errors}}
-						{{formCommentForm.text.errors}}	
-						{{formCommentForm.text}}
-					<input type = "hidden" name = "intParentId" value = "{{modelComment.id}}">
-					<br>
-					<input class = "input__reply-to-comment" data-comment-author="{{modelComment.author.username}}" type="submit" value = "Reply">
-				</form>
-				<button data-id = "{{modelComment.id}}" class = "btn__reply-to-comment">
-					Reply
-				</button>
-				{% if modelComment.author == user %}
-					<button id = "btn__delete-comment${{modelComment.id}}" class = "btn__delete-comment" data-url = "{% url 'communities:comment-delete' modelComment.id %}">
-						Delete?
-					</button>
-					<br>
-				{% endif %}
-				<br>
-			</div>
-
-			<br>
-
+				{% include 'communities/t/tComment.html' %}
 			{% endfor %}
 		</div>
 	{% endif %}
-	<p class = "text-muted p__show-hide-create-comment" data-id = "{{modelPost.id}}">
-		Create a comment
-	</p>
+	<div class = "d-flex justify-content-between">
+		<p class = "text-muted p__show-hide-create-comment" data-id = "{{modelPost.id}}">
+			Create a comment
+		</p>
+		<div>
+			{% if user != modelPost.author %}
+				{% if user in modelPost.user_likes.all %}
+					<p class = "p__like-post text-danger" data-url = "{% url 'communities:post-like-unlike' modelPost.id %}">
+						Unlike Post
+					</p>
+				{% else %}
+					<p class = "p__like-post text-success" data-url = "{% url 'communities:post-like-unlike' modelPost.id %}">
+						Like Post
+					</p>
+				{% endif %}
+			{% else %}
+				<p style="color:rgb(185, 43, 43);" class = "btn__delete-post" data-url = "{% url 'communities:post-delete' modelPost.id %}">
+					Delete post?
+				</p>
+			{% endif %}
+		</div>
+	</div>
 	<div style = "display:none" id = "div__create-comment${{modelPost.id}}">
 		<form class = "form__create-comment" method = "POST" action = "{% url 'communities:comment-create' modelPost.author.username modelPost.slug %}" >
 			{% csrf_token %}
@@ -73,24 +63,8 @@
 				{{formCommentForm.text.errors}}
 				{{formCommentForm.text}}
 			</div>
-			<!-- {{formCommentForm.as_p}} -->
 			<br>
 			<button class = "btn btn-primary btn-sm" type = "submit">Post Comment</button>
 		</form>
 	</div>
-	{% if user != modelPost.author %}
-		{% if user in modelPost.user_likes.all %}
-			<p class = "p__like-post text-danger" data-url = "{% url 'communities:post-like-unlike' modelPost.id %}">
-				Unlike Post
-			</p>
-		{% else %}
-			<p class = "p__like-post text-success" data-url = "{% url 'communities:post-like-unlike' modelPost.id %}">
-				Like Post
-			</p>
-		{% endif %}
-	{% else %}
-		<p style="color:rgb(185, 43, 43);" class = "btn__delete-post" data-url = "{% url 'communities:post-delete' modelPost.id %}">
-			Delete post?
-		</p>
-	{% endif %}
 </div>

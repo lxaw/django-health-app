@@ -3,29 +3,6 @@
 {% block content %}
 
 <div class = "container border border-primary rounded p-3">
-	<h1>Create a post.</h1>
-	<form method = "POST" action = "{% url 'communities:post-create' %}">
-		{% csrf_token %}
-		<h3>Title: </h3>
-		<div class = "form-group">
-			<textarea name = "title" class = "form-control" rows = 1></textarea>
-		</div>
-		<h3>Content: </h3>
-		<div class = "form-group">
-			<textarea name = "text" class = "form-control" rows = 4></textarea>
-		</div>
-		<br>
-		<div class = "container">
-			<div class = "row">
-				<button type = "submit" class = "btn btn-primary">Submit</button>
-			</div>
-		</div>
-	</form>
-</div>
-
-<br>
-
-<div class = "container border border-primary rounded p-3">
 	<h1 class = "text-center">
 		<a href = "{% url 'newsfeed:help-request-prepare' %}">
 			Request help.
@@ -36,7 +13,17 @@
 <br>
 
 <div class = "container border border-primary rounded p-3">
-	<h4 class = "pl-4">Recent posts:</h4>
+	<h4 class ="text-center">
+		<a href = "{% url 'communities:post-prepare' %}">
+			Create a post.
+		</a>
+	</h4>
+</div>
+
+<br>
+
+<div class = "container border border-primary rounded p-3">
+	<h4 class = "text-center">Recent posts:</h4>
 	<div class = "container">
 			{% for modelPost,listPostComments in dictModelPosts.items %}
 

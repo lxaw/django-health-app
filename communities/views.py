@@ -63,7 +63,15 @@ def viewIndex(request):
 	return render(request,'communities/index.html',context = context)
 
 @login_required
-def viewCreatePost(request):
+def viewPostPrepare(request):
+	context = {
+
+	}
+
+	return render(request,'communities/post_prepare.html',context=context)
+
+@login_required
+def viewPostCreate(request):
 	###################################
 	# Inputs:
 	# request
@@ -263,7 +271,7 @@ def viewCreateComment(request,username,slug):
 	return redirect('communities:index')
 
 @login_required
-def viewDeletePost(request,post_id):
+def viewPostDelete(request,post_id):
 	###################################
 	# Inputs:
 	# request, int
