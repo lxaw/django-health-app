@@ -7,7 +7,7 @@ from django.utils import timezone
 ###########################
 # Necessary other models
 ###########################
-from users.models import CustomUser
+from users.models import CustomUser, DirectMessage
 from communities.models import Post
 from newsfeed.models import HelpRequest
 
@@ -31,6 +31,9 @@ class BaseNotification(models.Model):
 	class Meta:
 		abstract = True
 
+	def voidDelete(self):
+		self.delete()
+
 #############
 # NOTE:
 # Related names are a field in a db, so cannot have the same name even if inherited class
@@ -38,6 +41,7 @@ class BaseNotification(models.Model):
 
 # notifications for post
 class NotificationPost(BaseNotification):
+	# notification linking to post
 	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "sender_notification_post_set")
 	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="recipient_notification_post_set",null=False)
 
@@ -49,8 +53,10 @@ class NotificationPost(BaseNotification):
 	def strGetType(self):
 		# get the type of notification, useful for looping
 		return "Post"
+	
 
 class NotificationHelpRequest(BaseNotification):
+	# notification linking to help request
 	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "sender_notification_help_request_set")
 	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="recipient_notification_help_request_set",null=False)
 
@@ -61,6 +67,32 @@ class NotificationHelpRequest(BaseNotification):
 	
 	def strGetType(self):
 		return "HelpRequest"	
+
+class NotificationDirectMessage(BaseNotification):
+	# notification linking to dm
+	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "sender_notification_direct_message_set")
+	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="recipient_notification_direct_message_set",null=False)
+
+	direct_message = models.ForeignKey(DirectMessage,on_delete = models.CASCADE,related_name = "notification_direct_message_set")
+
+def __str__(self):
+	return "Notification for direct message from {}".format(self.direct_message.author)
+
+def strGetType(self):
+	return "DirectMessage"
+
+class NotificationUser(BaseNotification):
+	# notification linking to user
+	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "sender_notification_user_set")
+	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="recipient_notification_user_set",null=False)
+
+	user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="notification_user_set")
+
+	def __str__(self):
+		return "Notification to linking user {}".format(self.user)
+	
+	def strGetType(self):
+		return "User"
 
 class TipOfDay(models.Model):
 	text = models.CharField(max_length=300,null=False)

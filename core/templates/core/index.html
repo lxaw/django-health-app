@@ -22,55 +22,12 @@
 	{% if qsModelNotificationPost|length == 0 %}
 		<p class = "text-center">All caught up!</p>
 	{% else %}
-	<br>
-		{% for modelNotification in qsModelNotificationPost %}
-		<div class = "container border border rounded p-3">
-			Date: <strong>{{modelNotification.pub_date}}</strong>
-
+		{% for modelNotificationPost in qsModelNotificationPost %}
+			{% include 'core/t/tNotificationPost.html' %}
 			<br>
-			{% if modelNotification.sender %}
-				Sender: <strong>{{modelNotification.sender}}</strong>
-			{% endif %}
-			<div class = "border border rounded p-3">
-				{{modelNotification.text}}
-			</div>
-			<div>
-				<a href = "{{modelNotification.post.get_absolute_url}}">
-					See post.
-				</a>
-			</div>
-			<br>
-			<button class = "btn btn-outline-success" id = "btn__delete-notification" data-url="{% url 'core:notification_delete' modelNotification.id %}">
-				Got it!
-			</button>
-		</div>
-		<br>
 		{% endfor %}
-		<br>
 	{% endif %}
 </div>
 
 <br>
-
-
 {% endblock content %}
-
-{% block javascript %}
-<script>
-	function delete_notification(strUrl){
-		$.ajax({
-			url:strUrl,
-			success:function(){
-				location.reload();
-			}
-		})
-	}
-	let btnDeleteNotification = document.getElementById("btn__delete-notification");
-	let strUrl = btnDeleteNotification.getAttribute("data-url");
-	btnDeleteNotification.addEventListener("click",()=>{
-		delete_notification(strUrl);
-	})
-
-
-</script>
-{% endblock %}

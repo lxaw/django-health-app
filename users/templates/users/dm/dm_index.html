@@ -16,6 +16,7 @@
 <br>
 
 <div class = "container border border-primary rounded p-3">
+	<h4 class = "text-center">Your DM History:</h4>
 	{% for modelUser in dictUserDmDict.keys %}
 		<a href = "{% url 'users:dm-detail' modelUser.username %}">
 			{% include 'users/t/tDmThumb.html' %}

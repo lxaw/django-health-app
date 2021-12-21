@@ -19,7 +19,7 @@ from django.contrib import messages
 from users.models import CustomUser
 from .models import Post,Comment
 # notifications
-from core.models import NotificationPost
+from core.models import NotificationPost, NotificationUser
 
 #####################################
 # Necessary forms
@@ -121,23 +121,24 @@ def viewLikeUnlikePost(request,post_id):
 	else:
 
 		modelPost.user_likes.add(request.user)
-		# notify that they liked post
-		# modelNotification = Notification(sender=request.user,recipient=modelPost.author, message="{} has liked your post \"{}\".".format(request.user.username,modelPost.title))
-		# ################
-		# # Note:
-		# # To link to post, need to make sure the url of notification
-		# # matches how we decide to continue to do urls for posts.
-		# # This is important as old notifications could give bad urls.
-		# ################
-		# # building the url
-		# modelNotification.related_reverse = dictNotificationReverses["communities"]['post']['detail']
-		# modelNotification.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
 
-		# # 
-		# # dont keep showing notification if press like and unlike 
-		# # 
+		################
+		# Create a notification.
+		# populate all fields
+		################
+
+		# notify that they liked post
+		modelNotificationPost = NotificationPost()
+		# give sender
+		modelNotificationPost.sender = request.user
+		# give recipient
+		modelNotificationPost.recipient = modelPost.author
+		# link to post
+		modelNotificationPost.post = modelPost
+		# give text
+		modelNotificationPost.text = "{} has liked your post {}.".format(request.user,modelPost.title)
 		
-		# modelNotification.save()
+		modelNotificationPost.save()
 	
 	return redirect('communities:index')
 

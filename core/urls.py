@@ -9,5 +9,5 @@ urlpatterns = [
 	# ex: /about/
 	path('',core_views.viewAbout,name='about'),
 	# deleting notification
-	path('notifications/delete/<int:notification_id>',core_views.viewDeleteNotification,name="notification_delete"),
+	path('notifications/<str:notification_type>/<int:notification_id>/delete/',core_views.viewNotificationDelete,name="notification-delete"),
 ]

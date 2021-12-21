@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 ###########################
 # Necessary models
 ###########################
-from .models import TipOfDay,NotificationPost,NotificationHelpRequest
+from .models import TipOfDay,NotificationPost,NotificationHelpRequest,NotificationUser
 from users.models import CustomUser
 
 ###########################
@@ -17,6 +17,8 @@ from users.models import CustomUser
 ###########################
 from datetime import date
 import random
+
+from core.base_functions import boolModelOwnershipCheck
 
 # Create your views here.
 
@@ -66,11 +68,11 @@ def viewIndex(request):
 		'modelTip':listModelTips,
 		'qsModelNotificationPost':qsModelNotificationPost,
 	}
+	return render(request,'core/index.html',context=context)
 
-	return render(request,'core/index.html',context = context)
 
 @login_required
-def viewDeleteNotification(request,notification_id):
+def viewNotificationDelete(request,notification_type,notification_id):
 	###################################
 	# Inputs:
 	# request, int
@@ -79,11 +81,35 @@ def viewDeleteNotification(request,notification_id):
 	# Utility:
 	# view called for delete a notification
 	###################################
+
+	# check what type of notification
+	if notification_type == "Post":
+		modelNotification = get_object_or_404(NotificationPost,id = notification_id)
+
+		if boolModelOwnershipCheck(modelNotification,"recipient",request.user):
+			modelNotification.delete()
+			messages.success(request,"Notification deleted.")
+			return redirect('core:index')
+		
+	elif notification_type == "HelpRequest":
+		modelNotification = get_object_or_404(NotificationHelpRequest,id = notification_id)
+		if boolModelOwnershipCheck(modelNotification,"recipient",request.user):
+			modelNotification.delete()
+			messages.success(request,"Notification deleted.")
+			return redirect('core:index')
+	
+	elif notification_type == "User":
+		modelNotification = get_object_or_404(NotificationUser,id = notification_id)
+		if boolModelOwnershipCheck(modelNotification,"recipient",request.user):
+			modelNotification.delete()
+			messages.success(request,"Notification deleted.")
+			return redirect('core:index')
+	
+	else:
+		messages.warning(request,"Notification type {} undefined.".format(notification_type))
+		return redirect('core:index')
+
 	modelNotification = get_object_or_404(Notification, id = notification_id)
 	modelNotificationRecipient = modelNotification.recipient
 
-	if request.user == modelNotificationRecipient:
-		messages.success(request, "Notification successfully deleted.")
-		modelNotification.delete()
 	
-	return redirect('core:index')

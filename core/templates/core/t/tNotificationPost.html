@@ -1,0 +1,38 @@
+<div class = "container border p-3">
+	<div class = "d-flex justify-content-between">
+		{% if modelNotificationPost.sender %}
+		<p>
+			From:
+			<a href = "{{modelNotificationPost.sender.get_public_profile_url}}">
+				{{modelNotificationPost.sender}}
+			</a>
+		</p>
+		{% endif %}
+		<p class = "small text-muted">{{modelNotificationPost.pub_date}}</p>
+	</div>
+	<hr style = "margin-top:-2px;" >
+	<p>
+		{{modelNotificationPost.text}}
+	</p>
+	<div class = "d-flex justify-content-between">
+		<p>
+			<a href = "{{modelNotificationPost.post.get_absolute_url}}">
+				See post.
+			</a>
+		</p>
+		<button class = "btn__notification-delete btn btn-outline-success" data-url = "{% url 'core:notification-delete' modelNotificationPost.strGetType modelNotificationPost.id %}" onclick = "tNotificationPostBtnDelete(this.getAttribute('data-url'))">
+			Got it!
+		</button>
+	</div>
+</div>
+
+<script>
+	function tNotificationPostBtnDelete(strUrl){
+		$.ajax({
+			url: strUrl,
+			success:function(){
+				location.reload();
+			}
+		})
+	}
+</script>
