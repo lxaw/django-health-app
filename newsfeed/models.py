@@ -77,7 +77,10 @@ class HelpRequest(models.Model):
 			)
 	
 	def get_parsed_tags(self):
-		return [i for i in self.tags.split(self.delim)]
+		if self.tags:
+			return [i for i in self.tags.split(self.delim)]
+		else:
+			return []
 
 	# check if created within day amount
 	def boolWithinXDays(self,intDays):

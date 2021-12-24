@@ -18,7 +18,7 @@
 <br>
 
 <div class = "container border border-primary rounded p-3">
-	<h3 class = "text-center">Notifications</h3>
+	<h3 class = "text-center">Activity on your posts.</h3>
 	{% if qsModelNotificationPost|length == 0 %}
 		<p class = "text-center">All caught up!</p>
 	{% else %}
@@ -30,4 +30,16 @@
 </div>
 
 <br>
+
+<div class = "container border border-primary rounded p-3">
+	<h3 class = "text-center">Activity on your help requests.</h3>
+	{% if qsModelNotificationHelpRequest|length == 0 %}
+		<p class = "text-center">All caught up!</p>
+	{% else %}
+		{% for modelNotificationHelpRequest in qsModelNotificationHelpRequest %}
+			{% include 'core/t/tNotificationHelpRequest.html' %}
+			<br>
+		{% endfor %}
+	{% endif %}
+</div>
 {% endblock content %}

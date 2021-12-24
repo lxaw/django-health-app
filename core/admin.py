@@ -18,7 +18,7 @@ class NotificationHelpRequestAdmin(admin.ModelAdmin):
 		("Pub Date",{"fields":['pub_date']}),
 		("Sender",{"fields":['sender']}),
 		("Recipient",{"fields":['recipient']}),
-		("Help Request",{"fields":['Help Request']}),
+		("Help Request",{"fields":['help_request']}),
 	]
 
 class NotificationPostAdmin(admin.ModelAdmin):

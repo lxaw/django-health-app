@@ -84,36 +84,4 @@
 
 {% endblock content %}
 
-
-{% block javascript %}
-
-<script>
-	/*
-	************************
-	* Functions
-	************************
-	*/
-	function delete_help_request(strUrl){
-		if(!confirm("Are you sure?")){
-			return;
-		}
-
-		$.ajax({
-			url:strUrl,
-			success:function(){
-				location.reload();
-			}
-		})
-	}
-	
-	// associate p with delete request
-	let arrPDeleteHelpRequest = document.getElementsByClassName("p__delete-help-request");
-	for(let p of arrPDeleteHelpRequest){
-		p.addEventListener('click',()=>{
-			delete_help_request(p.getAttribute('data-url'));
-		})
-	}
-
-</script>
-
-{% endblock javascript %}
+{% include 'newsfeed/t/jsHelpRequest.html' %}

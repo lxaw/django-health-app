@@ -57,6 +57,7 @@ def viewIndex(request):
 	
 	# get all their notifications
 	qsModelNotificationPost = request.user.recipient_notification_post_set.all().order_by("-pub_date")
+	qsModelNotificationHelpRequest = request.user.recipient_notification_help_request_set.all().order_by('-pub_date')
 	
 
 	dateToday = date.today()
@@ -67,6 +68,7 @@ def viewIndex(request):
 		'strDate':strDate,
 		'modelTip':listModelTips,
 		'qsModelNotificationPost':qsModelNotificationPost,
+		'qsModelNotificationHelpRequest':qsModelNotificationHelpRequest,
 	}
 	return render(request,'core/index.html',context=context)
 

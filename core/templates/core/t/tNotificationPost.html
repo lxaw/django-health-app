@@ -20,9 +20,11 @@
 				See post.
 			</a>
 		</p>
-		<button class = "btn__notification-delete btn btn-outline-success" data-url = "{% url 'core:notification-delete' modelNotificationPost.strGetType modelNotificationPost.id %}" onclick = "tNotificationPostBtnDelete(this.getAttribute('data-url'))">
-			Got it!
-		</button>
+		<form action = "{% url 'core:notification-delete' modelNotificationPost.strGetType modelNotificationPost.id %}">
+			<button class = "btn btn-outline-success">
+				Got it!
+			</button>
+		</form>
 	</div>
 </div>
 

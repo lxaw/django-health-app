@@ -108,7 +108,7 @@ def viewDetailHelpRequest(request,username,slug):
     modelHelpRequest = get_object_or_404(HelpRequest,slug=slug,author=modelHelpRequestAuthor)
 
 	# get all the offers
-    listmodelHelpRequestOffers = modelHelpRequest.help_request/help_request_offer_set.all()
+    listmodelHelpRequestOffers = modelHelpRequest.help_request_offer_set.all()
 
     context = {
         "modelHelpRequest":modelHelpRequest,
@@ -245,17 +245,18 @@ def viewCreateHelpRequestOffer(request,username,slug):
 		# now save
 		modelCreatedHelpRequestOffer.save()
 
-		# create notification to user for help request
-		# modelNotification = Notification(sender=request.user,recipient=modelHelpRequest.author,
-		# 	message = "User \"{}\" has offered help for request \"{}\"".format(request.user.username,modelHelpRequest.title)
-		# )
-		# # give a related reverse
-		# modelNotification.related_reverse = dictNotificationReverses["newsfeed"]["help-request-offer"]['detail']
-		# # modelNotification.related_reverse = "newsfeed:help-request-offer-detail"
-		# # give arguments for the reverse
-		# modelNotification.related_reverse_args = "{username}${slug}${id}".format(username=modelAuthor.username,slug=modelHelpRequest.slug,id=modelCreatedHelpRequestOffer.id)
-		# # send the notification
-		# modelNotification.save()
+		##############
+		# Create notification
+		##############
+		modelNotification = NotificationHelpRequest(sender=request.user,recipient=modelHelpRequest.author,
+			text = "{} has offered to help on your help request \"{}\"".format(request.user.username,modelHelpRequest.title)
+		)
+		modelNotification.help_request = modelHelpRequest
+
+		modelNotification.save()
+
+		# create message
+		messages.success(request,"Successfully created help request offer.")
 	
 	return redirect("newsfeed:index")
 
