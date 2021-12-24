@@ -18,6 +18,8 @@ from newsfeed.models import HelpRequest,HelpRequestOffer
 from communities.models import Post
 # users models
 from users.models import CustomUser
+# notifications
+from core.models import NotificationHelpRequest
 
 ############################
 # Necessary Forms
@@ -181,7 +183,7 @@ def viewCreateHelpRequest(request):
 		strConcatedTags = ""
 		for strPossibleTag in listPossibleTags:
 			if strPossibleTag in request.POST.keys():
-				strConcatedTags += (strPossibleTag) + "-"
+				strConcatedTags += (strPossibleTag) + "$"
 		if(strConcatedTags != ""):
 			# if not empty, remove the last "-"
 			strConcatedTags = strConcatedTags[:-1]
@@ -206,16 +208,13 @@ def viewCreateHelpRequest(request):
 		for modelLoopedUser in CustomUser.objects.all():
 			# dont send yourself a notification
 			if modelLoopedUser != request.user:
-				# modelNotificationToLoopedUser = Notification(sender=request.user,recipient=modelLoopedUser,
-				# 	message = "{} created help request \"{}\". See if you can help!".format(request.user.username,strTitle)
-				# )
-				# # associate the reverse with the notification
-				# modelNotificationToLoopedUser.related_reverse = dictNotificationReverses["newsfeed"]["help-request"]["detail"]
-				# # modelNotificationToLoopedUser.related_reverse = "newsfeed:help-request-detail"
-				# # associatie reverse arguments with notification
-				# modelNotificationToLoopedUser.related_reverse_args = "{}${}".format(modelCreatedHelpRequest.author.username,modelCreatedHelpRequest.slug)
-				# modelNotificationToLoopedUser.save()
-				print('h')
+				modelNotificationToLoopedUser = NotificationHelpRequest(sender=request.user,recipient=modelLoopedUser,
+					text = "{} created help request \"{}\". See if you can help!".format(request.user.username,strTitle)
+				)
+				# associate with a help request
+				modelNotificationToLoopedUser.help_request = modelCreatedHelpRequest
+				# save the notification
+				modelNotificationToLoopedUser.save()
 
 	return redirect('newsfeed:index')
 
