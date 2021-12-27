@@ -2,10 +2,8 @@
 
 {% block content %}
 
-<div class = "container border border-primary rounded p-3">
-	{% include "newsfeed/t/tHelpRequest.html" %}
-	<br>
-</div>
+{% include "newsfeed/t/tHelpRequest.html" %}
+
 <br>
 
 {% if modelHelpRequest.boolWasRespondedTo %}
@@ -22,10 +20,10 @@
 	</div>
 {% else %}
 	{% if request.user != modelHelpRequest.author %}
-		<div class = "container border border-primary rounded p-3">
+		<div class = "container border border rounded p-3">
 			<h4>Think you can help out?</h4>
 			<p class = "text-muted">Send a direct message to begin the conversation.</p>
-			<div class = "container border border-primary rounded p-3">
+			<div>
 				<form method = "POST" action = "{% url 'newsfeed:help-request-offer-create' modelHelpRequest.author.username modelHelpRequest.slug %}">
 					{% csrf_token %}
 					<label class = "text-muted" for="text_content">Write a brief introduction. Let them know why you can help.</label>
@@ -37,9 +35,7 @@
 						</div>
 					</div>
 				</form>
-				<br>
 			</div>
-			<br>
 		</div>
 	{% else %}
 	<div class = "container border border-primary rounded p-3">

@@ -8,43 +8,43 @@
 
 <br>
 
-<div class = "container">
-	<div class = "container row">
-		<div class = "col-sm border rounded p-3 mr-3">
-			<h1 class = "text-center">
-				<a href = "{% url 'newsfeed:help-request-prepare' %}">
-					Request help.
-				</a>
-			</h1>
-		</div>
-		<div class = "col-sm border rounded p-3">
-			<h1 class = "text-center">
-				<a href ="{% url 'newsfeed:help-request-archive-detail' %}">
-					Or view your requests.
-				</a>
-			</h1>
-		</div>
-	</div>
+<div class = "container border rounded p-3">
+	<h1 class = "text-center">
+		<a href = "{% url 'newsfeed:help-request-prepare' %}">
+			Request help.
+		</a>
+	</h1>
+</div>
+
+<br>
+<div class = "container border rounded p-3">
+	<h1 class = "text-center">
+		<a href ="{% url 'newsfeed:help-request-archive-detail' %}">
+			Or view your requests.
+		</a>
+	</h1>
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border border rounded p-3">
 	<h4>
 		Recent Help Requests
 	</h4>
-	{% for modelHelpRequest in listUnfilledHelpRequests %}
+	{% if listUnfilledHelpRequests|length == 0 %}
+		<p class = "text-muted">Looks like theres nothing yet!</p>
+	{% else %}
+		{% for modelHelpRequest in listUnfilledHelpRequests %}
 
 			{% include "newsfeed/t/tHelpRequest.html" %}
-			<br>
-		<br>
 
-	{% endfor %}
+		{% endfor %}
+	{% endif %}
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border border rounded p-3">
 	<h4>
 		See what your followed users are posting.
 	</h4>
@@ -52,7 +52,7 @@
 		<p class = "text-muted">Looks like theres nothing yet!</p>
 	{% else %}
 		{% for modelPost in listLastNFollowedUserPosts %}
-			<div class = "newsfeed__new-post border border-primary" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
+			<div class = "newsfeed__new-post border border" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
 				<a href = "{{modelPost.get_absolute_url}}">
 					User  {{modelPost.author}} uploaded a post at {{modelPost.pub_date}}
 				</a>
@@ -63,7 +63,7 @@
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border border rounded p-3">
 	<h4>
 		Most recent posts today.
 	</h4>
@@ -72,7 +72,7 @@
 	{% endif %}
 	{% for modelPost in listRecentPosts %}
 
-		<div class = "newsfeed__new-post border border-primary" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
+		<div class = "newsfeed__new-post border border" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
 			<a href = "{{modelPost.get_absolute_url}}">
 				User  {{modelPost.author}} uploaded a post at {{modelPost.pub_date}}
 			</a>

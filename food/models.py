@@ -28,9 +28,9 @@ class Food(models.Model):
     # the amount of kilocals
     kcals = models.FloatField()
     # the date at which the meal was uploaded
-    date = models.DateTimeField(default=timezone.now)
+    pub_date = models.DateTimeField(default=timezone.now)
 
-    def boolWithinXDats(self,intDays):
+    def boolWithinXDays(self,intDays):
         # check to see if the upload of the meal is within
         # intDays of today
 

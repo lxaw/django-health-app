@@ -3,16 +3,6 @@
 {% block content %}
 
 <div class = "container border border-primary rounded p-3">
-	<h1 class = "text-center">
-		<a href = "{% url 'newsfeed:help-request-prepare' %}">
-			Request help.
-		</a>
-	</h1>
-</div>
-
-<br>
-
-<div class = "container border border-primary rounded p-3">
 	<h4 class ="text-center">
 		<a href = "{% url 'communities:post-prepare' %}">
 			Create a post.
@@ -22,7 +12,7 @@
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border border rounded p-3">
 	<h4 class = "text-center">Recent posts:</h4>
 	<div class = "container">
 			{% for modelPost,listPostComments in dictModelPosts.items %}

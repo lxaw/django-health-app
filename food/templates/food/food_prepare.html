@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class = "container border rounded p-3">
-	<form method = "POST" action = "{% url 'users:upload_food' %}">
+	<form method = "POST" action = "{% url 'food:food-create' %}">
 		{% csrf_token %}
 		<h2>Enter your meal information.</h2>
 		<div class = "form-group">

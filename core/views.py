@@ -16,6 +16,7 @@ from users.models import CustomUser
 # Necessary imports
 ###########################
 from datetime import date
+from datetime import datetime
 import random
 
 from core.base_functions import boolModelOwnershipCheck
@@ -47,12 +48,12 @@ def viewIndex(request):
 	# view called for index (home) page
 	###################################
 
-	# get a tip
-	listModelTips = []
-	for modelTip in TipOfDay.objects.all():
-		if request.user not in modelTip.responded_users.all():
-			# user has not yet responded to tip
-			listModelTips.append(modelTip)
+	# # get a tip
+	# listModelTips = []
+	# for modelTip in TipOfDay.objects.all():
+	# 	if request.user not in modelTip.responded_users.all():
+	# 		# user has not yet responded to tip
+	# 		listModelTips.append(modelTip)
 	
 	# get all their notifications
 	qsModelNotificationPost = request.user.recipient_notification_post_set.all().order_by("-pub_date")
@@ -61,11 +62,15 @@ def viewIndex(request):
 
 	dateToday = date.today()
 	strDate = dateToday.strftime("%B %d, %Y")
+	# returns 1 for jan first, we want 0 however for indexing
+	intDayNum = int(datetime.now().timetuple().tm_yday) - 1
+	# use the day num to index the tips
+	modelTipOfDay = get_object_or_404(TipOfDay,day_number=intDayNum)
 
 	context = {
 		'strTitle':'index',
 		'strDate':strDate,
-		'modelTip':listModelTips,
+		'modelTipOfDay':modelTipOfDay,
 		'qsModelNotificationPost':qsModelNotificationPost,
 		'qsModelNotificationHelpRequest':qsModelNotificationHelpRequest,
 	}

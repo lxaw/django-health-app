@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     # food
     'food.apps.FoodConfig',
 
-
     # ############################
     # django defaults
     # ############################
