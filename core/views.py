@@ -22,7 +22,6 @@ from core.base_functions import boolModelOwnershipCheck
 
 # Create your views here.
 
-
 def viewAbout(request):
 	###################################
 	# Inputs:

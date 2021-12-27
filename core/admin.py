@@ -8,7 +8,6 @@ class TipOfDayAdmin(admin.ModelAdmin):
 	fieldsets = [
 		("Text Content",{"fields":['text']}),
 		("Tags",{"fields":['tags']}),
-		("Urls",{"fields":['url']}),
 	]
 	search_fields = ['tag','text']
 

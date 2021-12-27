@@ -95,13 +95,22 @@ class NotificationUser(BaseNotification):
 		return "User"
 
 class TipOfDay(models.Model):
+	# number of the day of the year
+	day_number = models.IntegerField()
+	# text in the tip of the day
 	text = models.CharField(max_length=300,null=False)
-
 	# tag is a comma delimited string
-	tags = models.CharField(max_length = 500)
-
+	tags = models.CharField(max_length = 500,null=True,blank=True)
 	# users who have responded to tip of day
 	responded_users = models.ManyToManyField(CustomUser,related_name="responded_users")
 
+	strDelim = "$"
+
 	def __str__(self):
-		return "Tip #{}: {}".format(self.id,self.text)
+		return "Tip #{}: {}".format(self.day_number,self.text)
+	
+	def listGetParsedTags(self):
+		if self.tags:
+			return [i for i in self.tags.split(self.strDelim)]
+		else:
+			return []
