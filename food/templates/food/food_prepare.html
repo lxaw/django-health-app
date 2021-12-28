@@ -5,7 +5,7 @@
 <div class = "container border rounded p-3">
 	<form method = "POST" action = "{% url 'food:food-create' %}">
 		{% csrf_token %}
-		<h2>Enter your meal information.</h2>
+		<h2 class = 'text-center'>Enter your meal information.</h2>
 		<div class = "form-group">
 			<label for = "name">What type of food was it?</label>
 			<textarea placeholder= "i.e: Chicken Sandwich" name = "name" class = "form-control"></textarea>

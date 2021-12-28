@@ -7,15 +7,17 @@
 <br>
 
 {% if modelHelpRequest.boolWasRespondedTo %}
-	<div class = "container border border-primary rounded p-3">
+	<div class = "container border rounded p-3">
 		<p>To be helped by user <strong>{{modelHelpRequest.accepted_user.username}}.</strong></p>
 		<a href = "{{modelHelpRequest.accepted_user.get_public_profile_url}}">
-			View <strong>{{modelHelpRequest.accepted_user.username}}</strong>'s profile.
+			<p>
+				View <strong>{{modelHelpRequest.accepted_user.username}}</strong>'s profile.
+			</p>
 		</a>
-		<br>
-		<br>
 		<a href = "{% url 'users:dm-detail' modelHelpRequest.accepted_user %}">
-			Or direct message them.
+			<p>
+				Or direct message them.
+			</p>
 		</a>
 	</div>
 {% else %}
@@ -38,15 +40,15 @@
 			</div>
 		</div>
 	{% else %}
-	<div class = "container border border-primary rounded p-3">
-		<h4>Your Offers</h4>
+	<div class = "container border  rounded p-3">
+		<h4 class = 'text-center'>Your Offers</h4>
 		{% if listmodelHelpRequestOffers|length == 0 %}
-			<p>No offers yet.</p>
+			<p class = 'text-center'>No offers yet.</p>
 		{% else %}
 			{% for modelHelpRequestOffer in listmodelHelpRequestOffers %}
-				<div class = "container border border-primary rounded p-3">
+				<div class = "container border  rounded p-3">
 					<a href = "{{modelHelpRequestOffer.get_absolute_url}}">
-						<p>Offer by {{modelHelpRequest.author}} on {{modelHelpRequest.pub_date}}</p>
+						<p>Offer by {{modelHelpRequestOffer.author}} on {{modelHelpRequest.pub_date}}</p>
 					</a>
 				</div>
 			{% endfor %}

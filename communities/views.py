@@ -334,3 +334,16 @@ def viewAddRemoveFollow(request, username):
 
 	# this never runs if use ajax
 	return HttpResponseRedirect('/')
+
+@login_required
+def viewLeaderboardIndex(request):
+	if not request.user.is_pod_plus_member:
+		messages.warning(request,"Only POD+ members may access this page.")
+		return redirect('communities:index')
+	
+	# else they are a member
+	context = {
+
+	}
+
+	return render(request,'communities/leaderboard.html',context=context)

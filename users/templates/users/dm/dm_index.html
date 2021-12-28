@@ -2,21 +2,27 @@
 
 {% block content %}
 <div class = "container border border-primary rounded p-3">
-	<h5 class = "text-center">Your Direct-Messages</h5>
+	<h1 class = "text-center">
+		Your Direct-Messages
+	</h1>
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border  rounded p-3">
 	<a href = "{% url 'users:dm-prepare' %}">
-		<h5 class = "text-center">Create a DM</h5>
+		<h5 class = "text-center">
+			Create a DM
+		</h5>
 	</a>
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
-	<h4 class = "text-center">Your DM History:</h4>
+<div class = "container border  rounded p-3">
+	<h4 class = "text-center">
+		Your DM History:
+	</h4>
 	{% for modelUser in dictUserDmDict.keys %}
 		<a href = "{% url 'users:dm-detail' modelUser.username %}">
 			{% include 'users/t/tDmThumb.html' %}

@@ -2,9 +2,17 @@
 
 {% block content %}
 
-<div class = "container border border-primary rounded p-3 text-center">
+<div class = "container border border-primary rounded p-3">
+	<h1 class = 'text-center'>
+		Your Diet Info
+	</h1>
+</div>
+
+<br>
+
+<div class = "container border rounded p-3">
 	<a href = "{% url 'food:food-prepare' %}">
-		<h3>Upload your most recent meal.</h3>
+		<h3 class = "text-center">Upload your most recent meal.</h3>
 	</a>
 </div>
 
@@ -22,7 +30,7 @@
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border  rounded p-3">
 	<h2 class = "text-center">Your Graphs:</h2>
 	<br>
 	<div class = "row justify-content-center">
@@ -36,7 +44,7 @@
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border  rounded p-3">
 	<div class = "container text-center">
 		<h2>Your History:</h2>
 	</div>

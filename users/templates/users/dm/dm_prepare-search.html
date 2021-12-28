@@ -2,19 +2,30 @@
 
 {% block content %}
 
-<div class = "container border border-primary rounded p-3">
-	<h2 class = "text-center">Create a DM.</h2>
+<div class = "container border  rounded p-3">
+	<h1 class = "text-center">
+		Create a DM.
+	</h1>
+	{% if boolSearched %}
+		<p class = 'text-muted text-center'>
+			Choose among the candidates, or search again.
+		</p>
+	{% else %}
+		<p class = 'text-muted text-center'>
+			First find the user you would like to message.
+		</p>
+	{% endif %}
 </div>
 
 <br>
 
 {% if boolSearched %}
-	<div class = "container border border-primary rounded p-3">
+	<div class = "container border  rounded p-3">
 		<h3 class = "text-center">You searched for "{{strSearchStr}}".</h3>
 		<p class = "text-center">There {{listmodelMatchedUsers|pluralize:"is,are"}} {{listmodelMatchedUsers|length}} match{{listmodelMatchedUsers|pluralize:",es"}}.</p>
 	</div>
 	<br>
-	<div class = "container border border-primary rounded p-3">
+	<div class = "container border  rounded p-3">
 		{% if listmodelMatchedUsers|length == 0 %}
 			<p class = "text-center">
 				Please try again.
@@ -35,7 +46,7 @@
 
 	<br>
 
-	<div class = "container border border-primary rounded p-3">
+	<div class = "container border  rounded p-3">
 		<form method = "GET" autocomplete="off">
 			{{formSearchUserForm}}
 			<button class = "btn btn-outline-success" type='submit'>
@@ -44,7 +55,7 @@
 		</form>
 	</div>
 {% else %}
-	<div class = "container border border-primary rounded p-3">
+	<div class = "container border  rounded p-3">
 		<form method = "GET" autocomplete="off">
 			{{formSearchUserForm}}
 			<button class = "btn btn-outline-success" type='submit'>

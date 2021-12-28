@@ -2,13 +2,13 @@
 
 {% block content %}
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border rounded p-3">
 	<h1 class = "text-center">What would you like help with?</h1>
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border rounded p-3">
 	<h4 class = "text-center">Give some information on your problem.</h4>
 	<form method = "POST" action = "{% url 'newsfeed:help-request-create' %}">
 		{% csrf_token %}

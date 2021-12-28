@@ -3,12 +3,28 @@
 {% block content %}
 
 <div class = "container border border-primary rounded p-3">
-	<h4 class ="text-center">
-		<a href = "{% url 'communities:post-prepare' %}">
+	<a href = "{% url 'communities:post-prepare' %}">
+		<h1 class ="text-center">
 			Create a post.
-		</a>
-	</h4>
+		</h1>
+	</a>
 </div>
+
+<br>
+
+{% if user.is_pod_plus_member %}
+<div class = "container border rounded p-3">
+	<div class = "d-flex flex-row justify-content-center">
+		<i class="bi bi-star mr-3 mt-1"></i>
+		<a href = "{% url 'communities:leaderboard-index' %}">
+			<h4 class = "text-center">
+				Community Leaderboard (POD+ Exclusive)
+			</h4>
+		</a>
+		<i class="bi bi-star ml-3 mt-1"></i>
+	</div>
+</div>
+{% endif %}
 
 <br>
 
