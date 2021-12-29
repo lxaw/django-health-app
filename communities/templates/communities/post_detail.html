@@ -2,14 +2,18 @@
 
 {% block content %}
 
-<div class = "container border border-primary rounded p-3">
-	<h3>You're looking at post "{{modelPost.title}}"</h3>
-</div>
-
-<br>
-
 {% include 'communities/t/tPost.html' %}
 
 {% include 'communities/t/jPostActions.html' %}
+
+<br>
+
+<div class = "container border rounded p-3">
+	<a href = "{% url 'communities:index' %}">
+		<h4 class = 'text-center'>
+			Back to Communities
+		</h4>
+	</a>
+</div>
 
 {% endblock content %}

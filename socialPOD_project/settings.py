@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'communities.apps.CommunitiesConfig',
     # food
     'food.apps.FoodConfig',
+    # fitness
+    'fitness.apps.FitnessConfig',
 
     # ############################
     # django defaults

@@ -1,24 +1,34 @@
 <div class = "container border rounded p-3" id = "div__post${{modelPost.id}}">
 	<div>
-		<div class = "d-flex flex-row">
+		<div class = "d-flex flex-row mb-0">
 			<img style="height:5rem;width:5rem;"  class = "rounded-circle" src = "{{modelPost.author.profile_picture.url}}">
-			<div class = "ml-3">
-				<p class = "mb-0">
-					<a href = "{% url 'communities:profile' modelPost.author.username %}">
-						{{modelPost.author}}
-					</a>
-				</p>
-				<p class = "mt-0 text-muted">
-					{{modelPost.pub_date}}
-				</p>
+			<div class = "ml-3 mt-3">
+				<div>
+					<p class = "mb-0">
+						<a href = "{% url 'communities:profile' modelPost.author.username %}">
+							{{modelPost.author}}
+						</a>
+					</p>
+				</div>
+				<div>
+					<p class = "mt-0 text-muted">
+						{{modelPost.pub_date}}
+					</p>
+				</div>
 			</div>
 		</div>
-		<strong>
-			{{modelPost.title}}
-		</strong>
-		<br>
-		{{modelPost.text}}
-		<br>
+		<div class = "mt-2 mb-0">
+			<strong>
+				<p class = 'mb-0'>
+					{{modelPost.title}}
+				</p>
+			</strong>
+		</div>
+		<div class = 'mt-0'>
+			<p>
+				{{modelPost.text}}
+			</p>
+		</div>
 	</div>
 	<hr>
 

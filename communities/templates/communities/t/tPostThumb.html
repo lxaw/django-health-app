@@ -1,23 +1,42 @@
-<div class = "container border rounded p-3" id = "div__post${{modelPost.id}}">
+<div class = "container border rounded p-3 mb-2" id = "div__post${{modelPost.id}}">
 	<div>
-		<div class = "d-flex flex-row">
+		<div class = "d-flex flex-row mb-0">
 			<img style="height:5rem;width:5rem;"  class = "rounded-circle" src = "{{modelPost.author.profile_picture.url}}">
-			<div class = "ml-3">
-				<p class = "mb-0">
-					<a href = "{% url 'communities:profile' modelPost.author.username %}">
-						{{modelPost.author}}
-					</a>
-				</p>
-				<p class = "mt-0 text-muted">
-					{{modelPost.pub_date}}
-				</p>
+			<div class = "ml-3 mt-3 mb-2">
+				<div>
+					<p class = "mb-0">
+						<a href = "{% url 'communities:profile' modelPost.author.username %}">
+							{{modelPost.author}}
+						</a>
+					</p>
+				</div>
+				<div>
+					<p class = "mt-0 text-muted">
+						{{modelPost.pub_date}}
+					</p>
+				</div>
 			</div>
 		</div>
-		<strong>
-			{{modelPost.title}}
-		</strong>
-		<br>
-		{{modelPost.text}}
-		<br>
+		<div>
+			<h4>
+				"{{modelPost.title}}"
+			</h4>
+		</div>
+	</div>
+	<hr>
+	<div class = 'd-flex justify-content-between'>
+		<div>
+			<a href = "{{modelPost.get_absolute_url}}">
+				<p>
+					See post.
+				</p>
+			</a>
+		</div>
+		<div>
+			<p class = 'text-muted'>
+				{{modelPost.comments.count}} comment{{modelPost.comments.count|pluralize:',s'}}.
+			</p>
+		</div>
 	</div>
 </div>
+

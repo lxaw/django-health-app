@@ -40,6 +40,8 @@ urlpatterns = [
     path('communities/',include('communities.urls')),
     # food urls
     path('food/',include('food.urls')),
+    # fitness urls
+    path('fitness/',include('fitness.urls')),
 ]
 
 

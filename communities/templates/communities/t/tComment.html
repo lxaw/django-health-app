@@ -31,8 +31,7 @@
 			{{formCommentForm.text.errors}}	
 			{{formCommentForm.text}}
 		<input type = "hidden" name = "intParentId" value = "{{modelComment.id}}">
-		<br>
-		<input class = "input__reply-to-comment" data-comment-author="{{modelComment.author.username}}" type="submit" value = "Reply">
+		<button class = "btn btn-outline-success input__reply-to-comment" data-comment-author="{{modelComment.author.username}}" type="submit">Reply</button>
 	</form>
 	<div class = "d-flex justify-content-between">
 		<p data-id = "{{modelComment.id}}" class = "text-success btn__reply-to-comment">Reply</p>

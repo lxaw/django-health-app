@@ -5,7 +5,7 @@
 
 <div style="align-items:flex-start;" class = "container border border-primary rounded p-3">
 	<div style="display:inline-flex" >
-		<img class = "rounded-circle img__users-profile-img" src = "{{user.profile_picture.url}}">
+		<img class = "rounded-circle" style="height:6.5rem;width:6.5rem;" src = "{{user.profile_picture.url}}">
 		<div class = "div__users-profile-media-account">
 			<h2 class = "account-heading">
 				Welcome,  <strong>{{user.username}}.</strong>
@@ -32,7 +32,7 @@
 <div class = "container border border rounded p-3">
 	<a href = "{% url 'food:index' %}">
 		<h3 class = "text-center">
-			Your Diet History
+			Your Diet Center
 		</h3>
 	</a>
 </div>
@@ -40,9 +40,9 @@
 <br>
 
 <div class = "container border border rounded p-3">
-	<a href = "">
+	<a href = "{% url 'fitness:index' %}">
 		<h3 class = "text-center">
-			Your PA History
+			Your Fitness Center
 		</h3>
 	</a>	
 </div>
@@ -57,7 +57,9 @@
 	<br>
 	<strong>Days Active:</strong> {{dictUserStats.intDaysActive}}
 	<br>
-	<strong>Points:</strong> {{dictUserStats.intPoints}}
+	{% if user.is_pod_plus_member %}
+		<strong>Points:</strong> {{dictUserStats.intPoints}}
+	{% endif %}
 	<br>
 	<strong>Date joined:</strong> {{dictUserStats.strDateJoined}}
 </div>

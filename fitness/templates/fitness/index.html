@@ -1,0 +1,153 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<div class = "container border border-primary rounded p-3">
+	<h1 class = 'text-center'>
+		Your Fitness Center
+	</h1>
+</div>
+
+<br>
+
+<div class = 'container border rounded p-3'>
+	<h3 class = "text-center">
+		Today's Physical Activity
+	</h3>
+	<hr>
+	<p>
+		Minutes of PA:
+	</p>
+	<p>
+		Calories burned:
+	</p>
+</div>
+
+<br>
+
+<div class = 'container border rounded p-3'>
+	<h3 class = 'text-center'>
+		Your stats:
+	</h3>
+	<div class = 'container justify-content-center'>
+		<select id = "select__fitnessStatsPeriod" onchange="populateFitnessStatsPeriod(this.id,'div__fitnessStatsPeriodContainer')" name = "select__fitnessStatsPeriod"  class = 'form-control form-select form-select-lg'>
+			<option selected value='week' class = 'text-center'>
+				This Week
+			</option>
+			<option value="month" class = 'text-center'>
+				This Month
+			</option>
+			<option value="year" class = 'text-center'>
+				This Year
+			</option>
+			<option value="all" class = 'text-center'>
+				From Start
+			</option>
+		</select>
+	</div>
+	<hr>
+	<div id = 'div__fitnessStatsPeriodContainer' class = "container">
+		<div id = "div__fitnessStats$week" class = 'div__fitnessStatsSelection'>
+			<h3 class = 'text-center'>
+				Weekly stats
+			</h3>
+			<div>
+				<p>
+					Minutes of PA:
+				</p>
+				<p>
+					Average calories burned:
+				</p>
+				<p>
+					Miles walked:
+				</p>
+			</div>
+		</div>
+		<div id = "div__fitnessStats$month" class = 'div__fitnessStatsSelection' style = "display:none;">
+			<h3 class = 'text-center'>
+				Monthly stats
+			</h3>
+			<div>
+				<p>
+					Minutes of PA:
+				</p>
+				<p>
+					Average calories burned:
+				</p>
+				<p>
+					Miles walked:
+				</p>
+			</div>
+		</div>
+		<div id = "div__fitnessStats$year" class = 'div__fitnessStatsSelection' style = "display:none;">
+			<h3 class = 'text-center'>
+				Yearly stats
+			</h3>
+			<div>
+				<p>
+					Minutes of PA:
+				</p>
+				<p>
+					Average calories burned:
+				</p>
+				<p>
+					Miles walked:
+				</p>
+			</div>
+		</div>
+		<div id = "div__fitnessStats$all" class = 'div__fitnessStatsSelection' style = "display:none;">
+			<h3 class = 'text-center'>
+				Stats from Beginning
+			</h3>
+			<div>
+				<p>
+					Minutes of PA:
+				</p>
+				<p>
+					Average calories burned:
+				</p>
+				<p>
+					Miles walked:
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+
+function populateFitnessStatsPeriod(idSelect,idDiv){
+	/*
+	Inputs:
+	id of selector, id of div that contains stats
+	Function:
+	depending on value of selector, show and hide divs.
+	Default starts with week.
+	*/
+
+	let selectSelector = document.getElementById(idSelect);
+	let divFitnessStats = document.getElementById(idDiv);
+
+	// get all the child divs
+	let arrdivChildDivs = divFitnessStats.getElementsByClassName("div__fitnessStatsSelection");
+	// loop thru divs, if the value is not that div's id hide it, else show
+	for(let divLooped of arrdivChildDivs){
+		// if match, show
+		if(divLooped.id == "div__fitnessStats$" + selectSelector.value){
+			divLooped.style.display = "";
+		}
+		// else hide
+		else{
+			divLooped.style.display = "none";
+		}
+	}
+}
+
+
+</script>
+
+{% endblock %}
