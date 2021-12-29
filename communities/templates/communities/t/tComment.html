@@ -27,11 +27,9 @@
 	</div>
 	<form style = "display:none" id = "form__comment-reply${{modelComment.id}}" class = "form__comment-reply" action = "{% url 'communities:comment-create' modelPost.author.username modelPost.slug %}" method = "POST">
 		{% csrf_token %}
-		{{formCommentForm.non_field_errors}}
-			{{formCommentForm.text.errors}}	
-			{{formCommentForm.text}}
+		<textarea class = 'form-control mb-2' name = "text"></textarea>
+		<button class = "btn btn-outline-success btn-sm input__reply-to-comment" data-comment-author="{{modelComment.author.username}}" type="submit">Reply</button>
 		<input type = "hidden" name = "intParentId" value = "{{modelComment.id}}">
-		<button class = "btn btn-outline-success input__reply-to-comment" data-comment-author="{{modelComment.author.username}}" type="submit">Reply</button>
 	</form>
 	<div class = "d-flex justify-content-between">
 		<p data-id = "{{modelComment.id}}" class = "text-success btn__reply-to-comment">Reply</p>

@@ -67,13 +67,8 @@
 	<div style = "display:none" id = "div__create-comment${{modelPost.id}}">
 		<form class = "form__create-comment" method = "POST" action = "{% url 'communities:comment-create' modelPost.author.username modelPost.slug %}" >
 			{% csrf_token %}
-			{{formCommentForm.non_field_errors}}
-			<div>
-				{{formCommentForm.text.errors}}
-				{{formCommentForm.text}}
-			</div>
-			<br>
-			<button class = "btn btn-primary btn-sm" type = "submit">Post Comment</button>
+			<textarea class = 'form-control mb-2' name = "text"></textarea>
+			<button class = "btn btn-outline-success btn-sm" type = "submit">Post Comment</button>
 		</form>
 	</div>
 </div>

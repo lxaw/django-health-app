@@ -224,7 +224,6 @@ def viewCreateComment(request,username,slug):
 		formCommentForm = CommentForm(data=request.POST)
 
 		if formCommentForm.is_valid():
-
 			modelParentObj = None
 			# try to get parent comment id from hidden input
 			try:
@@ -266,9 +265,12 @@ def viewCreateComment(request,username,slug):
 			modelNotificationToParent.text= "{} has commented on your post {}.".format(request.user.username,modelPost.title)
 			modelNotificationToParent.post = modelPost
 			modelNotificationToParent.save()
+		# if form not valid, show message
+		else:
+			messages.warning(request,"Message could not be sent. Please try again.")
 			
 
-	return redirect('communities:index')
+	return redirect(reverse('communities:post-detail',kwargs={'username':modelPost.author.username,'slug':modelPost.slug}))
 
 @login_required
 def viewPostDelete(request,post_id):
