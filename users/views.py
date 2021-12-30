@@ -4,7 +4,7 @@
 from django.shortcuts import render, reverse, redirect,get_object_or_404,HttpResponseRedirect
 
 # forms
-from .forms import UserRegisterForm, DirectMessageForm
+from .forms import UserRegisterForm,CustomUserUpdateForm,CustomUserUpdatePasswordForm,DirectMessageForm
 
 # messages on registration / log in
 from django.contrib import messages
@@ -128,6 +128,35 @@ def viewProfile(request):
 
 	return render(request,'users/profile.html',context = context)
 
+# display form to edit information
+@login_required
+def viewProfileEditPrepare(request):
+
+	# allow users to edit their information
+
+	context = {
+	}
+
+	return render(request,'users/edit.html',context = context)
+
+# process the edited info
+@login_required
+def viewProfileEdit(request):
+
+	if request.method == 'POST':
+		formUpdateForm = CustomUserUpdateForm(data=request.POST,instance=request.user)
+		formUpdatePasswordForm = CustomUserUpdatePasswordForm(data=request.POST,instance=request.user)
+
+		if formUpdateForm.is_valid():
+			# update everything
+			if formUpdatePasswordForm.is_valid():
+				messages.success(request,"update everything")
+			# else update without password
+			else:
+				messages.success(request,"update no pass")
+		else:
+			print(formUpdateForm.errors)
+	return redirect('users:profile')
 
 
 ################################
@@ -135,7 +164,7 @@ def viewProfile(request):
 ################################
 
 @login_required
-def viewIndexDMs(request):
+def viewDmIndex(request):
 	listmodelDmedUsers = []
 	# all the distinct users you have dm'ed
 
@@ -226,7 +255,7 @@ def viewDmDetail(request,username):
 	return render(request,'users/dm/dm_detail.html',context=context)
 
 @login_required
-def viewCreateDm(request,username):
+def viewDmCreate(request,username):
 	######################
 	# Inputs:
 	# request, str username of the dm'ed user

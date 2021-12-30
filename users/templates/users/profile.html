@@ -11,7 +11,11 @@
 				Welcome,  <strong>{{user.username}}.</strong>
 			</h2>
 			{% if user.is_pod_plus_member %}
-				<p class = "text-secondary">POD+ Member</p>
+				<p style="color:gold;">
+					<strong>
+						POD+ Member
+					</strong>
+				</p>
 			{% endif %}
 		</div>
 	</div>
@@ -50,7 +54,17 @@
 <br>
 
 <div class = "container border border rounded p-3">
-	<h2 class = "text-center">Your information:</h2>
+	<div>
+		<h2 class = "text-center">
+			Your Information
+		</h2>
+		<a href = "{% url 'users:profile-edit-prepare' %}">
+			<p class = 'text-center'>
+				Edit Information
+			</p>
+		</a>
+	</div>
+	<hr>
 	<strong>Email:</strong> {{dictUserStats.strEmail}}
 	<br>
 	<strong>Username:</strong> {{dictUserStats.strUsername}}
