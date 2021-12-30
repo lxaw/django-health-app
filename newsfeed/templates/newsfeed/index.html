@@ -3,48 +3,58 @@
 {% block content %}
 
 <div class = "container text-center border border-primary rounded p-3">
-	<h1>Here is your newsfeed.</h1>
-</div>
-
-<br>
-
-<div class = "container">
-	<div class = "container row">
-		<div class = "col-sm border rounded p-3 mr-3">
-			<h1 class = "text-center">
-				<a href = "{% url 'newsfeed:help-request-prepare' %}">
-					Request help.
-				</a>
-			</h1>
-		</div>
-		<div class = "col-sm border rounded p-3">
-			<h1 class = "text-center">
-				<a href ="{% url 'newsfeed:help-request-archive-detail' %}">
-					Or view your requests.
-				</a>
-			</h1>
-		</div>
+	<div class = "d-flex flex-row">
+		<h1>
+			<i class="bi bi-newspaper"></i>
+		</h1>
+		<h1 class = 'container text-center'>
+			Newsfeed
+		</h1>
+		<h1>
+			<i class="bi bi-newspaper"></i>
+		</h1>
 	</div>
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
-	<h4>
-		Recent Help Requests
+<div class = "container border rounded p-3">
+	<h4 class = "text-center">
+		<a href = "{% url 'newsfeed:help-request-prepare' %}">
+			Request help.
+		</a>
 	</h4>
-	{% for modelHelpRequest in listUnfilledHelpRequests %}
+</div>
 
-			{% include "newsfeed/t/tHelpRequest.html" %}
-			<br>
-		<br>
-
-	{% endfor %}
+<br>
+<div class = "container border rounded p-3">
+	<h4 class = "text-center">
+		<a href ="{% url 'newsfeed:help-request-archive-detail' %}">
+			Or view your requests.
+		</a>
+	</h4>
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border border rounded p-3">
+	<h4>
+		Recent Help Requests
+	</h4>
+	{% if listUnfilledHelpRequests|length == 0 %}
+		<p class = "text-muted">Looks like theres nothing yet!</p>
+	{% else %}
+		{% for modelHelpRequest in listUnfilledHelpRequests %}
+
+			{% include "newsfeed/t/tHelpRequest.html" %}
+
+		{% endfor %}
+	{% endif %}
+</div>
+
+<br>
+
+<div class = "container border border rounded p-3">
 	<h4>
 		See what your followed users are posting.
 	</h4>
@@ -52,7 +62,7 @@
 		<p class = "text-muted">Looks like theres nothing yet!</p>
 	{% else %}
 		{% for modelPost in listLastNFollowedUserPosts %}
-			<div class = "newsfeed__new-post border border-primary" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
+			<div class = "newsfeed__new-post border border" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
 				<a href = "{{modelPost.get_absolute_url}}">
 					User  {{modelPost.author}} uploaded a post at {{modelPost.pub_date}}
 				</a>
@@ -63,7 +73,7 @@
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border border rounded p-3">
 	<h4>
 		Most recent posts today.
 	</h4>
@@ -72,7 +82,7 @@
 	{% endif %}
 	{% for modelPost in listRecentPosts %}
 
-		<div class = "newsfeed__new-post border border-primary" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
+		<div class = "newsfeed__new-post border border" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
 			<a href = "{{modelPost.get_absolute_url}}">
 				User  {{modelPost.author}} uploaded a post at {{modelPost.pub_date}}
 			</a>
@@ -84,36 +94,4 @@
 
 {% endblock content %}
 
-
-{% block javascript %}
-
-<script>
-	/*
-	************************
-	* Functions
-	************************
-	*/
-	function delete_help_request(strUrl){
-		if(!confirm("Are you sure?")){
-			return;
-		}
-
-		$.ajax({
-			url:strUrl,
-			success:function(){
-				location.reload();
-			}
-		})
-	}
-	
-	// associate p with delete request
-	let arrPDeleteHelpRequest = document.getElementsByClassName("p__delete-help-request");
-	for(let p of arrPDeleteHelpRequest){
-		p.addEventListener('click',()=>{
-			delete_help_request(p.getAttribute('data-url'));
-		})
-	}
-
-</script>
-
-{% endblock javascript %}
+{% include 'newsfeed/t/jsHelpRequest.html' %}

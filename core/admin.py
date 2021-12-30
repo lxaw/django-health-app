@@ -1,27 +1,54 @@
 from django.contrib import admin
 
-from .models import TipOfDay,Notification
+from .models import TipOfDay,NotificationHelpRequest,NotificationPost, NotificationDirectMessage,NotificationUser
 
 # Register your models here.
 
 class TipOfDayAdmin(admin.ModelAdmin):
 	fieldsets = [
-		("Text Content",{"fields":['text_content']}),
+		("Text Content",{"fields":['text']}),
 		("Tags",{"fields":['tags']}),
-		("Urls",{"fields":['url']}),
 	]
-	search_fields = ['tag','text_content']
+	search_fields = ['tag','text']
 
-class NotificationAdmin(admin.ModelAdmin):
+class NotificationHelpRequestAdmin(admin.ModelAdmin):
 	fieldsets = [
-		("sender",{"fields":['sender']}),
-		("recipient",{"fields":['recipient']}),
-		("message",{"fields":['message']}),
-		("pub_date",{"fields":['pub_date']}),
-		("read",{"fields":['read']}),
-		('related_reverse',{"fields":['related_reverse']}),
-		('related_reverse_args',{"fields":['related_reverse_args']}),
+		("Text",{"fields":['text']}),
+		("Pub Date",{"fields":['pub_date']}),
+		("Sender",{"fields":['sender']}),
+		("Recipient",{"fields":['recipient']}),
+		("Help Request",{"fields":['help_request']}),
+	]
+
+class NotificationPostAdmin(admin.ModelAdmin):
+	fieldsets = [
+		("Text",{"fields":['text']}),
+		("Pub Date",{"fields":['pub_date']}),
+		("Sender",{"fields":['sender']}),
+		("Recipient",{"fields":['recipient']}),
+		("Post",{"fields":['post']}),
+	]
+
+class NotificationDirectMessageAdmin(admin.ModelAdmin):
+	fieldsets = [
+		("Text",{"fields":['text']}),
+		("Pub Date",{"fields":['pub_date']}),
+		("Sender",{"fields":['sender']}),
+		("Recipient",{"fields":['recipient']}),
+		("Direct Message",{"fields":['direct_message']}),
+	]
+
+class NotificationUserAdmin(admin.ModelAdmin):
+	fieldsets = [
+		("Text",{"fields":['text']}),
+		("Pub Date",{"fields":['pub_date']}),
+		("Sender",{"fields":['sender']}),
+		("Recipient",{"fields":['recipient']}),
+		("Linked User",{"fields":['user']}),
 	]
 
 admin.site.register(TipOfDay,TipOfDayAdmin)
-admin.site.register(Notification, NotificationAdmin)
+admin.site.register(NotificationHelpRequest,NotificationHelpRequestAdmin)
+admin.site.register(NotificationPost,NotificationPostAdmin)
+admin.site.register(NotificationDirectMessage,NotificationDirectMessageAdmin)
+admin.site.register(NotificationUser,NotificationUserAdmin)

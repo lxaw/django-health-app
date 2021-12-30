@@ -11,7 +11,7 @@ class HelpRequestForm(forms.ModelForm):
 
 		fields = [
 			"title",
-			"text_content",
+			"text",
 			"tags",
 		]
 		exclude = ()
@@ -21,7 +21,7 @@ class HelpRequestOfferForm(forms.ModelForm):
 		model = HelpRequestOffer
 
 		fields = [
-			"text_content",
+			"text",
 		]
 
 		exclude = ()

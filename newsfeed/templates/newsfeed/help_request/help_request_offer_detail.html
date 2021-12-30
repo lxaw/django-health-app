@@ -10,10 +10,14 @@
 
 {% else %}
 <div class = "container border border-primary rounded p-3">
-	<h3>Help Offer for "{{modelHelpRequest.title}}"</h3>
+	<h3>Help Offer for 
+		<a href = "{% url 'newsfeed:help-request-detail' modelHelpRequest.author.username modelHelpRequest.slug %}">
+			"{{modelHelpRequest.title}}"
+		</a>
+	</h3>
 	<h5>Author: <a href = "{{modelHelpRequestOffer.author.get_public_profile_url}}">{{modelHelpRequestOffer.author}}</a></h5>
-	<div class = "container border rounded p-3">
-		{{modelHelpRequestOffer.text_content}}
+	<div>
+		{{modelHelpRequestOffer.text}}
 	</div>
 </div>
 

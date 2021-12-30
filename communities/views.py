@@ -17,8 +17,9 @@ from django.contrib import messages
 # Necessary models
 #####################################
 from users.models import CustomUser
-from core.models import Notification
 from .models import Post,Comment
+# notifications
+from core.models import NotificationPost, NotificationUser
 
 #####################################
 # Necessary forms
@@ -29,12 +30,6 @@ from newsfeed.forms import HelpRequestForm
 # Outside imports
 #####################################
 from django.utils import timezone
-
-#####################################
-# import reverse dictionary to use reverses 
-# more easily for notifications
-#####################################
-from core.notification_reverses.reverses import dictNotificationReverses
 
 @login_required
 def viewIndex(request):
@@ -68,7 +63,15 @@ def viewIndex(request):
 	return render(request,'communities/index.html',context = context)
 
 @login_required
-def viewCreatePost(request):
+def viewPostPrepare(request):
+	context = {
+
+	}
+
+	return render(request,'communities/post_prepare.html',context=context)
+
+@login_required
+def viewPostCreate(request):
 	###################################
 	# Inputs:
 	# request
@@ -126,23 +129,24 @@ def viewLikeUnlikePost(request,post_id):
 	else:
 
 		modelPost.user_likes.add(request.user)
-		# notify that they liked post
-		modelNotification = Notification(sender=request.user,recipient=modelPost.author, message="{} has liked your post \"{}\".".format(request.user.username,modelPost.title))
-		################
-		# Note:
-		# To link to post, need to make sure the url of notification
-		# matches how we decide to continue to do urls for posts.
-		# This is important as old notifications could give bad urls.
-		################
-		# building the url
-		modelNotification.related_reverse = dictNotificationReverses["communities"]['post']['detail']
-		modelNotification.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
 
-		# 
-		# dont keep showing notification if press like and unlike 
-		# 
+		################
+		# Create a notification.
+		# populate all fields
+		################
+
+		# notify that they liked post
+		modelNotificationPost = NotificationPost()
+		# give sender
+		modelNotificationPost.sender = request.user
+		# give recipient
+		modelNotificationPost.recipient = modelPost.author
+		# link to post
+		modelNotificationPost.post = modelPost
+		# give text
+		modelNotificationPost.text = "{} has liked your post {}.".format(request.user,modelPost.title)
 		
-		modelNotification.save()
+		modelNotificationPost.save()
 	
 	return redirect('communities:index')
 
@@ -220,7 +224,6 @@ def viewCreateComment(request,username,slug):
 		formCommentForm = CommentForm(data=request.POST)
 
 		if formCommentForm.is_valid():
-
 			modelParentObj = None
 			# try to get parent comment id from hidden input
 			try:
@@ -239,11 +242,13 @@ def viewCreateComment(request,username,slug):
 					# put the parent id in the reply
 					modelReplyComment.parent = modelParentObj
 					# since reply, notify the person you reply to
-					modelNotificationToReply = Notification(sender=request.user,recipient=modelParentObj.author, message="{} has replied to your comment on post \"{}\".".format(request.user.username,modelPost.title))
-					modelNotificationToReply.related_reverse = dictNotificationReverses["communities"]["post"]["detail"]
-					modelNotificationToReply.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
-
+					modelNotificationToReply = NotificationPost()
+					modelNotificationToReply.sender = request.user
+					modelNotificationToReply.recipient = modelParentObj.author
+					modelNotificationToReply.text = "{} has replied to your comment on post {}.".format(request.user.username,modelPost.title)
+					modelNotificationToReply.post = modelPost
 					modelNotificationToReply.save()
+
 			# Else, this is a normal comment
 			# create but dont save to db
 			modelNewComment = formCommentForm.save(commit = False)
@@ -254,20 +259,21 @@ def viewCreateComment(request,username,slug):
 
 			# create a notification for the other users
 			# always notify the post owner
-			modelNotificationToParent = Notification(sender=request.user,recipient=modelPost.author,
-				message="{} has commented on your post \"{}\".".format(request.user.username,modelPost.title))
-
-			# link to a reverse
-			modelNotificationToParent.related_reverse = dictNotificationReverses["communities"]["post"]["detail"]
-			# give the arguments to the reverse
-			modelNotificationToParent.related_reverse_args = "{}${}".format(modelPost.author.username,modelPost.slug)
-			
+			modelNotificationToParent = NotificationPost()
+			modelNotificationToParent.sender = request.user
+			modelNotificationToParent.recipient = modelPost.author
+			modelNotificationToParent.text= "{} has commented on your post {}.".format(request.user.username,modelPost.title)
+			modelNotificationToParent.post = modelPost
 			modelNotificationToParent.save()
+		# if form not valid, show message
+		else:
+			messages.warning(request,"Message could not be sent. Please try again.")
+			
 
-	return redirect('communities:index')
+	return redirect(reverse('communities:post-detail',kwargs={'username':modelPost.author.username,'slug':modelPost.slug}))
 
 @login_required
-def viewDeletePost(request,post_id):
+def viewPostDelete(request,post_id):
 	###################################
 	# Inputs:
 	# request, int
@@ -330,3 +336,16 @@ def viewAddRemoveFollow(request, username):
 
 	# this never runs if use ajax
 	return HttpResponseRedirect('/')
+
+@login_required
+def viewLeaderboardIndex(request):
+	if not request.user.is_pod_plus_member:
+		messages.warning(request,"Only POD+ members may access this page.")
+		return redirect('communities:index')
+	
+	# else they are a member
+	context = {
+
+	}
+
+	return render(request,'communities/leaderboard.html',context=context)

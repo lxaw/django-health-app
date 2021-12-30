@@ -3,45 +3,37 @@
 {% block content %}
 
 <div class = "container border border-primary rounded p-3">
-	<h1>Create a post.</h1>
-	<form method = "POST" action = "{% url 'communities:post-create' %}">
-		{% csrf_token %}
-		<h3>Title: </h3>
-		<div class = "form-group">
-			<textarea name = "title" class = "form-control" rows = 1></textarea>
-		</div>
-		<h3>Content: </h3>
-		<div class = "form-group">
-			<textarea name = "text_content" class = "form-control" rows = 4></textarea>
-		</div>
-		<br>
-		<div class = "container">
-			<div class = "row">
-				<button type = "submit" class = "btn btn-primary">Submit</button>
-			</div>
-		</div>
-	</form>
+	<a href = "{% url 'communities:post-prepare' %}">
+		<h1 class ="text-center">
+			Create a post.
+		</h1>
+	</a>
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
-	<h1 class = "text-center">
-		<a href = "{% url 'newsfeed:help-request-prepare' %}">
-			Request help.
+{% if user.is_pod_plus_member %}
+<div class = "container border rounded p-3">
+	<div class = "d-flex flex-row justify-content-center">
+		<i class="bi bi-star mr-3 mt-1"></i>
+		<a href = "{% url 'communities:leaderboard-index' %}">
+			<h4 class = "text-center">
+				Community Leaderboard (POD+ Exclusive)
+			</h4>
 		</a>
-	</h1>
+		<i class="bi bi-star ml-3 mt-1"></i>
+	</div>
 </div>
+{% endif %}
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
-	<h4 class = "pl-4">Recent posts:</h4>
+<div class = "container border border rounded p-3">
+	<h4 class = "text-center">Recent posts:</h4>
 	<div class = "container">
 			{% for modelPost,listPostComments in dictModelPosts.items %}
 
-				{% include 'communities/t/tPost.html' %}
-				<br>
+				{% include 'communities/t/tPostThumb.html' %}
 
 			{% endfor %}
 	</div>

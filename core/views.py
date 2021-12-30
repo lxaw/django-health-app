@@ -9,17 +9,19 @@ from django.contrib.auth.decorators import login_required
 ###########################
 # Necessary models
 ###########################
-from .models import TipOfDay, Notification
+from .models import TipOfDay,NotificationPost,NotificationHelpRequest,NotificationUser
 from users.models import CustomUser
 
 ###########################
 # Necessary imports
 ###########################
 from datetime import date
+from datetime import datetime
 import random
 
-# Create your views here.
+from core.base_functions import boolModelOwnershipCheck
 
+# Create your views here.
 
 def viewAbout(request):
 	###################################
@@ -46,31 +48,37 @@ def viewIndex(request):
 	# view called for index (home) page
 	###################################
 
-	# get a tip
-	listModelTips = []
-	for modelTip in TipOfDay.objects.all():
-		if request.user not in modelTip.responded_users.all():
-			# user has not yet responded to tip
-			listModelTips.append(modelTip)
+	# # get a tip
+	# listModelTips = []
+	# for modelTip in TipOfDay.objects.all():
+	# 	if request.user not in modelTip.responded_users.all():
+	# 		# user has not yet responded to tip
+	# 		listModelTips.append(modelTip)
 	
 	# get all their notifications
-	listModelNotifications = request.user.recipient_notification.all().order_by("-pub_date")
+	qsModelNotificationPost = request.user.recipient_notification_post_set.all().order_by("-pub_date")
+	qsModelNotificationHelpRequest = request.user.recipient_notification_help_request_set.all().order_by('-pub_date')
 	
 
 	dateToday = date.today()
 	strDate = dateToday.strftime("%B %d, %Y")
+	# returns 1 for jan first, we want 0 however for indexing
+	intDayNum = int(datetime.now().timetuple().tm_yday) - 1
+	# use the day num to index the tips
+	modelTipOfDay = get_object_or_404(TipOfDay,day_number=intDayNum)
 
 	context = {
 		'strTitle':'index',
 		'strDate':strDate,
-		'modelTip':listModelTips,
-		'listModelNotifications':listModelNotifications,
+		'modelTipOfDay':modelTipOfDay,
+		'qsModelNotificationPost':qsModelNotificationPost,
+		'qsModelNotificationHelpRequest':qsModelNotificationHelpRequest,
 	}
+	return render(request,'core/index.html',context=context)
 
-	return render(request,'core/index.html',context = context)
 
 @login_required
-def viewDeleteNotification(request,notification_id):
+def viewNotificationDelete(request,notification_type,notification_id):
 	###################################
 	# Inputs:
 	# request, int
@@ -79,11 +87,35 @@ def viewDeleteNotification(request,notification_id):
 	# Utility:
 	# view called for delete a notification
 	###################################
+
+	# check what type of notification
+	if notification_type == "Post":
+		modelNotification = get_object_or_404(NotificationPost,id = notification_id)
+
+		if boolModelOwnershipCheck(modelNotification,"recipient",request.user):
+			modelNotification.delete()
+			messages.success(request,"Notification deleted.")
+			return redirect('core:index')
+		
+	elif notification_type == "HelpRequest":
+		modelNotification = get_object_or_404(NotificationHelpRequest,id = notification_id)
+		if boolModelOwnershipCheck(modelNotification,"recipient",request.user):
+			modelNotification.delete()
+			messages.success(request,"Notification deleted.")
+			return redirect('core:index')
+	
+	elif notification_type == "User":
+		modelNotification = get_object_or_404(NotificationUser,id = notification_id)
+		if boolModelOwnershipCheck(modelNotification,"recipient",request.user):
+			modelNotification.delete()
+			messages.success(request,"Notification deleted.")
+			return redirect('core:index')
+	
+	else:
+		messages.warning(request,"Notification type {} undefined.".format(notification_type))
+		return redirect('core:index')
+
 	modelNotification = get_object_or_404(Notification, id = notification_id)
 	modelNotificationRecipient = modelNotification.recipient
 
-	if request.user == modelNotificationRecipient:
-		messages.success(request, "Notification successfully deleted.")
-		modelNotification.delete()
 	
-	return redirect('core:index')

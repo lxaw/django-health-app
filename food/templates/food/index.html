@@ -1,0 +1,150 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<div class = "container border border-primary rounded p-3">
+	<h1 class = 'text-center'>
+		Your Diet Info
+	</h1>
+</div>
+
+<br>
+
+<div class = "container border rounded p-3">
+	<a href = "{% url 'food:food-prepare' %}">
+		<h3 class = "text-center">Upload your most recent meal.</h3>
+	</a>
+</div>
+
+<br>
+
+<div class = "container border rounded p-3">
+	<h2 class = "text-center">Your Diet Overview:</h2>
+	<strong>Standard Deviation: </strong>{{dictUserStats.floatStd}}
+	<br>
+	<strong>Mean: </strong>{{dictUserStats.floatMean}}
+	<br>
+	<strong>Median: </strong>{{dictUserStats.floatMedian}}
+	<br>
+</div>
+
+<br>
+
+<div class = "container border  rounded p-3">
+	<h2 class = "text-center">Your Graphs:</h2>
+	<br>
+	<div class = "row justify-content-center">
+		<!-- kcal info for grab by javascript -->
+		{{listFood|json_script:"jsonFoods"}}
+		<div class = "div__users-profile-chart-container">
+			<canvas id = "canvas__users-profile-chart__id"></canvas>
+		</div>
+	</div>
+</div>
+
+<br>
+
+<div class = "container border  rounded p-3">
+	<div class = "container text-center">
+		<h2>Your History:</h2>
+	</div>
+	{% for modelFood in setFood %}
+		<div class = "container border rounded p-3">
+			<p><strong>Meal name: </strong> {{modelFood.name}}</p>
+			<p><strong>Date:</strong> {{modelFood.date}}</p>
+			<p><strong>Kilocalorie count:</strong> {{modelFood.kcals}}</p>
+			<p class = "p__delete-food text-danger" data-url="{% url 'food:food-delete' modelFood.id %}" >
+				Delete?
+			</a>
+		</div>
+		<br>
+	{% endfor %}
+</div>
+
+
+
+{% endblock %}
+{% block javascript %}
+<script>
+/*
+*************************
+* For working with ajax
+*************************
+*/
+function delete_food(strUrl){
+	// confirm before
+	if(!confirm("Are you sure?")){
+		return;
+	}
+
+	$.ajax({
+		url:strUrl,
+		success:function(){
+			location.reload()
+		}
+	})
+}
+
+let arrpDeleteFood = document.getElementsByClassName("p__delete-food");
+for(let p of arrpDeleteFood){
+	p.addEventListener("click",()=>{
+		delete_food(p.getAttribute("data-url"));
+	})
+}
+
+
+/*
+*************************
+* For working with graphs
+*************************
+*/
+var arrFoods = JSON.parse(document.getElementById('jsonFoods').textContent);
+
+var arrLabels = [];
+var arrData = [];
+
+// populate the arrays
+for(let objFood of arrFoods){
+	arrLabels.push(objFood.pub_date);
+	arrData.push(objFood.kcals);
+}
+
+var ctx = document.getElementById('canvas__users-profile-chart__id').getContext('2d');
+
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+		labels: arrLabels,
+        datasets: [{
+            data: arrData,
+			borderColor:'rgb(75,192,192)',
+            borderWidth: 1,
+			fill:false,
+			tension:0.1
+        }]
+    },
+    options: {
+		maintainAspectRatio:false,
+		responsive:true,
+		legend:{
+			display:false
+		},
+        scales: {
+			yAxes: [{
+				scaleLabel:{
+					display:true,
+					labelString:'K-Cal Count'
+				}
+			}],
+			xAxes: [{
+				scaleLabel:{
+					display:true,
+					labelString:'Day Number of Year'
+				}
+			}]
+        }
+    }
+});
+
+</script>
+{% endblock javascript %}

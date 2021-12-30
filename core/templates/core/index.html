@@ -1,74 +1,37 @@
 {% extends "core/base.html" %}
 {% block content %}
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border border rounded p-3">
 	<h4 class = "text-center">Tip of the day for {{strDate}}:</h4>
-	<br>
-	{{modelTip}}
+	{% include 'core/t/tTipOfDay.html' %}
 </div>
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
-	<a href = "{% url 'users:dm-index' %}">
-		<h3 class = "text-center">Your DMs</h3>
-	</a>
-</div>
 
-<br>
-
-<div class = "container border border-primary rounded p-3">
-	<h3 class = "text-center">Notifications</h3>
-	{% if listModelNotifications|length == 0 %}
+<div class = "container border border rounded p-3">
+	<h3 class = "text-center">Activity on your posts.</h3>
+	{% if qsModelNotificationPost|length == 0 %}
 		<p class = "text-center">All caught up!</p>
 	{% else %}
-	<br>
-		{% for modelNotification in listModelNotifications %}
-		<div class = "container border border rounded p-3">
-			Date: <strong>{{modelNotification.pub_date}}</strong>
-
+		{% for modelNotificationPost in qsModelNotificationPost %}
+			{% include 'core/t/tNotificationPost.html' %}
 			<br>
-			{% if modelNotification.sender %}
-				Sender: <strong>{{modelNotification.sender}}</strong>
-			{% endif %}
-			<div class = "border border rounded p-3">
-				{{modelNotification.message}}
-			</div>
-			{% if modelNotification.related_reverse_args %}
-				<a href = {{modelNotification.get_absolute_url}}>Click to view.</a>
-			{% endif %}
-			<br>
-			<button class = "btn btn-outline-success" id = "btn__delete-notification" data-url="{% url 'core:notification_delete' modelNotification.id %}">
-				Got it!
-			</button>
-		</div>
-		<br>
 		{% endfor %}
-		<br>
 	{% endif %}
 </div>
 
 <br>
 
-
+<div class = "container border border rounded p-3">
+	<h3 class = "text-center">Activity on your help requests.</h3>
+	{% if qsModelNotificationHelpRequest|length == 0 %}
+		<p class = "text-center">All caught up!</p>
+	{% else %}
+		{% for modelNotificationHelpRequest in qsModelNotificationHelpRequest %}
+			{% include 'core/t/tNotificationHelpRequest.html' %}
+			<br>
+		{% endfor %}
+	{% endif %}
+</div>
 {% endblock content %}
-
-{% block javascript %}
-<script>
-	function delete_notification(strUrl){
-		$.ajax({
-			url:strUrl,
-			success:function(){
-				location.reload();
-			}
-		})
-	}
-	let btnDeleteNotification = document.getElementById("btn__delete-notification");
-	let strUrl = btnDeleteNotification.getAttribute("data-url");
-	btnDeleteNotification.addEventListener("click",()=>{
-		delete_notification(strUrl);
-	})
-
-
-</script>
-{% endblock %}

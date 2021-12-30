@@ -1,39 +1,52 @@
-<div class = "container border border-primary rounded">
-    <br>
-    <a href = "{% url 'communities:profile' modelHelpRequest.author.username %}">
-        <img alt = "a profile picture" style="height:10%;width:10%"  class = "rounded-circle img__users-profile-img border border-dark" src = "{{modelHelpRequest.author.profile_picture.url}}">
-            {{modelHelpRequest.author}}
-    </a> on {{modelHelpRequest.pub_date}}
-    <br>
-    <br>
-    <div class  ="container">
-        <div class = "row">
-            <p>Title: </p>
-            <a href = "{{modelHelpRequest.get_absolute_url}}">
-                <strong>
-                    "{{modelHelpRequest.title}}"
-                </strong>
-            </a>
+<div class = "container border rounded p-3 mb-2">
+    <div>
+        <div class = "d-flex flex-row">
+            <div>
+                <a href = "{% url 'communities:profile' modelHelpRequest.author.username %}">
+                    <img alt = "a profile picture" style="height:5rem;width:5rem;"  class = "rounded-circle" src = "{{modelHelpRequest.author.profile_picture.url}}">
+                </a> 
+            </div>
+            <div class = "ml-3 mt-2">
+                <p class = "mb-0 mt-2">
+                    {{modelHelpRequest.author}}
+                </p>
+                <p class = "mt-0 text-muted">
+                    {{modelHelpRequest.pub_date}}
+                </p>
+            </div>
+        </div>
+        <a href = "{{modelHelpRequest.get_absolute_url}}">
+            <strong>
+                "{{modelHelpRequest.title}}"
+            </strong>
+        </a>
+    </div>
+    <div>
+        {{modelHelpRequest.text}}
+    </div>
+    <p class = "text-muted">Related tags:</p>
+    <div class = "d-flex justify-content-between mb-2">
+        <div>
+            {% if modelHelpRequest.get_parsed_tags %}
+                {% for strTag in modelHelpRequest.get_parsed_tags %}
+                    <span style= "background-color: aliceblue;" class ="rounded mr-3 p-1">
+                        <a href = "{% url 'newsfeed:help-request-index-tag' strTag %}" style = "text-decoration: none;">
+                            {{strTag}}
+                        </a>
+                    </span>
+                {% endfor %}
+            {% else %}
+                <p>This post has no tags associated with it.</p>
+            {% endif %}
+        </div>
+        <div>
+            {% if request.user == modelHelpRequest.author %}
+                <form action = "{% url 'newsfeed:help-request-delete' modelHelpRequest.id %}">
+                    <button class = "btn btn-outline-danger mb-3" type="submit">
+                        Delete?
+                    </button>
+                </form>
+            {% endif %}
         </div>
     </div>
-    <div class = "container border rounded p-3">
-        {{modelHelpRequest.text_content}}
-    </div>
-    <br>
-    <div class = "container">
-        <p>Related tags:</p>
-        {% for strTag in modelHelpRequest.get_parsed_tags %}
-            <span style= "background-color: aliceblue;" class ="rounded mr-3 p-1">
-                <a href = "{% url 'newsfeed:help-request-index-tag' strTag %}" style = "text-decoration: none;">
-                    {{strTag}}
-                </a>
-            </span>
-        {% endfor %}
-    </div>
-    <br>
-    {% if request.user == modelHelpRequest.author %}
-        <p data-url = "{% url 'newsfeed:help-request-delete' modelHelpRequest.id %}" class = "p__delete-help-request mr-4 text-danger">
-            Delete?
-        </p>
-    {% endif %}
 </div>

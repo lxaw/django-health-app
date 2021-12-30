@@ -18,7 +18,7 @@ input[type=checkbox]{
 */
 #navbar__main{
     background: rgb(24,7,7);
-background: linear-gradient(90deg, rgba(24,7,7,1) 0%, rgba(179,1,1,1) 100%, rgba(88,225,2,1) 100%, rgba(0,212,255,1) 100%);
+    background: linear-gradient(90deg, rgba(24,7,7,1) 0%, rgba(179,1,1,1) 100%, rgba(88,225,2,1) 100%, rgba(0,212,255,1) 100%);
 }
 .navbar__main__a-tag{
     text-decoration: none;
@@ -32,68 +32,10 @@ background: linear-gradient(90deg, rgba(24,7,7,1) 0%, rgba(179,1,1,1) 100%, rgba
 
 /*
 ***********************************
-* Styles for Communities Page
+* Styles for Profile
 ***********************************
 */
-.p__communities-post-title{
-    font-weight: bold;
-}
-.btn__like-post--active{
-    background-color: #5df362;
-    border-radius: 5px;
-}
-.btn__like-post--inactive{
-    border-radius: 5px;
-    border-radius: 5px;
-}
 
-.btn__delete-comment{
-    background-color: rgb(255, 115, 115);
-    border-radius: 5px;
-}
-.btn__reply-to-comment{
-    border-radius: 5px;
-}
-.btn__communities-post-comment-delete{
-    background-color: rgb(255, 126, 126);
-}
-/*
-Inputs
-*/
-.input__reply-to-comment{
-    border-radius: 5px;
-    background-color: rgb(101, 226, 101);
-}
-
-/*
-divs
-*/
-.div__communities-post-detail{
-    border-color: black;
-    background-color: red;
-}
-
-.div__communities-post-comment{
-    background-color: rgb(255, 224, 224);
-    margin:20px;
-    padding:10px;
-}
-.div__communities-post-comment-reply{
-    background-color: #ffd2d2;
-    margin:20px;
-    padding:10px;
-}
-.div__communities-post{
-    background-color: rgb(243, 243, 243);
-    margin:20px;
-    padding:10px;
-}
-
-/*
-***********************************
-* Styles for Profile Page
-***********************************
-*/
 .img__users-profile-img{
     width:100px;
     height:100px;
@@ -117,31 +59,4 @@ divs
     padding:10px;
 }
 .div__users-profile-chart-container{
-}
-/*
-***********************************
-* Styles for Podcasts & Tips Page
-***********************************
-*/
-.a__podcasts-podcast-link{
-    text-decoration: none;
-    color:mediumblue;
-}
-.a__podcasts-podcast-link:hover{
-    color:royalblue;
-    text-decoration: none;
-}
-.div__podcasts-podcast-thumbnail{
-    width:30px;
-    height:200px;
-    border-radius:5px;
-    margin:10px;
-}
-
-/*
-Styles for forms
-*/
-.form__create-comment{
-    padding:10px;
-    margin:20px;
 }

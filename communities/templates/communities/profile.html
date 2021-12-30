@@ -3,15 +3,15 @@
 {% block content %}
 
 {% if modelViewedUser == user %}
-<div class = "text-center container border border-dark rounded alert alert-primary">
+<div class = "text-center container border rounded alert alert-primary">
 	This is how you appear publicly.
 </div>
 {% endif %}
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border rounded p-3">
 <div style="align-items:flex-start;" class = "div__users-profile">
 	<div style="display:inline-flex" class = "div__users-profile-media">
-		<img class = "rounded-circle img__users-profile-img" src = "{{modelViewedUser.profile_picture.url}}">
+		<img class = "rounded-circle" style="width:5rem;height:5rem;" src = "{{modelViewedUser.profile_picture.url}}">
 		<div class = "div__users-profile-media-account">
 			<h2 class = "account-heading">
 				{{modelViewedUser.username}}
@@ -35,7 +35,7 @@
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border rounded p-3">
 	<h3>About:</h3>
 	<p>
 		{{modelViewedUser.text_about}}
@@ -44,7 +44,7 @@
 
 <br>
 
-<div class = "container border border-primary rounded p-3">
+<div class = "container border rounded p-3">
 <h4>Stats:</h4>
 <ul>
 	<li>
@@ -60,14 +60,11 @@
 </div>
 
 <br>
-<div class = "container border border-primary rounded p-3">
+<div class = "container border rounded p-3">
 	<h4>All posts from {{modelViewedUser.username}}</h4>
 	{% for modelPost in listModelPosts %}
 	<a href = "{{modelPost.get_absolute_url}}">
-		<div class = "container border border-primary rounded p-3">
-			{{modelPost.title}}
-		</div>
-		<br>
+		{% include 'communities/t/tPostThumb.html' %}
 	</a>
 	{% endfor %}
 </div>

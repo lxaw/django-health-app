@@ -12,7 +12,7 @@ class CommentInline(admin.TabularInline):
 	fieldsets = [
 		("Post",{"fields":['post']}),
 		("Author",{"fields":['author']}),
-		("Body",{"fields":['body']}),
+		("Body",{"fields":['text']}),
 		("Parent",{"fields":['parent']}),
 	]
 	model = Comment
@@ -21,12 +21,12 @@ class PostAdmin(admin.ModelAdmin):
 
 	fieldsets = [
 		("Title",{"fields":['title']}),
-		("Author, Text Content",{'fields':['author','text_content']}),
+		("Author, Text Content",{'fields':['author','text']}),
 		('Date',{'fields':["pub_date"]}),
 		('Slug',{'fields':["slug"]}),
 	]
 
-	list_display = ('author','title','text_content')
+	list_display = ('author','title','text')
 
 	list_filter = ['pub_date']
 

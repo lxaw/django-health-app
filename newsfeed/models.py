@@ -33,7 +33,7 @@ class HelpRequest(models.Model):
 	# associate with a title
 	title = models.CharField(max_length=200,null=False)
 	# associate with text
-	text_content = models.CharField(max_length = 300)
+	text = models.CharField(max_length = 300)
 	# associate with tags
 	tags = models.CharField(max_length = 300,null=True)
 
@@ -77,7 +77,10 @@ class HelpRequest(models.Model):
 			)
 	
 	def get_parsed_tags(self):
-		return [i for i in self.tags.split(self.delim)]
+		if self.tags:
+			return [i for i in self.tags.split(self.delim)]
+		else:
+			return []
 
 	# check if created within day amount
 	def boolWithinXDays(self,intDays):
@@ -95,7 +98,7 @@ class HelpRequestOffer(models.Model):
 	# associate with user
 	author = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="help_request_offer_set")
 	# text associated with the message
-	text_content = models.CharField(max_length=300)
+	text = models.CharField(max_length=300)
 	# store date of poub
 	pub_date = models.DateTimeField(default=timezone.now)
 	# associate with a request for help
