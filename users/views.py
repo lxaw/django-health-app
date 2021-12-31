@@ -192,7 +192,6 @@ def viewDmIndex(request):
 	
 	# now sort the dictionary by value
 	dictUserDmDict = dict(sorted(dictUserDmDict.items(),key=lambda item: item[1],reverse=True))
-	print(dictUserDmDict)
 
 	context = {
 		"dictUserDmDict":dictUserDmDict,

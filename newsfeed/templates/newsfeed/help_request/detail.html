@@ -19,9 +19,14 @@
 				Or direct message them.
 			</p>
 		</a>
+		<a href = "{% url 'users:help-request-offer-remove-prepare' user.username modelHelpRequest.slug  %}" class = 'text-danger'>
+			<p>
+				Remove user {{modelHelpRequest.accepted_user.username}} from your help request?
+			</p>
+		</a>
 	</div>
-{% else %}
-	{% if request.user != modelHelpRequest.author %}
+{% elif request.user != modelHelpRequest.author %}
+	{% if request.user not in modelHelpRequest.listGetOfferUsers %}
 		<div class = "container border border rounded p-3">
 			<h4>Think you can help out?</h4>
 			<p class = "text-muted">Send a direct message to begin the conversation.</p>
@@ -40,21 +45,35 @@
 			</div>
 		</div>
 	{% else %}
-	<div class = "container border  rounded p-3">
-		<h4 class = 'text-center'>Your Offers</h4>
-		{% if listmodelHelpRequestOffers|length == 0 %}
-			<p class = 'text-center'>No offers yet.</p>
-		{% else %}
-			{% for modelHelpRequestOffer in listmodelHelpRequestOffers %}
-				<div class = "container border  rounded p-3">
-					<a href = "{{modelHelpRequestOffer.get_absolute_url}}">
-						<p>Offer by {{modelHelpRequestOffer.author}} on {{modelHelpRequest.pub_date}}</p>
-					</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-	</div>
+		<div class = "container border rounded p-3">
+			<h4>You have already created a help request offer.</h4>
+			<p>
+				If you would like to create a new one, you must 
+				<a href = "{% url 'newsfeed:help-request-offer-delete' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}" class = 'text-danger'>delete</a> the old one.
+			</p>
+			<hr>
+			<h5>
+				Your last created offer:
+			</h5>
+			{% include 'newsfeed/t/tHelpRequestOfferThumb.html' %}
+
+		</div>
 	{% endif %}
+{% else %}
+<div class = "container border rounded p-3">
+	<h4 class = 'text-center'>Your Offers</h4>
+	{% if listmodelHelpRequestOffers|length == 0 %}
+		<p class = 'text-center'>No offers yet.</p>
+	{% else %}
+		{% for modelHelpRequestOffer in listmodelHelpRequestOffers %}
+			<div class = "container border  rounded p-3">
+				<a href = "{{modelHelpRequestOffer.get_absolute_url}}">
+					<p>Offer by {{modelHelpRequestOffer.author}} on {{modelHelpRequest.pub_date}}</p>
+				</a>
+			</div>
+		{% endfor %}
+	{% endif %}
+	</div>
 {% endif %}
 
 {% endblock %}

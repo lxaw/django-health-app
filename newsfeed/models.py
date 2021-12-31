@@ -87,6 +87,14 @@ class HelpRequest(models.Model):
 		now = timezone.now()
 		return now - datetime.timedelta(days=intDays) <= self.pub_date <= now
 	
+	# get a list of all users who offered help
+	def listGetOfferedUsers(self):
+		listAllUsers = []
+		for modelOffer in self.help_request_offer_set.all():
+			listAllUsers.append(modelOffer.author)
+		
+		return listAllUsers
+	
 	def __str__(self):
 		return self.title
 

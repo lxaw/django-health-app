@@ -1,12 +1,14 @@
 {% extends "core/base.html" %}
 {% block content %}
 
-<div class = "container border border rounded p-3">
-	<h4 class = "text-center">Tip of the day for {{strDate}}:</h4>
-	{% include 'core/t/tTipOfDay.html' %}
-</div>
+{% if modelTipOfDay %}
+	<div class = "container border border rounded p-3">
+		<h4 class = "text-center">Tip of the day for {{strDate}}:</h4>
+		{% include 'core/t/tTipOfDay.html' %}
+	</div>
 
-<br>
+	<br>
+{% endif %}
 
 
 <div class = "container border border rounded p-3">
