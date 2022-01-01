@@ -6,6 +6,7 @@
 
 <br>
 
+<!-- If responded to, display the offer's author -->
 {% if modelHelpRequest.boolWasRespondedTo %}
 	<div class = "container border rounded p-3">
 		<p>To be helped by user <strong>{{modelHelpRequest.accepted_user.username}}.</strong></p>
@@ -19,14 +20,16 @@
 				Or direct message them.
 			</p>
 		</a>
-		<a href = "{% url 'users:help-request-offer-remove-prepare' user.username modelHelpRequest.slug  %}" class = 'text-danger'>
+		<a href = "{% url 'newsfeed:help-request-offer-delete-prepare' user.username modelHelpRequest.slug modelHelpRequestOfferAccepted.id %}" class = 'text-danger'>
 			<p>
 				Remove user {{modelHelpRequest.accepted_user.username}} from your help request?
 			</p>
 		</a>
 	</div>
+<!-- else if not the author of request and not responded to, allow offer creation -->
 {% elif request.user != modelHelpRequest.author %}
-	{% if request.user not in modelHelpRequest.listGetOfferUsers %}
+<!-- If not already made offer, allow to make -->
+	{% if not modelHelpRequestOffer %}
 		<div class = "container border border rounded p-3">
 			<h4>Think you can help out?</h4>
 			<p class = "text-muted">Send a direct message to begin the conversation.</p>
@@ -44,12 +47,15 @@
 				</form>
 			</div>
 		</div>
+<!-- If made offer, allow to delete / view -->
 	{% else %}
 		<div class = "container border rounded p-3">
 			<h4>You have already created a help request offer.</h4>
 			<p>
 				If you would like to create a new one, you must 
-				<a href = "{% url 'newsfeed:help-request-offer-delete' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}" class = 'text-danger'>delete</a> the old one.
+				<span onclick="voidDeleteHelpRequestOffer(this.id)"  id = "span__help-request-offer-delete" data-url = "{% url 'newsfeed:help-request-offer-delete' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}" class = 'text-danger'>
+					delete
+				</span> the old one.
 			</p>
 			<hr>
 			<h5>
@@ -76,4 +82,20 @@
 	</div>
 {% endif %}
 
+{% endblock %}
+
+{% block javascript %}
+<script>
+
+function voidDeleteHelpRequestOffer(eId){
+	// element id = eId of clicker
+	let e = document.getElementById(eId);
+	let strUrl = e.getAttribute('data-url');
+	if(confirm("Are you sure?") == true){
+		// delete
+		location.href = strUrl;
+	}
+}
+
+</script>
 {% endblock %}

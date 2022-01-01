@@ -41,12 +41,23 @@
         </div>
         <div>
             {% if request.user == modelHelpRequest.author %}
-                <form action = "{% url 'newsfeed:help-request-delete' modelHelpRequest.id %}">
-                    <button class = "btn btn-outline-danger mb-3" type="submit">
-                        Delete?
-                    </button>
-                </form>
+                <button id = "btn__delete-help-request${{modelHelpRequest.id}}" onclick = "voidDeleteHelpRequest(this.id)" data-url = "{% url 'newsfeed:help-request-delete' modelHelpRequest.author.username modelHelpRequest.slug %}" class = "btn btn-outline-danger mb-3" type="submit">
+                    Delete?
+                </button>
             {% endif %}
         </div>
     </div>
 </div>
+<script>
+
+function voidDeleteHelpRequest(eId){
+	// element id = eId of clicker
+	let e = document.getElementById(eId);
+	let strUrl = e.getAttribute('data-url');
+	if(confirm("Are you sure?") == true){
+		// delete
+		location.href = strUrl;
+	}
+}
+
+</script>

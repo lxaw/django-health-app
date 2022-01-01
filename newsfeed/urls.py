@@ -20,7 +20,7 @@ urlpatterns = [
 	# creating a request for help
 	path('request-help/create/',newsfeed_views.viewHelpRequestCreate,name="help-request-create"),
 	# delete help request
-	path('request-help/delete/<int:id>/',newsfeed_views.viewHelpRequestDelete,name="help-request-delete"),
+	path('request-help/<str:username>/<slug:slug>/delete/',newsfeed_views.viewHelpRequestDelete,name="help-request-delete"),
 	##################
 	# URLS for Help Request Offers
 	##################

@@ -144,18 +144,28 @@ def viewProfileEditPrepare(request):
 def viewProfileEdit(request):
 
 	if request.method == 'POST':
-		formUpdateForm = CustomUserUpdateForm(data=request.POST,instance=request.user)
-		formUpdatePasswordForm = CustomUserUpdatePasswordForm(data=request.POST,instance=request.user)
+
+		if len(request.FILES) != 0:
+			# uploaded a file
+			# delete old prof pic, replace with new
+			request.user.set_user_profile_picture_default()
+
+		formUpdateForm = CustomUserUpdateForm(request.POST,request.FILES,instance=request.user)
+		formUpdatePasswordForm = CustomUserUpdatePasswordForm(data=request.POST,
+		instance=request.user)
 
 		if formUpdateForm.is_valid():
+			messages.success(request,"Successfully updated profile.")
 			# update everything
 			if formUpdatePasswordForm.is_valid():
-				messages.success(request,"update everything")
+				formUpdateForm.save()
+				formUpdatePasswordForm.save()
 			# else update without password
 			else:
-				messages.success(request,"update no pass")
+				formUpdateForm.save()
 		else:
 			print(formUpdateForm.errors)
+
 	return redirect('users:profile')
 
 

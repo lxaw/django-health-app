@@ -9,19 +9,32 @@
 
 <div class = "container border  rounded p-3">
 	<h4 class = "text-center">Your pending requests</h4>
-	{% for modelHelpRequest in listmodelPendingRequests %}
-		{% include "newsfeed/t/tHelpRequest.html" %}
-	{% endfor%}
+	{% if listmodelPendingRequests|length == 0 %}
+		<p class ='text-muted text-center'>
+			No outgoing requests.
+		</p>
+	{% else %}
+
+		{% for modelHelpRequest in listmodelPendingRequests %}
+			{% include "newsfeed/t/tHelpRequest.html" %}
+		{% endfor%}
+	{% endif %}
 </div>
 
 <br>
 
 <div class = "container border  rounded p-3">
 	<h4 class = "text-center">Your older requests</h4>
-	{% for modelHelpRequest in listmodelAcceptedRequests %}
-		{% include "newsfeed/t/tHelpRequest.html" %}
-		<br>
-	{% endfor%}
+	{% if listmodelAcceptedRequests|length == 0 %}
+		<p class = 'text-muted text-center'>
+			No prior requests.
+		</p>
+	{% else %}
+		{% for modelHelpRequest in listmodelAcceptedRequests %}
+			{% include "newsfeed/t/tHelpRequest.html" %}
+			<br>
+		{% endfor%}
+	{% endif %}
 </div>
 
 {% endblock %}

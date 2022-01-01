@@ -112,16 +112,16 @@ def viewHelpRequestDetail(request,username,slug):
     listmodelHelpRequestOffers = modelHelpRequest.help_request_offer_set.all()
 
     # the offer that was accepted, if present
-    modelAcceptedOffer = None
+    modelHelpRequestOfferAccepted = None
 
     # the offer created by someone who already made an offer, if present
-    modelHelpRequestOfferOffer = None
+    modelHelpRequestOffer = None
 
     # get the offer that won, if present
     for modelLoopedOffer in listmodelHelpRequestOffers:
         # each user can only create one help request offer, so only need to check user
         if modelLoopedOffer.author == modelHelpRequest.accepted_user:
-            modelAcceptedOffer = modelLoopedOffer
+            modelHelpRequestOfferAccepted = modelLoopedOffer
         # if request user made offer, show them it
         if modelLoopedOffer.author == request.user:
             modelHelpRequestOffer = modelLoopedOffer
@@ -133,7 +133,7 @@ def viewHelpRequestDetail(request,username,slug):
         "modelHelpRequestAuthor":modelHelpRequestAuthor,
 
 		# if present
-        'modelAcceptedOffer':modelAcceptedOffer,
+        'modelHelpRequestOfferAccepted':modelHelpRequestOfferAccepted,
 		# if present
 		'modelHelpRequestOffer':modelHelpRequestOffer,
 
@@ -162,17 +162,19 @@ def viewHelpRequestPrepare(request):
 
 # delete help request
 @login_required
-def viewHelpRequestDelete(request, id):
+def viewHelpRequestDelete(request, username,slug):
     ###################################
     # Inputs:
-    # request, int id
+    # request, username of author, slug of post
     # Outputs:
     # redirect
     # Utility:
     # delete a help request
     ###################################
 
-    modelHelpRequest = get_object_or_404(HelpRequest,id=id)
+    modelAuthor = get_object_or_404(CustomUser,username=username)
+
+    modelHelpRequest = get_object_or_404(HelpRequest,author = modelAuthor,slug=slug)
     modelHelpRequestAuthor = modelHelpRequest.author
 
     if(request.user == modelHelpRequestAuthor):
@@ -405,6 +407,14 @@ def viewHelpRequestOfferDelete(request,username,slug,id):
     # request, username of person who created HELP REQUEST, slug of help request, 
     # id of HELP REQUEST OFFER
 
-    messages.success(request,"Successfully deleted offer.")
+    # Allow delete if 
+    # 1: is the author of the offer or
+    # 2: is the author of the help request
+
+    # 1: check if author of offer
+    modelOffer = get_object_or_404(HelpRequestOffer, id=id)
+    if request.user == modelOffer.author:
+        messages.success(request,"Successfully deleted offer.")
+        modelOffer.delete()
 
     return redirect(reverse('newsfeed:help-request-detail',kwargs={'username':username,'slug':slug}))

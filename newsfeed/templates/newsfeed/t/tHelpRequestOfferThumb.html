@@ -1,14 +1,20 @@
 <div class = 'container border p-3 rounded'>
-	<div class = 'd-flex justify-content-between'>
+	<div class = 'd-flex justify-content-between mb-0'>
 		<div>
-			{{modelHelpRequestOffer.author}}
+			<a href = "{{modelHelpRequestOffer.author.get_public_profile_url}}">
+				<p>
+					{{modelHelpRequestOffer.author}}
+				</p>
+			</a>
 		</div>
 		<div>
-			{{modelHelpRequestOffer.pub_date}}
+			<p>
+				{{modelHelpRequestOffer.pub_date}}
+			</p>
 		</div>
 	</div>	
-	<hr>
-	<div>
+	<hr class = 'mt-0 mb-2'>
+	<div class = 'mt-0'>
 		<p>
 			{{modelHelpRequestOffer.text}}
 		</p>

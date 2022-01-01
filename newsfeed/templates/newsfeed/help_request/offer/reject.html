@@ -3,17 +3,56 @@
 {% block content %}
 
 <div class = "container border border-primary rounded p-3">
-	<h4>Rejected offer</h4>
-	<div class = "container border border-primary rounded p-3">
+	<h2 class = 'text-center'>
+		Rejected Offer
+	</h2>
+	<p class = 'text-muted'>
+		You have rejected user <strong>{{modelUserOfferer}}</strong>'s offer to help.
+		Your request for help is still able to accept offers.
+	</p>
+</div>
+
+<br>
+
+<div class = "container border rounded p-3">
+	<div>
+		<h4 class = 'text-center'>
+			Let us know what why.
+		</h4>
 		<p>
-			You have rejected user <strong>{{modelUserOfferer}}</strong>'s offer to help.
-			Your request for help is still able to accept offers.
+			Please let us know why the offer was rejected by filling out the appropriate checkbox.
+			Your feedback helps improve the quality of the site.
 		</p>
 	</div>
-	<br>
-	<a href = "{{modelHelpRequest.get_absolute_url}}">
-		<h5>Back to your request</h5>
-	</a>
+	<div>
+		<form action = "" method = "POST">
+			{% csrf_token %}
+			<div class="form-check">
+				<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+				<label class="form-check-label" for="flexRadioDefault1">
+					Offer was offensive
+				</label>
+			</div>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+				<label class="form-check-label" for="flexRadioDefault1">
+					Offer was inappropriate to request
+				</label>
+			</div>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+				<label class="form-check-label" for="flexRadioDefault2">
+					No reason
+				</label>
+			</div>
+			<br>
+			<button class = "btn btn-outline-success" type='submit'>
+				Submit
+			</button>
+		</form>
+	</div>
+	
+
 </div>
 
 
