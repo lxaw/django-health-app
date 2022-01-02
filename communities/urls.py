@@ -10,7 +10,7 @@ app_name = "communities"
 
 urlpatterns = [
 	# ex: /communities/index/
-	path('index/',communities_views.viewIndex,name="index"),
+	path('index/<int:page>/',communities_views.viewIndex,name="index"),
 
 	##################
 	# URLS for Posts

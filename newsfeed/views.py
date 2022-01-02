@@ -230,8 +230,9 @@ def viewHelpRequestCreate(request):
         modelCreatedHelpRequest.save()
 
         # create an alert for all users
-        # do we want to do this? Or just for certain users?
-        for modelLoopedUser in CustomUser.objects.all():
+        # NOTE: 
+        # at moment just filtering for active users
+        for modelLoopedUser in CustomUser.objects.filter(is_active = True):
             # dont send yourself a notification
             if modelLoopedUser != request.user:
                 modelNotificationToLoopedUser = NotificationHelpRequest(sender=request.user,recipient=modelLoopedUser,
@@ -241,6 +242,7 @@ def viewHelpRequestCreate(request):
                 modelNotificationToLoopedUser.help_request = modelCreatedHelpRequest
                 # save the notification
                 modelNotificationToLoopedUser.save()
+
 
     return redirect('newsfeed:index')
 
@@ -327,7 +329,6 @@ def viewHelpRequestOfferAccept(request,username,slug,id):
     modelHelpRequest = get_object_or_404(HelpRequest,author=modelUserRequestee,slug=slug)
     # mark the help request as fulfilled (ie add offerer to responded_users)
     modelHelpRequest.accepted_user = modelUserOfferer
-    print('here')
     # # keep track of when it was accepted
     modelHelpRequest.accept_date = timezone.now()
     modelHelpRequest.save()
@@ -357,6 +358,19 @@ def viewHelpRequestOfferReject(request,username,slug,id):
     modelUserRequestee = get_object_or_404(CustomUser,username=username)
     # get the help request
     modelHelpRequest = get_object_or_404(HelpRequest,author=modelUserRequestee,slug=slug)
+
+    # send notification to user that offer rejected
+    modelNotification = NotificationHelpRequest(sender=request.user,recipient=modelHelpRequestOffer.author,
+        text="Your help request for request \"{}\" has been rejected.".format(modelHelpRequest.title)
+    )
+
+    modelNotification.help_request = modelHelpRequest 
+    modelNotification.save()
+
+    # delete the offer
+    # NOTE: This may want to be in another part of the views, since
+    # if we send a form on why an offer was bad we should show the offer as well.
+    modelHelpRequestOffer.delete()
 
     context = {
         "modelUserOfferer":modelUserOfferer,

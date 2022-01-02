@@ -45,7 +45,9 @@
 <br>
 
 <div class = "container border rounded p-3">
-<h4>Stats:</h4>
+<h4>
+	Stats:
+</h4>
 <ul>
 	<li>
 		Joined: {{modelViewedUser.date_joined}}
@@ -61,12 +63,20 @@
 
 <br>
 <div class = "container border rounded p-3">
-	<h4>All posts from {{modelViewedUser.username}}</h4>
-	{% for modelPost in listModelPosts %}
-	<a href = "{{modelPost.get_absolute_url}}">
-		{% include 'communities/t/tPostThumb.html' %}
-	</a>
-	{% endfor %}
+	<h4 class = 'text-center'>
+		All posts from {{modelViewedUser.username}}
+	</h4>
+	{% if listModelPosts|length == 0 %}
+		<p class = "text-muted text-center">
+			Nothing yet!
+		</p>
+	{% else %}
+		{% for modelPost in listModelPosts %}
+		<a href = "{{modelPost.get_absolute_url}}">
+			{% include 'communities/t/tPostThumb.html' %}
+		</a>
+		{% endfor %}
+	{% endif %}
 </div>
 
 {% endblock %}

@@ -8,7 +8,9 @@
             </div>
             <div class = "ml-3 mt-2">
                 <p class = "mb-0 mt-2">
-                    {{modelHelpRequest.author}}
+                    <a href = "{{modelHelpRequest.author.get_public_profile_url}}">
+                        {{modelHelpRequest.author}}
+                    </a>
                 </p>
                 <p class = "mt-0 text-muted">
                     {{modelHelpRequest.pub_date}}
