@@ -18,6 +18,9 @@ from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin,BaseUse
 
 import datetime
 
+# for resizing images
+from PIL import Image
+
 ###########################
 # Custom user models
 # With reference to: 
@@ -78,6 +81,11 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 	##############################################
 	# User models
 	##############################################
+	
+	# img path
+	DEFAULT_PROF_PIC_PATH = "users/profile_pics/defaults/default_profile_pic.jpg"
+	PROF_PIC_UPLOAD_PATH = "users/profile_pics"
+	
 	# Authentication of user
 	email = models.EmailField(gettext_lazy('email address'),unique = True)
 	username = models.CharField(max_length=150,unique = True)
@@ -100,7 +108,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 	# Custom fields
 	########################
 	is_developer = models.BooleanField(default = False)
-	is_pod_plus_member= models.BooleanField(default = True)
+	is_pod_plus_member= models.BooleanField(default = False)
 
 	int_points = models.IntegerField(default = 0)	
 	int_users_helped = models.IntegerField(default = 0)
@@ -110,7 +118,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 		'about'),max_length=500,blank = True)
 
 	# need Pillow library for images
-	profile_picture = models.ImageField(default="users/profile_pics/defaults/default_profile_pic.jpg",upload_to="users/profile_pics")
+	profile_picture = models.ImageField(default=DEFAULT_PROF_PIC_PATH,upload_to=PROF_PIC_UPLOAD_PATH)
 
 	# store when the user joined
 	date_joined = models.DateTimeField(default=timezone.now)
@@ -129,6 +137,40 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 	USERNAME_FIELD = "username"
 	REQUIRED_FIELDS = ["email","phone_number"]
 
+	def set_user_profile_picture_default(self):
+		# deletes and sets prof pic to default
+
+		# delete old picture
+		self.profile_picture.delete(save=False)
+		# set default
+		self.profile_picture = self.DEFAULT_PROF_PIC_PATH
+		# save
+		self.save()
+
+
+	def save(self):
+		##############
+		# TO DO:
+		# Delete old images when a user uploads new ones
+		##############
+		max_height = 300
+		max_width = 300
+
+		# NOTE: Should be a way to check if only one field changed
+		# delete and reset prof pic
+		# run save method of parent class
+		super().save()
+
+		# delete the last image
+		
+		# resize image
+		img = Image.open(self.profile_picture.path)
+		if img.height > max_height or img.width > max_width:
+			output_size = (max_height,max_width)
+			img.thumbnail(output_size)
+			img.save(self.profile_picture.path)
+		
+
 	def __str__(self):
 		###################
 		# String function when printing models
@@ -142,6 +184,19 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 		# profile page of a user
 		####################################
 		return reverse('communities:profile',kwargs={"username":self.username})
+	
+	def get_notification_count(self):
+		# returns the integer amount of all notifications
+		# that a user has
+		
+		# check each notification type, get sum
+		intSum = 0
+		
+		intSum += (self.recipient_notification_help_request_set.count() +
+		self.recipient_notification_post_set.count())
+
+		return intSum
+		
 
 class DirectMessage(models.Model):
 	# sender

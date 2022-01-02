@@ -4,7 +4,7 @@
 from django.shortcuts import render, reverse, redirect,get_object_or_404,HttpResponseRedirect
 
 # forms
-from .forms import UserRegisterForm, DirectMessageForm
+from .forms import UserRegisterForm,CustomUserUpdateForm,CustomUserUpdatePasswordForm,DirectMessageForm
 
 # messages on registration / log in
 from django.contrib import messages
@@ -128,6 +128,45 @@ def viewProfile(request):
 
 	return render(request,'users/profile.html',context = context)
 
+# display form to edit information
+@login_required
+def viewProfileEditPrepare(request):
+
+	# allow users to edit their information
+
+	context = {
+	}
+
+	return render(request,'users/edit.html',context = context)
+
+# process the edited info
+@login_required
+def viewProfileEdit(request):
+
+	if request.method == 'POST':
+
+		if len(request.FILES) != 0:
+			# uploaded a file
+			# delete old prof pic, replace with new
+			request.user.set_user_profile_picture_default()
+
+		formUpdateForm = CustomUserUpdateForm(request.POST,request.FILES,instance=request.user)
+		formUpdatePasswordForm = CustomUserUpdatePasswordForm(data=request.POST,
+		instance=request.user)
+
+		if formUpdateForm.is_valid():
+			messages.success(request,"Successfully updated profile.")
+			# update everything
+			if formUpdatePasswordForm.is_valid():
+				formUpdateForm.save()
+				formUpdatePasswordForm.save()
+			# else update without password
+			else:
+				formUpdateForm.save()
+		else:
+			print(formUpdateForm.errors)
+
+	return redirect('users:profile')
 
 
 ################################
@@ -135,7 +174,7 @@ def viewProfile(request):
 ################################
 
 @login_required
-def viewIndexDMs(request):
+def viewDmIndex(request):
 	listmodelDmedUsers = []
 	# all the distinct users you have dm'ed
 
@@ -163,7 +202,6 @@ def viewIndexDMs(request):
 	
 	# now sort the dictionary by value
 	dictUserDmDict = dict(sorted(dictUserDmDict.items(),key=lambda item: item[1],reverse=True))
-	print(dictUserDmDict)
 
 	context = {
 		"dictUserDmDict":dictUserDmDict,
@@ -226,7 +264,7 @@ def viewDmDetail(request,username):
 	return render(request,'users/dm/dm_detail.html',context=context)
 
 @login_required
-def viewCreateDm(request,username):
+def viewDmCreate(request,username):
 	######################
 	# Inputs:
 	# request, str username of the dm'ed user

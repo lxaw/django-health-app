@@ -65,6 +65,7 @@ def viewIndex(request):
 	# returns 1 for jan first, we want 0 however for indexing
 	intDayNum = int(datetime.now().timetuple().tm_yday) - 1
 	# use the day num to index the tips
+	print(intDayNum)
 	modelTipOfDay = get_object_or_404(TipOfDay,day_number=intDayNum)
 
 	context = {

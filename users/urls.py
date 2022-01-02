@@ -22,15 +22,19 @@ urlpatterns = [
 	#####################
 	# ex: /users/profile/
 	path('profile/',users_views.viewProfile,name='profile'),
+	# ex: /users/edit-prepare/	
+	path('edit-prepare/',users_views.viewProfileEditPrepare,name='profile-edit-prepare'),
+	# ex: /users/edit/
+	path('edit/',users_views.viewProfileEdit,name='profile-edit'),
 	#####################
 	# Food views
 	#####################
 	# ex: /users/dm/index
-	path('dm/index',users_views.viewIndexDMs,name="dm-index"),
+	path('dm/index',users_views.viewDmIndex,name="dm-index"),
 	# ex: /users/dm/prepare/
 	path('dm/prepare/',users_views.viewDmPrepareSearch,name="dm-prepare"),
 	# ex: /users/dm/bob/detail/
 	path('dm/<str:username>/detail/',users_views.viewDmDetail,name="dm-detail"),
 	# ex: /users/bob/dm/create/
-	path('dm/<str:username>/create/',users_views.viewCreateDm,name="dm-create"),
+	path('dm/<str:username>/create/',users_views.viewDmCreate,name="dm-create"),
 ]

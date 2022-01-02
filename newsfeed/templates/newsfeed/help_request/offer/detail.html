@@ -38,7 +38,7 @@
 		<a href = "{% url 'newsfeed:help-request-offer-accept' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
 			<button id = "btn__accept" class = "btn btn-outline-success mr-3">Accept</button>
 		</a>
-		<a href = "{% url 'newsfeed:help-request-offer-accept' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
+		<a href = "{% url 'newsfeed:help-request-offer-reject' modelHelpRequest.author.username modelHelpRequest.slug modelHelpRequestOffer.id %}">
 			<button id = "btn__reject" class = "btn btn-outline-danger">Reject</button>
 		</a>
 	</div>

@@ -13,7 +13,7 @@ from food.models import Food
 # Forms for searching
 #############################
 class SearchUserForm(forms.Form):
-	query = forms.CharField(label="Search",max_length=50)
+	query = forms.CharField(label="Search",max_length=100)
 
 #############################
 # Forms for User Creation / Change
@@ -40,17 +40,22 @@ class CustomUserCreationForm(UserCreationForm):
 
 	class Meta:
 		model = CustomUser
-		fields = ("email",)
+		fields = ('username','email','phone_number','password1','password2')
 
-class CustomUserChangeForm(UserChangeForm):
-	###################################
-	# Form to change items in custom user
-	###################################
+class CustomUserUpdateForm(forms.ModelForm):
+	email = forms.EmailField()
 
 	class Meta:
 		model = CustomUser
-		fields = ("email",)
+		fields = ['username','email','profile_picture']
 
+# special bc passwords are hashed
+class CustomUserUpdatePasswordForm(forms.ModelForm):
+	
+	class Meta:
+		model = CustomUser
+		fields = ['password']
+	
 
 #############################
 # Forms for DMs

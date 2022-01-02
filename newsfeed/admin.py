@@ -10,7 +10,7 @@ class HelpRequestAdmin(admin.ModelAdmin):
 	fieldsets = [
 		('Title',{'fields':["title"]}),
 		("Author",{"fields":["author"]}),
-		('Text Content',{"fields":["text_content"]}),
+		('Text Content',{"fields":["text"]}),
 		('Tags',{"fields":['tags']}),
 		("Date",{"fields":['pub_date']}),
 		("Slug",{'fields':['slug']}),
@@ -23,7 +23,7 @@ class HelpRequestOfferAdmin(admin.ModelAdmin):
 
 	fieldsets = [
 		("Author",{"fields":['author']}),
-		("Text Content",{"fields":['text_content']}),
+		("Text Content",{"fields":['text']}),
 		("Date",{"fields":["pub_date"]}),
 		("Help Request",{"fields":["help_request"]}),
 		("Is Accepted?",{"fields":["is_accepted"]}),
