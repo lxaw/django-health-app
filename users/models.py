@@ -114,7 +114,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 	int_users_helped = models.IntegerField(default = 0)
 	int_days_active = models.IntegerField(default = 0)
 
-	text_about = models.TextField(gettext_lazy(
+	about = models.TextField(gettext_lazy(
 		'about'),max_length=500,blank = True)
 
 	# need Pillow library for images
@@ -187,7 +187,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 		# Returns a reverse to the public
 		# profile page of a user
 		####################################
-		return reverse('communities:profile',kwargs={"username":self.username})
+		return reverse('communities:profile',kwargs={"username":self.username,"page":1})
 	
 	def get_notification_count(self):
 		# returns the integer amount of all notifications

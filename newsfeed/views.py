@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.urls import reverse
+from django.core.paginator import Paginator, EmptyPage
 
 ############################
 # Necessary Models
@@ -28,7 +29,7 @@ from core.models import NotificationHelpRequest
 from newsfeed.forms import HelpRequestForm,HelpRequestOfferForm
 
 @login_required
-def viewIndex(request):
+def viewIndex(request,page=1):
     ###################################
     # Inputs:
     # request
@@ -49,10 +50,17 @@ def viewIndex(request):
     
     # list of unfilled help requests
     # right now it has every single request, in reality may want to limit
-    listUnfilledHelpRequests = []
-    for modelHelpRequest in HelpRequest.objects.all().order_by("-pub_date"):
-        if not modelHelpRequest.boolWasRespondedTo():
-            listUnfilledHelpRequests.append(modelHelpRequest)
+    qsUnfilledHelpRequests = HelpRequest.objects.filter(accepted_user = None).order_by('-pub_date')
+
+    # now we paginate
+    intHelpRequestsPerPage = 2
+    paginator = Paginator(qsUnfilledHelpRequests,intHelpRequestsPerPage)
+    # paginate based on number of help requests
+    try:
+        qsUnfilledHelpRequests = paginator.page(page)
+    except EmptyPage:
+        # if exceed limit go to last page
+        qsUnfilledHelpRequests = paginator.page(paginator.num_pages)
 
     listLastNFollowedUserPosts = []
     # loop thru followed users, get their recent posts
@@ -65,7 +73,7 @@ def viewIndex(request):
 
     context = {
         "listRecentPosts":listRecentPosts,
-        "listUnfilledHelpRequests":listUnfilledHelpRequests,
+        'qsUnfilledHelpRequests':qsUnfilledHelpRequests,
         "listLastNFollowedUserPosts":listLastNFollowedUserPosts,
     }
     return render(request,'newsfeed/index.html',context = context)
@@ -181,7 +189,7 @@ def viewHelpRequestDelete(request, username,slug):
         messages.success(request,"Help Request successfully deleted.")
         modelHelpRequest.delete()
 
-    return redirect("newsfeed:index")
+    return redirect(reverse("newsfeed:index",kwargs={'page':1}))
 
 @login_required
 def viewHelpRequestCreate(request):
@@ -244,7 +252,7 @@ def viewHelpRequestCreate(request):
                 modelNotificationToLoopedUser.save()
 
 
-    return redirect('newsfeed:index')
+        return redirect(reverse('newsfeed:index',kwargs={"page":1}))
 
 def viewHelpRequestOfferCreate(request,username,slug):
     modelAuthor = get_object_or_404(CustomUser,username=username)
@@ -254,13 +262,13 @@ def viewHelpRequestOfferCreate(request,username,slug):
     # is not the same person giving themselves advice!
     if request.user == modelHelpRequest.author:
         messages.warning(request,"Cannot give yourself an offer to help.")
-        return redirect("newsfeed:index")
+        return redirect(reverse('newsfeed:index',kwargs={"page":1}))
     
     # make sure they have not already made a request
     for modelOffer in modelHelpRequest.help_request_offer_set.all():
         if request.user == modelOffer.author:
             messages.warning(request, "You have already created an offer to help. If you would like to create another, you must remove the old one.")
-            return redirect('newsfeed:index')
+            return redirect(reverse('newsfeed:index',kwargs={"page":1}))
 
     if request.method == "POST":
 
@@ -292,7 +300,7 @@ def viewHelpRequestOfferCreate(request,username,slug):
         # create message
         messages.success(request,"Successfully created help request offer.")
     
-    return redirect("newsfeed:index")
+    return redirect(reverse("newsfeed:help-request-detail",kwargs={'username':modelHelpRequest.author,'slug':modelHelpRequest.slug}))
 
 def viewHelpRequestOfferDetail(request,username,slug,id):
     ###############################
@@ -413,7 +421,7 @@ def viewHelpRequestOfferDeletePrepare(request,username,slug,id):
 
     }
 
-    return render(request,'newsfeed/help_request/offer/remove-prepare.html')
+    return render(request,'newsfeed/help_request/offer/remove_prepare.html')
 
 # actually deletes offer
 def viewHelpRequestOfferDelete(request,username,slug,id):

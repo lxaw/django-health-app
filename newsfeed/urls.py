@@ -7,7 +7,7 @@ app_name = "newsfeed"
 
 urlpatterns = [
     # ex: /newsfeed/index/
-    path('index',newsfeed_views.viewIndex,name="index"),
+    path('index&page=<int:page>/',newsfeed_views.viewIndex,name="index"),
 	##################
 	# URLS for Ask for Help
 	##################

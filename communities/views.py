@@ -185,21 +185,33 @@ def viewPostDetail(request, slug,username):
 	return render(request, 'communities/post_detail.html',context)
 
 @login_required
-def viewProfile(request, username):
+def viewProfile(request, username,page=1):
 	###################################
 	# Inputs:
-	# request, str username
+	# request, str username, page for pagination
 	# Outputs:
 	# render
 	# Utility:
 	# view called for public profile
 	###################################
+
 	modelUser = get_object_or_404(CustomUser, username = username)
-	listModelPosts = modelUser.created_post_set.all().order_by("-pub_date")
+	qsPosts = modelUser.created_post_set.order_by('-pub_date')
+
+	# pagination number of posts per page
+	intPostsPerPage = 3
+	# paginate based on number of posts
+	paginator = Paginator(qsPosts,intPostsPerPage)
+
+	try:
+		qsPosts = paginator.page(page)
+	except EmptyPage:
+		# if exceed limit go to last page
+		qsPosts = paginator.page(paginator.num_pages)
 
 	context = {
 		"modelViewedUser": modelUser,
-		"listModelPosts":listModelPosts,
+		"qsPosts":qsPosts,
 	}
 
 	return render(request, "communities/profile.html",context)

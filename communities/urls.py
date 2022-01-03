@@ -10,7 +10,7 @@ app_name = "communities"
 
 urlpatterns = [
 	# ex: /communities/index/
-	path('index/<int:page>/',communities_views.viewIndex,name="index"),
+	path('index&page=<int:page>/',communities_views.viewIndex,name="index"),
 
 	##################
 	# URLS for Posts
@@ -41,7 +41,7 @@ urlpatterns = [
 	# URLS for Public Profiles
 	##################
 	# ex: /communities/profile/username/
-	path('profile/<str:username>/',communities_views.viewProfile,name="profile"),
+	path('profile/<str:username>&page=<int:page>/',communities_views.viewProfile,name="profile"),
 	##################
 	# URLS for Following
 	##################

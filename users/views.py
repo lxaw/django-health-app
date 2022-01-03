@@ -113,13 +113,12 @@ def viewProfile(request):
 		"dictUserStats" :{
 			"strEmail": user.email,
 			"strUsername":user.username,
-			"strAbout": user.text_about,
+			"strAbout": user.about,
 			"boolIsPodPlusMember":user.is_pod_plus_member,
 			"intPoints":user.int_points,
 			"intDaysActive":user.int_days_active,
 			"intUsersHelped":user.int_users_helped,
 			"strDateJoined":user.date_joined,
-			"intFoodUploadCount":user.uploaded_meals.count(),
 		},
 		# followed users
 		"listFollowerUsers":listFollowerUsers,
