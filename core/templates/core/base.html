@@ -67,10 +67,10 @@ Basic navbar to show it is possible
 				</div>
 			</div>
 
-			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'communities:index' %}">
+			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'communities:index' 1 %}">
 				Communities
 			</a>
-			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'newsfeed:index' %}">
+			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'newsfeed:index' 1 %}">
 				Newsfeed
 			</a>
 			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'podcasts:index' %}">

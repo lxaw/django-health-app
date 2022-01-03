@@ -8,10 +8,14 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 #####################################
-# Messages
+# django utils
 #####################################
+# messages
 from django.contrib import messages
-
+# time zones
+from django.utils import timezone
+# pagination
+from django.core.paginator import Paginator, EmptyPage
 
 #####################################
 # Necessary models
@@ -26,16 +30,12 @@ from core.models import NotificationPost, NotificationUser
 #####################################
 from .forms import PostForm, CommentForm
 from newsfeed.forms import HelpRequestForm
-#####################################
-# Outside imports
-#####################################
-from django.utils import timezone
 
 @login_required
-def viewIndex(request):
+def viewIndex(request,page=1):
 	###################################
 	# Inputs:
-	# request
+	# request, page for pagination
 	# Outputs:
 	# render
 	# Utility:
@@ -50,12 +50,20 @@ def viewIndex(request):
 	
 	# order the posts
 	# Create a dictionary of {Post:Post comments sorted}
-	dictModelPosts = {}
-	for modelPost in Post.objects.all().order_by('-pub_date'):
-		dictModelPosts[modelPost] = modelPost.comments.filter(active=True).order_by("pub_date")
+	qsPosts = Post.objects.all().order_by('-pub_date')
+
+	intPostsPerPage = 5
+	# paginate based on number of posts
+	paginator = Paginator(qsPosts,intPostsPerPage)	
+
+	try:
+		qsPosts = paginator.page(page)
+	except EmptyPage:
+		# if exceed limit go to last page
+		qsPosts = paginator.page(paginator.num_pages)
 
 	context = {
-		"dictModelPosts":dictModelPosts,
+		"qsPosts":qsPosts,
 		"formPostForm":formPostForm,
 		"formCommentForm":formCommentForm,
 	}
@@ -105,12 +113,12 @@ def viewPostCreate(request):
 			messages.success(request, "Post created.")
 
 			# redirect
-			return redirect('communities:index')
+			return redirect(reverse('communities:index',kwargs={"page":1}))
 	
 	context = {
 		"formPostForm":formPostForm,
 	}
-	return redirect("communities:index")
+	return redirect(reverse('communities:index',kwargs={"page":1}))
 
 @login_required
 def viewLikeUnlikePost(request,post_id):
@@ -177,21 +185,33 @@ def viewPostDetail(request, slug,username):
 	return render(request, 'communities/post_detail.html',context)
 
 @login_required
-def viewProfile(request, username):
+def viewProfile(request, username,page=1):
 	###################################
 	# Inputs:
-	# request, str username
+	# request, str username, page for pagination
 	# Outputs:
 	# render
 	# Utility:
 	# view called for public profile
 	###################################
+
 	modelUser = get_object_or_404(CustomUser, username = username)
-	listModelPosts = modelUser.created_post_set.all().order_by("-pub_date")
+	qsPosts = modelUser.created_post_set.order_by('-pub_date')
+
+	# pagination number of posts per page
+	intPostsPerPage = 3
+	# paginate based on number of posts
+	paginator = Paginator(qsPosts,intPostsPerPage)
+
+	try:
+		qsPosts = paginator.page(page)
+	except EmptyPage:
+		# if exceed limit go to last page
+		qsPosts = paginator.page(paginator.num_pages)
 
 	context = {
 		"modelViewedUser": modelUser,
-		"listModelPosts":listModelPosts,
+		"qsPosts":qsPosts,
 	}
 
 	return render(request, "communities/profile.html",context)
@@ -291,7 +311,7 @@ def viewPostDelete(request,post_id):
 	if request.user == modelPostAuthor:
 		modelPost.delete()
 	
-	return redirect('communities:index')
+	return redirect(reverse('communities:index',kwargs={"page":1}))
 
 @login_required
 def viewDeleteComment(request,comment_id):
@@ -341,7 +361,7 @@ def viewAddRemoveFollow(request, username):
 def viewLeaderboardIndex(request):
 	if not request.user.is_pod_plus_member:
 		messages.warning(request,"Only POD+ members may access this page.")
-		return redirect('communities:index')
+		return redirect("communities:index")
 	
 	# else they are a member
 	context = {

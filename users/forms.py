@@ -47,7 +47,7 @@ class CustomUserUpdateForm(forms.ModelForm):
 
 	class Meta:
 		model = CustomUser
-		fields = ['username','email','profile_picture']
+		fields = ['username','email','profile_picture','about']
 
 # special bc passwords are hashed
 class CustomUserUpdatePasswordForm(forms.ModelForm):

@@ -4,7 +4,7 @@
 			<img style="height:10%;width:10%"  class = "rounded-circle" src = "{{modelComment.author.profile_picture.url}}">
 			<div class = "ml-3">
 				<p class = "mb-0">
-					<a href ="{% url 'communities:profile' modelComment.author.username %}">
+					<a href ="{{ modelComment.author.get_public_profile_url }}">
 						{{modelComment.author}}
 					</a>
 				</p>
@@ -16,7 +16,7 @@
 		</div>
 		<div class = "container row">
 			{% if modelComment.boolIsReply %}
-				<a href = "{% url 'communities:profile' modelComment.parent.author.username %}">
+				<a href = "{{modelComment.parent.get_public_profile_url}}">
 					@{{modelComment.parent.author}} &nbsp;
 				</a>
 			{% endif %}

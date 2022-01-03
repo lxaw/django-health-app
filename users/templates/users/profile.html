@@ -63,6 +63,11 @@
 				Edit Information
 			</p>
 		</a>
+		<a href = "{{user.get_public_profile_url}}">
+			<p class = 'text-center'>
+				See public profile
+			</p>
+		</a>
 	</div>
 	<hr>
 	<strong>Email:</strong> {{dictUserStats.strEmail}}
@@ -73,9 +78,11 @@
 	<br>
 	{% if user.is_pod_plus_member %}
 		<strong>Points:</strong> {{dictUserStats.intPoints}}
+		<br>
 	{% endif %}
-	<br>
 	<strong>Date joined:</strong> {{dictUserStats.strDateJoined}}
+	<br>
+	<strong>About You:</strong> "{{dictUserStats.strAbout}}"
 </div>
 
 <br>

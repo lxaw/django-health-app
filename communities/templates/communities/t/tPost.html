@@ -5,7 +5,7 @@
 			<div class = "ml-3 mt-3">
 				<div>
 					<p class = "mb-0">
-						<a href = "{% url 'communities:profile' modelPost.author.username %}">
+						<a href = "{{ modelPost.author.get_public_profile_url }}">
 							{{modelPost.author}}
 						</a>
 					</p>

@@ -38,14 +38,16 @@
 <div class = "container border rounded p-3">
 	<h3>About:</h3>
 	<p>
-		{{modelViewedUser.text_about}}
+		{{modelViewedUser.about}}
 	</p>
 </div>
 
 <br>
 
 <div class = "container border rounded p-3">
-<h4>Stats:</h4>
+<h4>
+	Stats:
+</h4>
 <ul>
 	<li>
 		Joined: {{modelViewedUser.date_joined}}
@@ -61,12 +63,46 @@
 
 <br>
 <div class = "container border rounded p-3">
-	<h4>All posts from {{modelViewedUser.username}}</h4>
-	{% for modelPost in listModelPosts %}
-	<a href = "{{modelPost.get_absolute_url}}">
-		{% include 'communities/t/tPostThumb.html' %}
-	</a>
+	<h4 class = 'text-center'>
+		All posts from {{modelViewedUser.username}}
+	</h4>
+	{% if qsPosts|length == 0 %}
+		<p class = "text-muted text-center">
+			Nothing yet!
+		</p>
+	{% else %}
+		{% for modelPost in qsPosts %}
+		<a href = "{{modelPost.get_absolute_url}}">
+			{% include 'communities/t/tPostThumb.html' %}
+		</a>
+		{% endfor %}
+	{% endif %}
+</div>
+
+<br>
+
+<div class = 'container'>
+	<ul class='pagination justify-content-center'>
+	{% if qsPosts.has_previous %}
+		<li class="mx-1"><a href='{% url "profile:index" qsPosts.previous_page_number %}'>Previous</a></li>
+	{% else %}
+		<li class='mx-1 disabled'><span >Previous</span></li>
+	{% endif %}
+
+	{% for i in qsPosts.paginator.page_range %}
+		{% if qsPosts.number == i %}
+		<li class='active mx-1'><span>{{ i }}</span></li>
+		{% else %}
+		<li class="mx-1"><a href='{% url "communities:profile" user.username i %}'>{{ i }}</a></li>
+		{% endif %}
 	{% endfor %}
+	
+	{% if qsPosts.has_next %}
+		<li class="mx-1"><a href='{% url "communities:profile" user.username qsPosts.next_page_number %}' >Next</a></li>
+	{% else %}
+		<li class="mx-1"><span class='disabled'>Next</span></li> 
+	{% endif %}
+	</ul>
 </div>
 
 {% endblock %}

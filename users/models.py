@@ -114,7 +114,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 	int_users_helped = models.IntegerField(default = 0)
 	int_days_active = models.IntegerField(default = 0)
 
-	text_about = models.TextField(gettext_lazy(
+	about = models.TextField(gettext_lazy(
 		'about'),max_length=500,blank = True)
 
 	# need Pillow library for images
@@ -145,10 +145,13 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 		# set default
 		self.profile_picture = self.DEFAULT_PROF_PIC_PATH
 		# save
-		self.save()
+		self.save_no_img_change()
+	
+	def save_no_img_change(self,*args,**kwargs):
+		super().save(*args,**kwargs)
 
 
-	def save(self):
+	def save(self,*args,**kwargs):
 		##############
 		# TO DO:
 		# Delete old images when a user uploads new ones
@@ -159,7 +162,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 		# NOTE: Should be a way to check if only one field changed
 		# delete and reset prof pic
 		# run save method of parent class
-		super().save()
+		super().save(*args,**kwargs)
 
 		# delete the last image
 		
@@ -169,6 +172,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 			output_size = (max_height,max_width)
 			img.thumbnail(output_size)
 			img.save(self.profile_picture.path)
+
 		
 
 	def __str__(self):
@@ -183,7 +187,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 		# Returns a reverse to the public
 		# profile page of a user
 		####################################
-		return reverse('communities:profile',kwargs={"username":self.username})
+		return reverse('communities:profile',kwargs={"username":self.username,"page":1})
 	
 	def get_notification_count(self):
 		# returns the integer amount of all notifications
