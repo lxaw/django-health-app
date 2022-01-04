@@ -132,10 +132,23 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 	# store user phone number
 	phone_number = models.CharField(max_length=12,unique=True,null=False)
 
+	# store if they responded to tip of day
+	# to check if they viewed the one for today, compare the last 
+	# view date to today's date
+	last_tip_view_date = models.DateField(null=True, blank=True)
+
 	# USERNAME_FIELD is the default unique field that ID's user
 	# This is the unique field that identies users.
 	USERNAME_FIELD = "username"
 	REQUIRED_FIELDS = ["email","phone_number"]
+
+	def boolViewedTodaysTip(self):
+		# check if viewed today's tip
+		# when view a tip, it updates the last date view to that
+		# of the day you are viewing
+		if self.last_tip_view_date == datetime.date.today():
+			return True
+		return False
 
 	def set_user_profile_picture_default(self):
 		# deletes and sets prof pic to default

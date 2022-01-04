@@ -114,3 +114,7 @@ class TipOfDay(models.Model):
 			return [i for i in self.tags.split(self.strDelim)]
 		else:
 			return []
+	
+	def reverseGetReadUrl(self):
+		# returns a reverse url for the read function of tip
+		return reverse('core:tip-read',kwargs={'tip_id':self.id})

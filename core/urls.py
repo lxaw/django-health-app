@@ -10,4 +10,6 @@ urlpatterns = [
 	path('',core_views.viewAbout,name='about'),
 	# deleting notification
 	path('notifications/<str:notification_type>/<int:notification_id>/delete/',core_views.viewNotificationDelete,name="notification-delete"),
+	# reading tip
+	path('tips/<int:tip_id>/read/',core_views.viewTipRead,name='tip-read'),
 ]

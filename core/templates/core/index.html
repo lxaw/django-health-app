@@ -3,7 +3,9 @@
 
 {% if modelTipOfDay %}
 	<div class = "container border border rounded p-3">
-		<h4 class = "text-center">Tip of the day for {{strDate}}:</h4>
+		<h4 class = "text-center">
+			Tip of the day for {{strDate}}
+		</h4>
 		{% include 'core/t/tTipOfDay.html' %}
 	</div>
 
@@ -12,9 +14,13 @@
 
 
 <div class = "container border border rounded p-3">
-	<h3 class = "text-center">Activity on your posts.</h3>
+	<h3 class = "text-center">
+		Activity on Your Posts
+	</h3>
 	{% if qsModelNotificationPost|length == 0 %}
-		<p class = "text-center">All caught up!</p>
+		<p class = "text-center">
+			All caught up!
+		</p>
 	{% else %}
 		{% for modelNotificationPost in qsModelNotificationPost %}
 			{% include 'core/t/tNotificationPost.html' %}
@@ -26,9 +32,13 @@
 <br>
 
 <div class = "container border border rounded p-3">
-	<h3 class = "text-center">Activity on your help requests.</h3>
+	<h3 class = "text-center">
+		Activity on Your Help Requests
+	</h3>
 	{% if qsModelNotificationHelpRequest|length == 0 %}
-		<p class = "text-center">All caught up!</p>
+		<p class = "text-center">
+			All caught up!
+		</p>
 	{% else %}
 		{% for modelNotificationHelpRequest in qsModelNotificationHelpRequest %}
 			{% include 'core/t/tNotificationHelpRequest.html' %}
@@ -37,3 +47,11 @@
 	{% endif %}
 </div>
 {% endblock content %}
+
+{% block javascript %}
+
+<script>
+	
+</script>
+
+{% endblock %}

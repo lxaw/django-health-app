@@ -1,12 +1,26 @@
-<div class = "container border rounded p-3">
-	<h6 class = "text-center">
-		Tip # {{modelTipOfDay.day_number}}
-	</h6>
-	<hr>
-	<p>
-		{{modelTipOfDay.text}}
-	</p>
-	<button class = "btn btn-outline-success">
-		Got it!
-	</button>
+<div class = "container border rounded p-3 div__tip-of-day-holder">
+	<div>
+		<h6 class = "text-center">
+			Tip # {{modelTipOfDay.day_number}}
+		</h6>
+		<hr>
+		<p>
+			{{modelTipOfDay.text}}
+		</p>
+	</div>
+	<div>
+		{% if request.user.boolViewedTodaysTip %}
+		<a href = "{{modelTipOfDay.reverseGetReadUrl}}">
+			<button class = "btn btn-outline-success">
+				Got it!
+			</button>
+		</a>
+		{% else %}
+		<a href = "">
+			<p class = 'text-success'>
+				See tip archive
+			</p>
+		</a>
+		{% endif %}
+	</div>
 </div>

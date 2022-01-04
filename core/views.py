@@ -119,4 +119,30 @@ def viewNotificationDelete(request,notification_type,notification_id):
 	modelNotification = get_object_or_404(Notification, id = notification_id)
 	modelNotificationRecipient = modelNotification.recipient
 
+@login_required
+def viewTipRead(request,tip_id):
+	# function that reads the tip of day
+	# to read a tip we add the user to the tip's responded users,
+	# and update the users last tip read date to today
+
+	###########################
+	# Inputs:
+	# request, id of tip
+	###########################
 	
+	# get the tip
+	modelTip = get_object_or_404(TipOfDay,id=tip_id)
+	# add to responded users
+	if request.user not in modelTip.responded_users.all():
+		# add to users
+		messages.success(request,"Tip has been read!")
+		modelTip.responded_users.add(request.user)
+	else:
+		messages.success(request,"Tip has been re-read!")
+
+	# regardless of if user has seen tip before, update the 
+	# date of last tip read
+	today = date.today()
+	request.user.last_tip_view_date = today
+
+	return redirect('core:index')
