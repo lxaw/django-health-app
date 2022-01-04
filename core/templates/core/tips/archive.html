@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class = 'container border border-primary rounded p-3'>
+	<h2 class = 'text-center'>
+		Tips Archive
+	</h2>
+</div>
+
+<br>
+
+<div class = 'container border rounded p-3'>
+	<h4 class = "text-center">
+		Your Viewed Tips
+	</h4>
+	<div>
+		{% if listModelViewedTips|length != 0 %}
+			{% for modelTipOfDay in listModelViewedTips %}
+				{% include 'core/t/tTipOfDay.html' %}
+			{% endfor %}
+		{% else %}
+			<p class = 'text-center text-muted'>
+				No tips viewed yet! Start by 
+				<a href = "{% url 'core:index' %}">
+				viewing today's tip.
+				</a>
+			</p>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

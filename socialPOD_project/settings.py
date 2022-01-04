@@ -49,8 +49,6 @@ INSTALLED_APPS = [
     'food.apps.FoodConfig',
     # fitness
     'fitness.apps.FitnessConfig',
-    # tips of day
-    'tips.apps.TipsConfig',
 
     # ############################
     # django defaults

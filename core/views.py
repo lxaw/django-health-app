@@ -49,11 +49,11 @@ def viewIndex(request):
 	###################################
 
 	# # get a tip
-	# listModelTips = []
+	# listModelViewedTips = []
 	# for modelTip in TipOfDay.objects.all():
 	# 	if request.user not in modelTip.responded_users.all():
 	# 		# user has not yet responded to tip
-	# 		listModelTips.append(modelTip)
+	# 		listModelViewedTips.append(modelTip)
 	
 	# get all their notifications
 	qsModelNotificationPost = request.user.recipient_notification_post_set.all().order_by("-pub_date")
@@ -146,3 +146,17 @@ def viewTipRead(request,tip_id):
 	request.user.last_tip_view_date = today
 
 	return redirect('core:index')
+
+def viewTipArchive(request):
+
+	listModelViewedTips = []
+
+	for modelTip in TipOfDay.objects.all():
+		if request.user in modelTip.responded_users.all():
+			listModelViewedTips.append(modelTip)
+
+	context = {
+		"listModelViewedTips":listModelViewedTips,
+	}
+
+	return render(request,'core/tips/archive.html',context=context)

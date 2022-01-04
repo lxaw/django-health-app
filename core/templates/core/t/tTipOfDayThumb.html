@@ -16,9 +16,11 @@
 			</button>
 		</a>
 		{% else %}
-		<p class = "text-center text-muted">
-			Thanks for reviewing this tip!
-		</p>
+		<a href = "{% url 'core:tip-archive' %}">
+			<p class = 'text-success'>
+				See in tip archive.
+			</p>
+		</a>
 		{% endif %}
 	</div>
 	<div>

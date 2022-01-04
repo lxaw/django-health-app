@@ -52,7 +52,7 @@ def viewIndex(request,page=1):
 	# Create a dictionary of {Post:Post comments sorted}
 	qsPosts = Post.objects.all().order_by('-pub_date')
 
-	intPostsPerPage = 5
+	intPostsPerPage = 3
 	# paginate based on number of posts
 	paginator = Paginator(qsPosts,intPostsPerPage)	
 
