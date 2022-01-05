@@ -83,6 +83,13 @@ def viewRegister(request):
 
 	return render(request,'users/register.html',context=context)
 
+
+# A way to have views with arguments be login views
+# kinda cheap
+def viewLoginRedirect(request):
+
+	return redirect(reverse("core:index",args=[1,1,1]))
+
 #################################
 # Views relating to user profiles
 #################################

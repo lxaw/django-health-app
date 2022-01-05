@@ -9,8 +9,24 @@ class TipOfDayAdmin(admin.ModelAdmin):
 		("Text Content",{"fields":['text']}),
 		("Tags",{"fields":['tags']}),
 		("Responded Users",{"fields":['responded_users']}),
+		("Day Number",{"fields":["day_number"]}),
 	]
-	search_fields = ['tag','text']
+
+	# what to display as a row on admin page
+	list_display = ['day_number','tags']
+	
+	# what can be filtered
+	list_filter = ('tags',)
+
+	# what can be searched
+	search_fields = ['day_number','tags','text']
+
+	# ordering
+	ordering = ('day_number',)
+
+###################################
+# Notifications
+###################################
 
 class NotificationHelpRequestAdmin(admin.ModelAdmin):
 	fieldsets = [
@@ -20,6 +36,7 @@ class NotificationHelpRequestAdmin(admin.ModelAdmin):
 		("Recipient",{"fields":['recipient']}),
 		("Help Request",{"fields":['help_request']}),
 	]
+
 
 class NotificationPostAdmin(admin.ModelAdmin):
 	fieldsets = [

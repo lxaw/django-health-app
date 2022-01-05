@@ -6,7 +6,8 @@
 		<h4 class = "text-center">
 			Tip of the day for {{strDate}}
 		</h4>
-		{% include 'core/t/tTipOfDayThumb.html' %}
+
+	{% include 'core/t/tips/tTipIndex.html' %}
 	</div>
 
 	<br>
@@ -27,6 +28,29 @@
 			<br>
 		{% endfor %}
 	{% endif %}
+	<div class = 'container'>
+		<ul class='pagination justify-content-center'>
+		{% if qsModelNotificationPost.has_previous %}
+			<li class="mx-1"><a href='{% url "core:index" qsModelNotificationPost.previous_page_number intNotifHrPgNum intNotifDmPgNum %}'>Previous</a></li>
+		{% else %}
+			<li class='mx-1 disabled'><span >Previous</span></li>
+		{% endif %}
+
+		{% for i in qsModelNotificationPost.paginator.page_range %}
+			{% if qsPosts.number == i %}
+			<li class='active mx-1'><span>{{ i }}</span></li>
+			{% else %}
+			<li class="mx-1"><a href='{% url "core:index" i intNotifHrPgNum intNotifDmPgNum %}'>{{ i }}</a></li>
+			{% endif %}
+		{% endfor %}
+		
+		{% if qsModelNotificationPost.has_next %}
+			<li class="mx-1"><a href='{% url "core:index" qsModelNotificationPost.next_page_number intNotifHrPgNum intNotifDmPgNum %}' >Next</a></li>
+		{% else %}
+			<li class="mx-1"><span class='disabled'>Next</span></li> 
+		{% endif %}
+		</ul>
+	</div>
 </div>
 
 <br>
@@ -45,6 +69,29 @@
 			<br>
 		{% endfor %}
 	{% endif %}
+	<div class = 'container'>
+		<ul class='pagination justify-content-center'>
+		{% if qsModelNotificationHelpRequest.has_previous %}
+			<li class="mx-1"><a href='{% url "core:index" intNotifHrPgNum qsModelNotificationHelpRequest.previous_page_number intNotifDmPgNum %}'>Previous</a></li>
+		{% else %}
+			<li class='mx-1 disabled'><span >Previous</span></li>
+		{% endif %}
+
+		{% for i in qsModelNotificationHelpRequest.paginator.page_range %}
+			{% if qsHelpRequests.number == i %}
+			<li class='active mx-1'><span>{{ i }}</span></li>
+			{% else %}
+			<li class="mx-1"><a href='{% url "core:index" intNotifHrPgNum i intNotifDmPgNum %}'>{{ i }}</a></li>
+			{% endif %}
+		{% endfor %}
+		
+		{% if qsModelNotificationHelpRequest.has_next %}
+			<li class="mx-1"><a href='{% url "core:index" intNotifHrPgNum qsModelNotificationHelpRequest.next_page_number intNotifDmPgNum %}' >Next</a></li>
+		{% else %}
+			<li class="mx-1"><span class='disabled'>Next</span></li> 
+		{% endif %}
+		</ul>
+	</div>
 </div>
 {% endblock content %}
 

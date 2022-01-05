@@ -5,7 +5,7 @@ from . import views as core_views
 app_name = "core"
 urlpatterns = [
 	# ex: /
-	path('index/',core_views.viewIndex,name='index'),
+	path('index&np=<int:npost_pg>&nhr=<int:nhelpreq_pg>&ndm=<int:ndm_pg>/',core_views.viewIndex,name='index'),
 	# ex: /about/
 	path('',core_views.viewAbout,name='about'),
 	# deleting notification

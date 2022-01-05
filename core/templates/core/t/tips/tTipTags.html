@@ -1,0 +1,13 @@
+<div class = "mt-3">
+	{% if modelTipOfDay.listGetParsedTags %}
+		{% for strTag in modelTipOfDay.listGetParsedTags %}
+			<span style= "background-color: aliceblue;" class ="rounded mr-3 p-1">
+				<a style = "text-decoration: none;">
+					{{strTag}}
+				</a>
+			</span>
+		{% endfor %}
+	{% else %}
+		<p>This tip has no tags associated with it.</p>
+	{% endif %}
+</div>

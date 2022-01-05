@@ -11,6 +11,8 @@ urlpatterns = [
 	# User basic functions
 	# Register, login/out
 	#####################
+	# redirect to login
+	path('login-redirect/',users_views.viewLoginRedirect,name='login-redirect'),
 	# ex: /users/register/
 	path('register/',users_views.viewRegister,name='register'),
 	# ex: /users/login/
@@ -37,4 +39,5 @@ urlpatterns = [
 	path('dm/<str:username>/detail/',users_views.viewDmDetail,name="dm-detail"),
 	# ex: /users/bob/dm/create/
 	path('dm/<str:username>/create/',users_views.viewDmCreate,name="dm-create"),
+
 ]
