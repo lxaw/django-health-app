@@ -41,38 +41,8 @@
 	<h4 class = 'text-center'>
 		Recent Help Requests
 	</h4>
-	{% if qsUnfilledHelpRequests|length == 0 %}
-		<p class = "text-muted">Looks like theres nothing yet!</p>
-	{% else %}
-		{% for modelHelpRequest in qsUnfilledHelpRequests %}
-
-			{% include "newsfeed/t/tHelpRequest.html" %}
-
-		{% endfor %}
-	{% endif %}
-	<br>
-	<div>
-		<ul class='pagination justify-content-center'>
-		{% if qsUnfilledHelpRequests.has_previous %}
-			<li class="mx-1"><a href='{% url "newsfeed:index" qsUnfilledHelpRequests.previous_page_number %}'>Previous</a></li>
-		{% else %}
-			<li class='mx-1 disabled'><span >Previous</span></li>
-		{% endif %}
-
-		{% for i in qsUnfilledHelpRequests.paginator.page_range %}
-			{% if qsUnfilledHelpRequests.number == i %}
-			<li class='active mx-1'><span>{{ i }}</span></li>
-			{% else %}
-			<li class="mx-1"><a href='{% url "newsfeed:index" i %}'>{{ i }}</a></li>
-			{% endif %}
-		{% endfor %}
-		
-		{% if qsUnfilledHelpRequests.has_next %}
-			<li class="mx-1"><a href='{% url "newsfeed:index" qsUnfilledHelpRequests.next_page_number %}' >Next</a></li>
-		{% else %}
-			<li class="mx-1"><span class='disabled'>Next</span></li> 
-		{% endif %}
-		</ul>
+	<div id = "div__help-requests-holder">
+		{% include 'newsfeed/t/index_help_requests.html' %}
 	</div>
 </div>
 
@@ -115,3 +85,33 @@
 {% endblock content %}
 
 {% include 'newsfeed/t/jsHelpRequest.html' %}
+
+{% block javascript %}
+
+<script>
+
+function ajax_update_url(e,divName){
+	page = e.getAttribute('page');
+	strUrl = e.getAttribute('data-url');
+	let divHolder = document.getElementById(divName);
+
+	$.ajax({
+		type:"GET",
+		url:strUrl,
+		dataType:'json',
+		// all the args for url
+		data:{
+			'page':page,
+		},
+		success: function(data){
+			// reload stuff
+			divHolder.innerHTML = data.data_html;
+			// update url
+			window.history.pushState(null,"",strUrl);
+		}
+	})
+}
+
+</script>
+
+{% endblock %}
