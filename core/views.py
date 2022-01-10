@@ -10,6 +10,11 @@ from django.urls import reverse
 # paginator
 from django.core.paginator import Paginator, EmptyPage
 
+# json
+from django.http import JsonResponse
+# templates
+from django.template.loader import render_to_string
+
 ###########################
 # Necessary models
 ###########################
@@ -44,7 +49,7 @@ def viewAbout(request):
 
 # n prepend = notificiation
 # pg = page for paginatiron
-def viewIndex(request,npost_pg=1,nhelpreq_pg=1,ndm_pg=1):
+def viewIndex(request,pg_post=1,pg_help_req=1,pg_dm=1):
 	###################################
 	# Inputs:
 	# request, page number for posts, page num for help reqs, page num for dms
@@ -55,8 +60,8 @@ def viewIndex(request,npost_pg=1,nhelpreq_pg=1,ndm_pg=1):
 	###################################
 
 	# get all their notifications
-	qsModelNotificationPost = request.user.recipient_notification_post_set.all().order_by("-pub_date")
-	qsModelNotificationHelpRequest = request.user.recipient_notification_help_request_set.all().order_by('-pub_date')
+	qsNotifPosts = request.user.recipient_notification_post_set.all().order_by("-pub_date")
+	qsModelNotifHelpRequest = request.user.recipient_notification_help_request_set.all().order_by('-pub_date')
 
 	dateToday = date.today()
 	strDate = dateToday.strftime("%B %d, %Y")
@@ -68,32 +73,103 @@ def viewIndex(request,npost_pg=1,nhelpreq_pg=1,ndm_pg=1):
 	# pagination
 	intPostNotifsPerPage = 3
 	intHelpRequestNotifsPerPage = 3
-	paginator_post = Paginator(qsModelNotificationPost,intPostNotifsPerPage)
-	paginator_hr = Paginator(qsModelNotificationHelpRequest,intHelpRequestNotifsPerPage)
+	paginator_post = Paginator(qsNotifPosts,intPostNotifsPerPage)
+	paginator_hr = Paginator(qsModelNotifHelpRequest,intHelpRequestNotifsPerPage)
 
 	try:
-		qsModelNotificationPost = paginator_post.page(npost_pg)
+		qsNotifPosts = paginator_post.page(pg_post)
 	except EmptyPage:
-		qsModelNotificationPost = paginator_post.page(paginator_post.num_pages)
+		qsNotifPosts = paginator_post.page(paginator_post.num_pages)
 	
 	try:
-		qsModelNotificationHelpRequest = paginator_hr.page(nhelpreq_pg)
+		qsModelNotifHelpRequest = paginator_hr.page(pg_help_req)
 	except EmptyPage:
-		qsModelNotificationHelpRequest = paginator_hr.page(paginator_hr.num_pages)
+		qsModelNotifHelpRequest = paginator_hr.page(paginator_hr.num_pages)
 
 	context = {
 		'strTitle':'index',
 		'strDate':strDate,
 		'modelTipOfDay':modelTipOfDay,
-		'qsModelNotificationPost':qsModelNotificationPost,
-		'qsModelNotificationHelpRequest':qsModelNotificationHelpRequest,
+		'qsNotifPosts':qsNotifPosts,
+		'qsNotifHelpRequest':qsModelNotifHelpRequest,
 
 		# page numbers
-		'intNotifPostPgNum':npost_pg,
-		'intNotifHrPgNum':nhelpreq_pg,
-		'intNotifDmPgNum':ndm_pg,
+		'intNotifPostPgNum':pg_post,
+		'intNotifHrPgNum':pg_help_req,
+		'intNotifDmPgNum':pg_dm,
 	}
 	return render(request,'core/index.html',context=context)
+
+@login_required
+def aGetNotifPosts(request,pg_post,pg_help_req,pg_dm):
+	###########################
+	# Inputs:
+	# request, str of model type, int for pg of posts, int for page of
+	# help reqs, int for page of dms
+	###########################
+	# ajax view to get the models for index
+
+	intPerPage = 3
+
+	# get all post notifications in order
+	qsNotifPosts = request.user.recipient_notification_post_set.all().order_by("-pub_date")
+	# paginate
+	paginator = Paginator(qsNotifPosts,intPerPage)
+
+	try:
+		qsNotifPosts = paginator.page(pg_post)
+	except EmptyPage:
+		qsNotifPosts = paginator.page(paginator.num_pages)
+
+	html_data = render_to_string(
+		"core/t/index_posts.html",
+		{"qsNotifPosts":qsNotifPosts,
+		# page numbers
+		"intNotifPostPgNum":pg_post,
+		'intNotifHrPgNum':pg_help_req,
+		"intNotifDmPgNum":pg_dm,
+		}
+	)	
+	data = {
+		"html_data":html_data,
+	}
+	return JsonResponse(data)
+
+@login_required
+def aGetNotifHelpRequests(request,pg_post,pg_help_req,pg_dm):
+	###########################
+	# Inputs:
+	# request, str of model type, int for pg of posts, int for page of
+	# help reqs, int for page of dms
+	###########################
+	# ajax view to get the models for index
+
+	intPerPage = 3
+
+	# get all post notifications in order
+	qsNotifHelpRequests = request.user.recipient_notification_help_request_set.all().order_by("-pub_date")
+	# paginate
+	paginator = Paginator(qsNotifHelpRequests,intPerPage)
+
+	try:
+		qsNotifHelpRequests = paginator.page(pg_post)
+	except EmptyPage:
+		qsNotifHelpRequests = paginator.page(paginator.num_pages)
+
+	html_data = render_to_string(
+		"core/t/index_posts.html",
+		{"qsNotifHelpRequests":qsNotifHelpRequests,
+		# page numbers
+		"intNotifPostPgNum":pg_post,
+		'intNotifHrPgNum':pg_help_req,
+		"intNotifDmPgNum":pg_dm,
+		}
+	)	
+	data = {
+		"html_data":html_data,
+	}
+	return JsonResponse(data)
+
 
 
 @login_required

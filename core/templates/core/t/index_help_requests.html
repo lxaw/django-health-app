@@ -1,0 +1,64 @@
+<div id = "div__notif-help-request-holder">
+	<h3 class = "text-center">
+		Activity on Your Help Requests
+	</h3>
+	{% if qsNotifHelpRequest|length == 0 %}
+		<p class = "text-center">
+			All caught up!
+		</p>
+	{% else %}
+		{% for modelNotifHelpRequest in qsNotifHelpRequest %}
+			{% include 'core/t/tNotificationHelpRequest.html' %}
+		{% endfor %}
+	{% endif %}
+	<div class = 'container'>
+		<ul class='pagination justify-content-center'>
+		{% if qsNotifHelpRequest.has_previous %}
+			<li class="mx-1">
+				<p class = "text-primary" ajax-url = "{% url 'core:ajax-index-help-requests' intNotifHrPgNum qsNotifHelpRequest.previous_page_number intNotifDmPgNum %}"
+				change-url = '{% url "core:index" intNotifHrPgNum qsNotifHelpRequest.previous_page_number intNotifDmPgNum %}'
+				onclick = "ajax_update_url(this,'div__notif-help-request-holder')"
+				>
+					Previous
+				</p>
+			</li>
+		{% else %}
+			<li class='mx-1 disabled'>
+				<span>
+					Previous
+				</span>
+			</li>
+		{% endif %}
+
+		{% for i in qsNotifHelpRequest.paginator.page_range %}
+			{% if qsHelpRequests.number == i %}
+			<li class='active mx-1'>
+				<span>
+					{{ i }}
+				</span>
+			</li>
+			{% else %}
+			<li class="mx-1">
+				<a href='{% url "core:index" intNotifHrPgNum i intNotifDmPgNum %}'>
+					{{ i }}
+				</a>
+			</li>
+			{% endif %}
+		{% endfor %}
+		
+		{% if qsNotifHelpRequest.has_next %}
+			<li class="mx-1">
+				<a href='{% url "core:index" intNotifHrPgNum qsNotifHelpRequest.next_page_number intNotifDmPgNum %}'>
+					Next
+				</a>
+			</li>
+		{% else %}
+			<li class="mx-1">
+				<span class='disabled'>
+					Next
+				</span>
+			</li> 
+		{% endif %}
+		</ul>
+	</div>
+</div>

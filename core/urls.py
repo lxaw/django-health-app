@@ -5,7 +5,7 @@ from . import views as core_views
 app_name = "core"
 urlpatterns = [
 	# ex: /
-	path('index&np=<int:npost_pg>&nhr=<int:nhelpreq_pg>&ndm=<int:ndm_pg>/',core_views.viewIndex,name='index'),
+	path('index&np=<int:pg_post>&nhr=<int:pg_help_req>&ndm=<int:pg_dm>/',core_views.viewIndex,name='index'),
 	# ex: /about/
 	path('',core_views.viewAbout,name='about'),
 	# deleting notification
@@ -18,4 +18,11 @@ urlpatterns = [
 	path('tips/<int:tip_id>/read/',core_views.viewTipRead,name='tip-read'),
 	# tip archive
 	path('tips/archive/',core_views.viewTipArchive,name='tip-archive'),
+
+	#######################
+	# AJAX paths
+	#######################
+	path('ajax/index_posts&pg_post=<int:pg_post>&pg_hr=<int:pg_help_req>&pg_dm=<int:pg_dm>/',core_views.aGetNotifPosts,name='ajax-index-posts'),
+	path('ajax/index_help_requests&pg_post=<int:pg_post>&pg_hr=<int:pg_help_req>&pg_dm=<int:pg_dm>/',core_views.aGetNotifHelpRequests,name='ajax-index-help-requests'),
+
 ]

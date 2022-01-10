@@ -7,12 +7,9 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 # templates
-from django.template import RequestContext
-from django.template import loader
 from django.template.loader import render_to_string
 # json / serializers
 from django.http import JsonResponse
-from django.core import serializers
 
 #####################################
 # django utils
@@ -76,7 +73,7 @@ def viewIndex(request,page=1):
 		"formCommentForm":formCommentForm,
 	}
 	if request.is_ajax():
-		posts_html = loader.render_to_string(
+		posts_html = render_to_string(
 			"communities/t/posts.html",
 			{'qsPosts':qsPosts}
 		)
@@ -174,7 +171,7 @@ def viewLikeUnlikePost(request,post_id):
 		
 		modelNotificationPost.save()
 	
-	return redirect('communities:index')
+	return redirect(reverse('communities:index',kwargs={"page":1}))
 
 @login_required
 def viewPostDetail(request, slug,username):

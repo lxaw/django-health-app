@@ -26,19 +26,17 @@
 
 	{% for i in qsPosts.paginator.page_range %}
 		{% if qsPosts.number == i %}
-		<li class='active mx-1'><span>{{ i }}</span></li>
+		<li class='mx-1'>
+            <span class = "text-success">
+                {{ i }}
+            </span>
+        </li>
 		{% else %}
 		<li class="mx-1">
 			<p page = "{{i}}" data-url = "{% url 'communities:index' i %}" onclick = "ajax_update_url(this)">
-                {% if page == i %}
-                <span class = "text-success">
-                    {{ i }}
-                </span>
-                {% else %}
                 <span class = "text-primary">
                     {{i}}
                 </span>
-                {% endif %}
             </p>
 		</li>
 		{% endif %}
