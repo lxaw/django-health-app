@@ -17,12 +17,13 @@ urlpatterns = [
 	# reading tip
 	path('tips/<int:tip_id>/read/',core_views.viewTipRead,name='tip-read'),
 	# tip archive
-	path('tips/archive/',core_views.viewTipArchive,name='tip-archive'),
+	path('tips/archive&pg_prev_tips=<int:pg_prev_tips>/',core_views.viewTipArchive,name='tip-archive'),
 
 	#######################
 	# AJAX paths
 	#######################
 	path('ajax/index_posts&pg_post=<int:pg_post>&pg_hr=<int:pg_help_req>&pg_dm=<int:pg_dm>/',core_views.aGetNotifPosts,name='ajax-index-posts'),
 	path('ajax/index_help_requests&pg_post=<int:pg_post>&pg_hr=<int:pg_help_req>&pg_dm=<int:pg_dm>/',core_views.aGetNotifHelpRequests,name='ajax-index-help-requests'),
+	path('ajax/tip/archive_get_tips&pg=<int:pg_prev_tips>/',core_views.aGetTips,name="ajax-tips-archive-prev-tips"),
 
 ]

@@ -101,7 +101,7 @@ class TipOfDay(models.Model):
 	# tag is a comma delimited string
 	tags = models.CharField(max_length = 500,null=True,blank=True)
 	# users who have responded to tip of day
-	responded_users = models.ManyToManyField(CustomUser,related_name="responded_users")
+	responded_users = models.ManyToManyField(CustomUser,related_name="tip_set")
 
 	strDelim = "$"
 
@@ -117,3 +117,7 @@ class TipOfDay(models.Model):
 	def reverseGetReadUrl(self):
 		# returns a reverse url for the read function of tip
 		return reverse('core:tip-read',kwargs={'tip_id':self.id})
+	
+	def reverseGetArchiveUrl(self):
+		# returns url for archive of tips
+		return reverse('core:tip-archive',kwargs = {"pg_prev_tips":1})

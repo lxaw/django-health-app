@@ -15,8 +15,8 @@
 		<ul class='pagination justify-content-center'>
 		{% if qsNotifHelpRequest.has_previous %}
 			<li class="mx-1">
-				<p class = "text-primary" ajax-url = "{% url 'core:ajax-index-help-requests' intNotifHrPgNum qsNotifHelpRequest.previous_page_number intNotifDmPgNum %}"
-				change-url = '{% url "core:index" intNotifHrPgNum qsNotifHelpRequest.previous_page_number intNotifDmPgNum %}'
+				<p class = "text-primary" ajax-url = "{% url 'core:ajax-index-help-requests' intNotifPostPgNum qsNotifHelpRequest.previous_page_number intNotifDmPgNum %}"
+				change-url = '{% url "core:index" intNotifPostPgNum qsNotifHelpRequest.previous_page_number intNotifDmPgNum %}'
 				onclick = "ajax_update_url(this,'div__notif-help-request-holder')"
 				>
 					Previous
@@ -31,26 +31,32 @@
 		{% endif %}
 
 		{% for i in qsNotifHelpRequest.paginator.page_range %}
-			{% if qsHelpRequests.number == i %}
+			{% if qsNotifHelpRequest.number == i %}
 			<li class='active mx-1'>
-				<span>
+				<span class = 'text-success'>
 					{{ i }}
 				</span>
 			</li>
 			{% else %}
 			<li class="mx-1">
-				<a href='{% url "core:index" intNotifHrPgNum i intNotifDmPgNum %}'>
+				<p	class = 'text-primary' ajax-url = '{% url "core:ajax-index-help-requests" intNotifHrPgNum i intNotifDmPgNum %}'
+					change-url='{% url "core:index" intNotifHrPgNum i intNotifDmPgNum %}'
+					onclick = "ajax_update_url(this,'div__notif-help-request-holder')"
+				>
 					{{ i }}
-				</a>
+				</p>
 			</li>
 			{% endif %}
 		{% endfor %}
 		
 		{% if qsNotifHelpRequest.has_next %}
 			<li class="mx-1">
-				<a href='{% url "core:index" intNotifHrPgNum qsNotifHelpRequest.next_page_number intNotifDmPgNum %}'>
-					Next
-				</a>
+				<p  class = "text-primary"
+					ajax-url = '{% url "core:ajax-index-help-requests" intNotifHrPgNum qsNotifHelpRequest.next_page_number intNotifDmPgNum %}'
+					onclick = "ajax_update_url(this,'div__notif-help-request-holder')"
+					change-url='{% url "core:index" intNotifHrPgNum qsNotifHelpRequest.next_page_number intNotifDmPgNum %}'>
+						Next
+				</p>
 			</li>
 		{% else %}
 			<li class="mx-1">

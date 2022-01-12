@@ -2,7 +2,7 @@
 	{% include "core/t/tips/tTipBase.html" %}
 	<div class = "mt-0 mb-0">
 		{% if request.user.boolViewedTodaysTip %}
-		<a href = "{% url 'core:tip-archive' %}">
+		<a href = "{{modelTipOfDay.reverseGetArchiveUrl}}">
 			<p class = 'text-success'>
 				See in tip archive.
 			</p>

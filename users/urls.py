@@ -23,7 +23,7 @@ urlpatterns = [
 	# User profile
 	#####################
 	# ex: /users/profile/
-	path('profile/',users_views.viewProfile,name='profile'),
+	path('profile&pg_following=<int:pg_following>/',users_views.viewProfile,name='profile'),
 	# ex: /users/edit-prepare/	
 	path('edit-prepare/',users_views.viewProfileEditPrepare,name='profile-edit-prepare'),
 	# ex: /users/edit/

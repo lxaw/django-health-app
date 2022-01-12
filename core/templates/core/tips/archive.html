@@ -14,18 +14,39 @@
 		Your Viewed Tips
 	</h4>
 	<div>
-		{% if listModelViewedTips|length != 0 %}
-			{% for modelTipOfDay in listModelViewedTips %}
-				{% include 'core/t/tips/tTipArchive.html' %}
-			{% endfor %}
-		{% else %}
-			<p class = 'text-center text-muted'>
-				No tips viewed yet! Start by 
-				<a href = "{% url 'core:index' %}">
-				viewing today's tip.
-				</a>
-			</p>
-		{% endif %}
+		{% include "core/tips/t/archived_tips.html" %}
 	</div>
 </div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+
+	function ajax_update_url(e,strDivName){
+		page = e.getAttribute('page');
+		// url for ajax call
+		strAjaxUrl = e.getAttribute('ajax-url');
+		// url to change page to
+		strChangeUrl = e.getAttribute('change-url');
+		// get the div to update
+		let divHolder = document.getElementById(strDivName);
+		console.log(divHolder);
+
+		$.ajax({
+			type:"GET",
+			url:strAjaxUrl,
+			dataType:'json',
+			data:{
+				"page":page,
+			},
+			success:function(data){
+				// reload div
+				divHolder.innerHTML = data.html_data;
+				// update url
+				window.history.pushState(null,'',strChangeUrl);
+			}
+		})
+	}
+	
+</script>
 {% endblock %}

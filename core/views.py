@@ -147,18 +147,18 @@ def aGetNotifHelpRequests(request,pg_post,pg_help_req,pg_dm):
 	intPerPage = 3
 
 	# get all post notifications in order
-	qsNotifHelpRequests = request.user.recipient_notification_help_request_set.all().order_by("-pub_date")
+	qsNotifHelpRequest = request.user.recipient_notification_help_request_set.all().order_by("-pub_date")
 	# paginate
-	paginator = Paginator(qsNotifHelpRequests,intPerPage)
+	paginator = Paginator(qsNotifHelpRequest,intPerPage)
 
 	try:
-		qsNotifHelpRequests = paginator.page(pg_post)
+		qsNotifHelpRequest = paginator.page(pg_help_req)
 	except EmptyPage:
-		qsNotifHelpRequests = paginator.page(paginator.num_pages)
+		qsNotifHelpRequest = paginator.page(paginator.num_pages)
 
 	html_data = render_to_string(
-		"core/t/index_posts.html",
-		{"qsNotifHelpRequests":qsNotifHelpRequests,
+		"core/t/index_help_requests.html",
+		{"qsNotifHelpRequest":qsNotifHelpRequest,
 		# page numbers
 		"intNotifPostPgNum":pg_post,
 		'intNotifHrPgNum':pg_help_req,
@@ -243,16 +243,51 @@ def viewTipRead(request,tip_id):
 
 	return redirect(reverse('core:index',args=[1,1,1]))
 
-def viewTipArchive(request):
+@login_required
+def viewTipArchive(request,pg_prev_tips):
+	# inputs:
+	# request, page for the previous tip
 
-	listModelViewedTips = []
+	intPerPage = 3
 
-	for modelTip in TipOfDay.objects.all():
-		if request.user in modelTip.responded_users.all():
-			listModelViewedTips.append(modelTip)
+	qsModelViewedTips = request.user.tip_set.all()
+	# paginator
+	paginator = Paginator(qsModelViewedTips,intPerPage)
+
+	try:
+		qsModelViewedTips = paginator.page(pg_prev_tips)
+	except EmptyPage:
+		qsModelViewedTips = paginator.page(paginator.num_pages)
 
 	context = {
-		"listModelViewedTips":listModelViewedTips,
+		"qsModelViewedTips":qsModelViewedTips,
 	}
 
 	return render(request,'core/tips/archive.html',context=context)
+
+@login_required
+def aGetTips(request,pg_prev_tips):
+	# inputs:
+	# request, int pg
+
+	intPerPage = 3
+
+	qsTips = request.user.tip_set.all()
+
+	# paginate
+	paginator = Paginator(qsTips,intPerPage)
+
+	try:
+		qsTips = paginator.page(pg_prev_tips)
+	except EmptyPage:
+		qsTips = paginator.page(paginator.num_pages)
+
+	html_data = render_to_string(
+		"core/tips/t/archived_tips.html",
+		{"qsModelViewedTips":qsTips}
+	)
+	data = {
+		"html_data":html_data,
+	}
+
+	return JsonResponse(data)

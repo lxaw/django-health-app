@@ -15,6 +15,10 @@ from django.contrib.auth.decorators import login_required
 # for forbiddens
 from django.http import HttpResponseForbidden
 
+# paginators
+from django.core.paginator import Paginator, EmptyPage
+from django.template.loader import render_to_string
+
 #################################
 # Form imports
 #################################
@@ -95,10 +99,10 @@ def viewLoginRedirect(request):
 #################################
 
 @login_required
-def viewProfile(request):
+def viewProfile(request,pg_following =1):
 	###################################
 	# Inputs:
-	# request
+	# request, pg for following users div
 	# Outputs:
 	# render
 	# Utility:
@@ -108,13 +112,19 @@ def viewProfile(request):
 	user = request.user
 
 
-	# performing calculations
-	# In reality, we may want the more important / longer calculations to be performed and stored in the model
-
 	# followed users
-	listFollowedUsers = list(user.follows.all())
+	qsFollowedUsers = user.follows.all()
+
+	intFollowedUsersPerPage = 1
+	# paginate
+	paginator_followed_users = Paginator(qsFollowedUsers,intFollowedUsersPerPage)
+	try:
+		qsFollowedUsers = paginator_followed_users.page(pg_following)
+	except:
+		qsFollowedUsers = paginator_followed_users.page(paginator_followed_users.num_pages)
+
 	# followers
-	listFollowerUsers = list(user.followed_by.all())
+	# qsFollowerUsers = list(user.followed_by.all())
 
 	context = {
 		"dictUserStats" :{
@@ -128,8 +138,7 @@ def viewProfile(request):
 			"strDateJoined":user.date_joined,
 		},
 		# followed users
-		"listFollowerUsers":listFollowerUsers,
-		"listFollowedUsers":listFollowedUsers,
+		"qsFollowedUsers":qsFollowedUsers,
 	}
 
 	return render(request,'users/profile.html',context = context)
