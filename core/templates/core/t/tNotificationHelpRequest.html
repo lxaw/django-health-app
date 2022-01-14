@@ -1,26 +1,26 @@
-<div class = "container border p-3">
+<div class = "container border p-3 mb-2">
 	<div class = "d-flex justify-content-between">
-		{% if modelNotificationHelpRequest.sender %}
+		{% if modelNotifHelpRequest.sender %}
 		<p>
 			From:
-			<a href = "{{modelNotificationHelpRequest.sender.get_public_profile_url}}">
-				{{modelNotificationHelpRequest.sender}}
+			<a href = "{{modelNotifHelpRequest.sender.get_public_profile_url}}">
+				{{modelNotifHelpRequest.sender}}
 			</a>
 		</p>
 		{% endif %}
-		<p class = "small text-muted">{{modelNotificationHelpRequest.pub_date}}</p>
+		<p class = "small text-muted">{{modelNotifHelpRequest.pub_date}}</p>
 	</div>
 	<hr style = "margin-top:-2px;" >
 	<p>
-		{{modelNotificationHelpRequest.text}}
+		{{modelNotifHelpRequest.text}}
 	</p>
 	<div class = "d-flex justify-content-between">
 		<p>
-			<a href = "{{modelNotificationHelpRequest.help_request.get_absolute_url}}">
+			<a href = "{{modelNotifHelpRequest.help_request.get_absolute_url}}">
 				See help request.
 			</a>
 		</p>
-		<form action = "{% url 'core:notification-delete' modelNotificationHelpRequest.strGetType modelNotificationHelpRequest.id %}">
+		<form action = "{% url 'core:notification-delete' modelNotifHelpRequest.strGetType modelNotifHelpRequest.id %}">
 			<button class = "btn btn-outline-success">
 				Got it!
 			</button>
@@ -29,7 +29,7 @@
 </div>
 
 <script>
-	function tNotificationHelpRequestBtnDelete(strUrl){
+	function tNotifHelpRequestBtnDelete(strUrl){
 		$.ajax({
 			url: strUrl,
 			success:function(){

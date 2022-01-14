@@ -1,26 +1,26 @@
-<div class = "container border p-3">
+<div class = "container border p-3 mb-2">
 	<div class = "d-flex justify-content-between">
-		{% if modelNotificationPost.sender %}
+		{% if modelNotifPost.sender %}
 		<p>
 			From:
-			<a href = "{{modelNotificationPost.sender.get_public_profile_url}}">
-				{{modelNotificationPost.sender}}
+			<a href = "{{modelNotifPost.sender.get_public_profile_url}}">
+				{{modelNotifPost.sender}}
 			</a>
 		</p>
 		{% endif %}
-		<p class = "small text-muted">{{modelNotificationPost.pub_date}}</p>
+		<p class = "small text-muted">{{modelNotifPost.pub_date}}</p>
 	</div>
 	<hr style = "margin-top:-2px;" >
 	<p>
-		{{modelNotificationPost.text}}
+		{{modelNotifPost.text}}
 	</p>
 	<div class = "d-flex justify-content-between">
 		<p>
-			<a href = "{{modelNotificationPost.post.get_absolute_url}}">
+			<a href = "{{modelNotifPost.post.get_absolute_url}}">
 				See post.
 			</a>
 		</p>
-		<form action = "{% url 'core:notification-delete' modelNotificationPost.strGetType modelNotificationPost.id %}">
+		<form action = "{% url 'core:notification-delete' modelNotifPost.strGetType modelNotifPost.id %}">
 			<button class = "btn btn-outline-success">
 				Got it!
 			</button>
@@ -29,7 +29,7 @@
 </div>
 
 <script>
-	function tNotificationPostBtnDelete(strUrl){
+	function tNotifPostBtnDelete(strUrl){
 		$.ajax({
 			url: strUrl,
 			success:function(){

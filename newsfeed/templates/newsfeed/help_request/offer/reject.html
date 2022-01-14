@@ -6,9 +6,12 @@
 	<h2 class = 'text-center'>
 		Rejected Offer
 	</h2>
-	<p class = 'text-muted'>
-		You have rejected user <strong>{{modelUserOfferer}}</strong>'s offer to help.
-		Your request for help is still able to accept offers.
+	<p class = 'text-muted text-center'>
+		You have not yet fully rejected the offer.
+	</p>
+	<p>
+		In order for the offer to be removed, please
+		fill out this form explaining why the offer was not satisfactory.
 	</p>
 </div>
 
@@ -17,7 +20,7 @@
 <div class = "container border rounded p-3">
 	<div>
 		<h4 class = 'text-center'>
-			Let us know what why.
+			Let us know what happened.
 		</h4>
 		<p>
 			Please let us know why the offer was rejected by filling out the appropriate checkbox.
@@ -28,22 +31,37 @@
 		<form action = "" method = "POST">
 			{% csrf_token %}
 			<div class="form-check">
-				<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-				<label class="form-check-label" for="flexRadioDefault1">
+				<input onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkOffensive">
+				<label class="form-check-label" for="checkOffensive">
 					Offer was offensive
 				</label>
 			</div>
 			<div class="form-check">
-				<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-				<label class="form-check-label" for="flexRadioDefault1">
+				<input  onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkInappropriate">
+				<label class="form-check-label" for="checkInappropriate">
 					Offer was inappropriate to request
 				</label>
 			</div>
 			<div class="form-check">
-				<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-				<label class="form-check-label" for="flexRadioDefault2">
+				<input onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input  checkbox__form-send" type="radio" name="offer-issue" id="checkNoReason" checked>
+				<label class="form-check-label" for="checkNoReason">
 					No reason
 				</label>
+			</div>
+			<div class="form-check">
+				<input onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input checkbox__form-send" type="radio" name="offer-issue" id="checkOther">
+				<label   for="checkOther">
+					Other
+				</label>
+				<div id = "div__text-input" style="display:none" >
+					<div class = "form-group">
+						<label for = "taTextOther">
+							Please describe.
+						</label>
+						<textarea class = "form-control" id = "taTextOther"></textarea>
+						<small id = "taTextOtherHelp" class = 'form-text text-muted'>Please accurately describe the situation.</small>
+					</div>
+				</div>
 			</div>
 			<br>
 			<button class = "btn btn-outline-success" type='submit'>
@@ -51,9 +69,35 @@
 			</button>
 		</form>
 	</div>
-	
 
 </div>
 
+
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+
+function voidCheckShowHideElement(strHideShowId){
+	// takes in an element to be clicked, a str to get element of 
+	// the desired hide / show element
+	let e = document.getElementById(strHideShowId);
+
+	let arrChecks = document.getElementsByClassName("checkbox__form-send");
+	// the element you want to hide / show
+	let eHideShow = document.getElementById(strHideShowId);
+
+	for(let checkbox of arrChecks){
+		if(checkbox.id == "checkOther" && checkbox.checked){
+			eHideShow.style.display = "";
+		}
+		else{
+			eHideShow.style.display = "none";
+		}
+	}
+}
+
+</script>
 
 {% endblock %}

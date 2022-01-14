@@ -13,12 +13,14 @@ def write_json(intRange,strFileName):
         for i in range(intRange-1):
             f.write(
                 '{\'text\':' + "\'Tip {}\',\n".format(i)
-                + '\'day_number\':{},\n'.format(i)
+                + '\'day_number\':{},\n'.format(i) 
+                + '\'tags\':{},\n'.format("\'tag1$tag2$tag3\'")
                 + '},\n'
             )
         f.write(
                 '{\'text\':' + "\'Tip {}\',\n".format(i)
                 + '\'day_number\':{},\n'.format(i)
+                + '\'tags\':{},\n'.format("\'tag1$tag2$tag3\'")
                 + '}\n]'
         )
 

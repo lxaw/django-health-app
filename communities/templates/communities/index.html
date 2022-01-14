@@ -41,45 +41,39 @@
 		<h4 class = "text-center">Recent posts:</h4>
 	</div>
 	
-	<div class = "container">
-		{% for modelPost in qsPosts %}	
-
-			{% include 'communities/t/tPostThumb.html' %}
-
-		{% endfor %}
+	<div class = "container" id = "div__posts-container" >
+		{% include 'communities/t/posts.html' %}
 	</div>
 
-	<br>
-
-
 </div>
 
-<br>
 
-<div class = 'container'>
-	<ul class='pagination justify-content-center'>
-	{% if qsPosts.has_previous %}
-		<li class="mx-1"><a href='{% url "communities:index" qsPosts.previous_page_number %}'>Previous</a></li>
-	{% else %}
-		<li class='mx-1 disabled'><span >Previous</span></li>
-	{% endif %}
-
-	{% for i in qsPosts.paginator.page_range %}
-		{% if qsPosts.number == i %}
-		<li class='active mx-1'><span>{{ i }}</span></li>
-		{% else %}
-		<li class="mx-1"><a href='{% url "communities:index" i %}'>{{ i }}</a></li>
-		{% endif %}
-	{% endfor %}
-	
-	{% if qsPosts.has_next %}
-		<li class="mx-1"><a href='{% url "communities:index" qsPosts.next_page_number %}' >Next</a></li>
-	{% else %}
-		<li class="mx-1"><span class='disabled'>Next</span></li> 
-	{% endif %}
-	</ul>
-</div>
 {% include 'communities/t/jPostActions.html' %}
 
-
 {% endblock content %}
+
+{% block javascript %}
+
+<script>
+
+function ajax_update_url(e){
+	strUrl = e.getAttribute("data-url");
+	let divPostContainer = document.getElementById('div__posts-container');
+
+	$.ajax({
+		type: 'GET',
+		url: strUrl,
+		dataType:'json',
+		success:function(data){
+			// reload posts
+			divPostContainer.innerHTML = data.posts_html;
+			// update url
+			window.history.pushState(null,"",strUrl);
+		},
+
+	})
+}
+
+</script>
+
+{% endblock %}

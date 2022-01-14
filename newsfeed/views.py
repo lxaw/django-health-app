@@ -9,6 +9,11 @@ from django.utils import timezone
 from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage
 
+# json
+from django.http import JsonResponse
+# template loading
+from django.template.loader import render_to_string
+
 ############################
 # Necessary Models
 ############################
@@ -75,7 +80,19 @@ def viewIndex(request,page=1):
         "listRecentPosts":listRecentPosts,
         'qsUnfilledHelpRequests':qsUnfilledHelpRequests,
         "listLastNFollowedUserPosts":listLastNFollowedUserPosts,
+        "page":page,
     }
+
+    if request.is_ajax():
+        help_requests_html = render_to_string(
+            "newsfeed/t/index_help_requests.html",
+            {"qsUnfilledHelpRequests":qsUnfilledHelpRequests}
+        )
+        data = {
+            'data_html':help_requests_html,
+        }
+        return JsonResponse(data)
+
     return render(request,'newsfeed/index.html',context = context)
 
 @login_required
@@ -374,11 +391,6 @@ def viewHelpRequestOfferReject(request,username,slug,id):
 
     modelNotification.help_request = modelHelpRequest 
     modelNotification.save()
-
-    # delete the offer
-    # NOTE: This may want to be in another part of the views, since
-    # if we send a form on why an offer was bad we should show the offer as well.
-    modelHelpRequestOffer.delete()
 
     context = {
         "modelUserOfferer":modelUserOfferer,

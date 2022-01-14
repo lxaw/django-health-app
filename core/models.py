@@ -48,12 +48,11 @@ class NotificationPost(BaseNotification):
 	post = models.ForeignKey(Post,on_delete = models.CASCADE,related_name = "notification_post_set")
 
 	def __str__(self):
-		return "Notification for post: {}".format(self.post.title)
+		return "To: {}|From: {}|Post:{}".format(self.sender,self.recipient,self.post.title)
 	
 	def strGetType(self):
 		# get the type of notification, useful for looping
 		return "Post"
-	
 
 class NotificationHelpRequest(BaseNotification):
 	# notification linking to help request
@@ -63,7 +62,7 @@ class NotificationHelpRequest(BaseNotification):
 	help_request = models.ForeignKey(HelpRequest,on_delete=models.CASCADE,related_name = "notification_help_request_set")
 
 	def __str__(self):
-		return "Notification for help request: {}".format(self.help_request.title)
+		return "To: {}|From: {}|HelpRequest:{}".format(self.sender,self.recipient,self.help_request.title)
 	
 	def strGetType(self):
 		return "HelpRequest"	
@@ -75,11 +74,11 @@ class NotificationDirectMessage(BaseNotification):
 
 	direct_message = models.ForeignKey(DirectMessage,on_delete = models.CASCADE,related_name = "notification_direct_message_set")
 
-def __str__(self):
-	return "Notification for direct message from {}".format(self.direct_message.author)
+	def __str__(self):
+		return "To: {}|From: {}|DM:{}".format(self.sender,self.recipient,self.direct_message)
 
-def strGetType(self):
-	return "DirectMessage"
+	def strGetType(self):
+		return "DirectMessage"
 
 class NotificationUser(BaseNotification):
 	# notification linking to user
@@ -89,7 +88,7 @@ class NotificationUser(BaseNotification):
 	user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="notification_user_set")
 
 	def __str__(self):
-		return "Notification to linking user {}".format(self.user)
+		return "To: {}|From: {}|User:{}".format(self.sender,self.recipient,self.user.username)
 	
 	def strGetType(self):
 		return "User"
@@ -102,7 +101,7 @@ class TipOfDay(models.Model):
 	# tag is a comma delimited string
 	tags = models.CharField(max_length = 500,null=True,blank=True)
 	# users who have responded to tip of day
-	responded_users = models.ManyToManyField(CustomUser,related_name="responded_users")
+	responded_users = models.ManyToManyField(CustomUser,related_name="tip_set")
 
 	strDelim = "$"
 
@@ -114,3 +113,11 @@ class TipOfDay(models.Model):
 			return [i for i in self.tags.split(self.strDelim)]
 		else:
 			return []
+	
+	def reverseGetReadUrl(self):
+		# returns a reverse url for the read function of tip
+		return reverse('core:tip-read',kwargs={'tip_id':self.id})
+	
+	def reverseGetArchiveUrl(self):
+		# returns url for archive of tips
+		return reverse('core:tip-archive',kwargs = {"pg_prev_tips":1})

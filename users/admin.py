@@ -22,8 +22,9 @@ class CustomUserAdminConfig(UserAdmin):
 	fieldsets = (
 		('User Information',{'fields':('email','username','phone_number')}),
 		('User Permissions',{'fields':('is_staff','is_active','is_developer','is_pod_plus_member')}),
-		('User Personal Information',{'fields':('text_about',)}),
+		('User Personal Information',{'fields':('about',)}),
 		('User Media',{'fields':('profile_picture',)}),
+		('Use Website User',{'fields':('last_tip_view_date',)}),
 	)
 
 class DirectMessageAdmin(admin.ModelAdmin):

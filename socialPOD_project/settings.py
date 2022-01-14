@@ -155,4 +155,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # Where users go when logging in
-LOGIN_REDIRECT_URL = "core:index"
+# A way to have views with arguments be login views
+LOGIN_REDIRECT_URL ="users:login-redirect"

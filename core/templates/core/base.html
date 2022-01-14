@@ -57,7 +57,7 @@ Basic navbar to show it is possible
 
 		{% if user.is_authenticated %}
 			<div style="display:grid;">
-				<a style="grid-column:1;grid-row:1;"   class = "navbar-text navbar__main__a-tag" href = "{% url 'core:index' %}">
+				<a style="grid-column:1;grid-row:1;"   class = "navbar-text navbar__main__a-tag" href = "{% url 'core:index' 1 1 1 %}">
 					Home
 				</a>
 				<div style = "grid-column-start: 2;grid-row:1;">
@@ -76,7 +76,7 @@ Basic navbar to show it is possible
 			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'podcasts:index' %}">
 				Podcasts & Tips
 			</a>
-			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'users:profile' %}">
+			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'users:profile' 1 %}">
 				Profile
 			</a>
 			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'users:logout' %}">

@@ -2,38 +2,54 @@
 {% block content %}
 
 {% if modelTipOfDay %}
-	<div class = "container border border rounded p-3">
-		<h4 class = "text-center">Tip of the day for {{strDate}}:</h4>
-		{% include 'core/t/tTipOfDay.html' %}
+	<div class = "container border rounded p-3">
+		<h4 class = "text-center">
+			Tip of the day for {{strDate}}
+		</h4>
+
+	{% include 'core/t/tips/tTipIndex.html' %}
 	</div>
 
 	<br>
 {% endif %}
 
 
-<div class = "container border border rounded p-3">
-	<h3 class = "text-center">Activity on your posts.</h3>
-	{% if qsModelNotificationPost|length == 0 %}
-		<p class = "text-center">All caught up!</p>
-	{% else %}
-		{% for modelNotificationPost in qsModelNotificationPost %}
-			{% include 'core/t/tNotificationPost.html' %}
-			<br>
-		{% endfor %}
-	{% endif %}
+<div class = "container border rounded p-3">
+	{% include 'core/t/index_posts.html' %}
 </div>
 
 <br>
 
-<div class = "container border border rounded p-3">
-	<h3 class = "text-center">Activity on your help requests.</h3>
-	{% if qsModelNotificationHelpRequest|length == 0 %}
-		<p class = "text-center">All caught up!</p>
-	{% else %}
-		{% for modelNotificationHelpRequest in qsModelNotificationHelpRequest %}
-			{% include 'core/t/tNotificationHelpRequest.html' %}
-			<br>
-		{% endfor %}
-	{% endif %}
+<div class = "container border rounded p-3">
+	{% include 'core/t/index_help_requests.html' %}
 </div>
 {% endblock content %}
+
+{% block javascript %}
+
+<script>
+
+	function ajax_update_url(e,strDivName){
+		// url for ajax call
+		strAjaxUrl = e.getAttribute('ajax-url');
+		// url to change page to
+		strChangeUrl = e.getAttribute('change-url');
+		// get the div to update
+		let divHolder = document.getElementById(strDivName);
+
+		$.ajax({
+			type:"GET",
+			url:strAjaxUrl,
+			dataType:'json',
+			success:function(data){
+				// reload div
+				divHolder.innerHTML = data.html_data;
+				// update url
+				window.history.pushState(null,'',strChangeUrl);
+			}
+		})
+	}
+	
+</script>
+
+{% endblock %}

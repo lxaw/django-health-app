@@ -11,6 +11,8 @@ urlpatterns = [
 	# User basic functions
 	# Register, login/out
 	#####################
+	# redirect to login
+	path('login-redirect/',users_views.viewLoginRedirect,name='login-redirect'),
 	# ex: /users/register/
 	path('register/',users_views.viewRegister,name='register'),
 	# ex: /users/login/
@@ -21,7 +23,7 @@ urlpatterns = [
 	# User profile
 	#####################
 	# ex: /users/profile/
-	path('profile/',users_views.viewProfile,name='profile'),
+	path('profile&pg_following=<int:pg_following>/',users_views.viewProfile,name='profile'),
 	# ex: /users/edit-prepare/	
 	path('edit-prepare/',users_views.viewProfileEditPrepare,name='profile-edit-prepare'),
 	# ex: /users/edit/
@@ -37,4 +39,8 @@ urlpatterns = [
 	path('dm/<str:username>/detail/',users_views.viewDmDetail,name="dm-detail"),
 	# ex: /users/bob/dm/create/
 	path('dm/<str:username>/create/',users_views.viewDmCreate,name="dm-create"),
+	#####################
+	# AJAX URLS
+	#####################
+	path('ajax/profile/get_followed_users&pg_following=<int:pg_following>/',users_views.aGetFollowedUsers,name="ajax-profile-get-followed-users"),
 ]

@@ -6,6 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+# templates
+from django.template.loader import render_to_string
+# json / serializers
+from django.http import JsonResponse
 
 #####################################
 # django utils
@@ -42,6 +46,7 @@ def viewIndex(request,page=1):
 	# view called for index
 	###################################
 
+
 	# note that create post is handled in a different view
 	# we use form action to create the objects
 	formPostForm = PostForm()
@@ -50,9 +55,9 @@ def viewIndex(request,page=1):
 	
 	# order the posts
 	# Create a dictionary of {Post:Post comments sorted}
-	qsPosts = Post.objects.all().order_by('-pub_date')
+	qsPosts = Post.objects.order_by('-pub_date')
 
-	intPostsPerPage = 5
+	intPostsPerPage = 3
 	# paginate based on number of posts
 	paginator = Paginator(qsPosts,intPostsPerPage)	
 
@@ -67,6 +72,18 @@ def viewIndex(request,page=1):
 		"formPostForm":formPostForm,
 		"formCommentForm":formCommentForm,
 	}
+	# NOTE!
+	# request.is_ajax() is depreciated in newer versions of django
+	if request.is_ajax():
+		posts_html = render_to_string(
+			"communities/t/posts.html",
+			{'qsPosts':qsPosts}
+		)
+		data = {
+			'posts_html':posts_html,
+			'has_next':qsPosts.has_next()
+		}
+		return JsonResponse(data)
 
 	return render(request,'communities/index.html',context = context)
 
@@ -156,7 +173,7 @@ def viewLikeUnlikePost(request,post_id):
 		
 		modelNotificationPost.save()
 	
-	return redirect('communities:index')
+	return redirect(reverse('communities:index',kwargs={"page":1}))
 
 @login_required
 def viewPostDetail(request, slug,username):
