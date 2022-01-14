@@ -9,6 +9,9 @@ from .forms import UserRegisterForm,CustomUserUpdateForm,CustomUserUpdatePasswor
 # messages on registration / log in
 from django.contrib import messages
 
+# json / serializers
+from django.http import JsonResponse
+
 # for when need to login to view something
 from django.contrib.auth.decorators import login_required
 
@@ -113,7 +116,7 @@ def viewProfile(request,pg_following =1):
 
 
 	# followed users
-	qsFollowedUsers = user.follows.all()
+	qsFollowedUsers = user.follows.order_by("username")
 
 	intFollowedUsersPerPage = 1
 	# paginate
@@ -142,6 +145,28 @@ def viewProfile(request,pg_following =1):
 	}
 
 	return render(request,'users/profile.html',context = context)
+
+# ajax view to get more followed users
+def aGetFollowedUsers(request,pg_following = 1):
+	intFollowedUsersPerPage = 1
+	qsFollowedUsers = request.user.follows.order_by('username')
+	# paginate
+	paginator_followed_users = Paginator(qsFollowedUsers,intFollowedUsersPerPage)
+
+	try:
+		qsFollowedUsers = paginator_followed_users.page(pg_following)
+	except EmptyPage:
+		qsFollowedUsers = paginator_followed_users.page(paginator.num_pages)
+	
+	html_data = render_to_string(
+		"users/t/profile_followed_users.html",
+		{"qsFollowedUsers":qsFollowedUsers}
+	)
+	data = {
+		"html_data":html_data,
+	}
+
+	return JsonResponse(data)
 
 # display form to edit information
 @login_required

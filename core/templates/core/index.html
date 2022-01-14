@@ -30,22 +30,17 @@
 <script>
 
 	function ajax_update_url(e,strDivName){
-		page = e.getAttribute('page');
 		// url for ajax call
 		strAjaxUrl = e.getAttribute('ajax-url');
 		// url to change page to
 		strChangeUrl = e.getAttribute('change-url');
 		// get the div to update
 		let divHolder = document.getElementById(strDivName);
-		console.log(divHolder);
 
 		$.ajax({
 			type:"GET",
 			url:strAjaxUrl,
 			dataType:'json',
-			data:{
-				"page":page,
-			},
 			success:function(data){
 				// reload div
 				divHolder.innerHTML = data.html_data;

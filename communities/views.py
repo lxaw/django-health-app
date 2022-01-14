@@ -72,6 +72,8 @@ def viewIndex(request,page=1):
 		"formPostForm":formPostForm,
 		"formCommentForm":formCommentForm,
 	}
+	# NOTE!
+	# request.is_ajax() is depreciated in newer versions of django
 	if request.is_ajax():
 		posts_html = render_to_string(
 			"communities/t/posts.html",

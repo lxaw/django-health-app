@@ -1,0 +1,71 @@
+<div id = "div__followed-users-holder">
+
+    <div>
+        {% for modelUser in qsFollowedUsers %}
+            <div class = "border rounded p-3 mb-2">
+                <a href = "{{modelUser.get_public_profile_url}}">
+                    <img class = "rounded-circle img__users-profile-img" src = "{{modelUser.profile_picture.url}}">
+                    {{modelUser.username}}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class = 'container'>
+        <ul class='pagination justify-content-center'>
+        {% if qsFollowedUsers.has_previous %}
+            <li class="mx-1">
+                <p class = "text-primary" 
+                ajax-url = "{% url 'users:ajax-profile-get-followed-users' qsFollowedUsers.previous_page_number %}" 
+                change-url = "{% url 'users:profile' qsFollowedUsers.previous_page_number %}"
+                onclick = 'ajax_update_url(this,"div__followed-users-holder")'>
+                    Previous
+                </p>
+            </li>
+        {% else %}
+            <li class='mx-1 disabled'>
+                <span >
+                    Previous
+                </span>
+            </li>
+        {% endif %}
+
+        {% for i in qsFollowedUsers.paginator.page_range %}
+            {% if qsFollowedUsers.number == i %}
+            <li class='active mx-1'>
+                <span class = 'text-success'>
+                    {{ i }}
+                </span>
+            </li>
+            {% else %}
+            <li class="mx-1">
+                <p class = "text-primary" 
+                ajax-url = "{% url 'users:ajax-profile-get-followed-users' i %}" 
+                change-url = "{% url 'users:profile' i %}"
+                onclick = 'ajax_update_url(this,"div__followed-users-holder")'>
+                    {{ i }}
+                </p>
+            </li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if qsFollowedUsers.has_next %}
+            <li class="mx-1">
+                <p class = "text-primary" 
+                ajax-url = "{% url 'users:ajax-profile-get-followed-users' qsFollowedUsers.next_page_number %}" 
+                change-url = "{% url 'users:profile' qsFollowedUsers.next_page_number %}"
+                onclick = 'ajax_update_url(this,"div__followed-users-holder")'>
+                    Next
+                </p>
+
+            </li>
+        {% else %}
+            <li class="mx-1">
+                <span class='disabled'>
+                    Next
+                </span>
+            </li> 
+        {% endif %}
+        </ul>
+    </div>
+</div>

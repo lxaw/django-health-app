@@ -57,7 +57,6 @@
 <script>
 
 function ajax_update_url(e){
-	page = e.getAttribute("page");
 	strUrl = e.getAttribute("data-url");
 	let divPostContainer = document.getElementById('div__posts-container');
 
@@ -65,9 +64,6 @@ function ajax_update_url(e){
 		type: 'GET',
 		url: strUrl,
 		dataType:'json',
-		data:{
-			'page':page
-		},
 		success:function(data){
 			// reload posts
 			divPostContainer.innerHTML = data.posts_html;

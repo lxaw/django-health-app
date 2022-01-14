@@ -91,15 +91,40 @@
 	<div class = "container p-3 text-center">
 		<h4>Follow count: {{user.follows.count}}</h4>
 	</div>
-	{% for modelUser in qsFollowedUsers %}
-		<div class = "border rounded p-3 mb-2">
-			<a href = "{{modelUser.get_public_profile_url}}">
-				<img class = "rounded-circle img__users-profile-img" src = "{{modelUser.profile_picture.url}}">
-				{{modelUser.username}}
-			</a>
-		</div>
-	{% endfor %}
+	<div>
+		{% include "users/t/profile_followed_users.html" %}
+	</div>
 </div>
 
+
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+
+	function ajax_update_url(e,strDivName){
+		page = e.getAttribute('page');
+		// url for ajax call
+		strAjaxUrl = e.getAttribute('ajax-url');
+		// url to change page to
+		strChangeUrl = e.getAttribute('change-url');
+		// get the div to update
+		let divHolder = document.getElementById(strDivName);
+
+		$.ajax({
+			type:"GET",
+			url:strAjaxUrl,
+			dataType:'json',
+			success:function(data){
+				// reload div
+				divHolder.innerHTML = data.html_data;
+				// update url
+				window.history.pushState(null,'',strChangeUrl);
+			}
+		})
+	}
+	
+</script>
 
 {% endblock %}

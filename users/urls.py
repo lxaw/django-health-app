@@ -39,5 +39,8 @@ urlpatterns = [
 	path('dm/<str:username>/detail/',users_views.viewDmDetail,name="dm-detail"),
 	# ex: /users/bob/dm/create/
 	path('dm/<str:username>/create/',users_views.viewDmCreate,name="dm-create"),
-
+	#####################
+	# AJAX URLS
+	#####################
+	path('ajax/profile/get_followed_users&pg_following=<int:pg_following>/',users_views.aGetFollowedUsers,name="ajax-profile-get-followed-users"),
 ]
