@@ -25,8 +25,14 @@ from newsfeed.models import HelpRequest,HelpRequestOffer
 from communities.models import Post
 # users models
 from users.models import CustomUser
+##############
+# Core models
+# notifications, feedback
+##############
 # notifications
 from core.models import NotificationHelpRequest
+# feedback
+from core.models import FeedbackHelpRequestOffer
 
 ############################
 # Necessary Forms
@@ -384,20 +390,45 @@ def viewHelpRequestOfferReject(request,username,slug,id):
     # get the help request
     modelHelpRequest = get_object_or_404(HelpRequest,author=modelUserRequestee,slug=slug)
 
-    # send notification to user that offer rejected
-    modelNotification = NotificationHelpRequest(sender=request.user,recipient=modelHelpRequestOffer.author,
-        text="Your help request for request \"{}\" has been rejected.".format(modelHelpRequest.title)
-    )
-
-    modelNotification.help_request = modelHelpRequest 
-    modelNotification.save()
 
     context = {
         "modelUserOfferer":modelUserOfferer,
         "modelHelpRequest":modelHelpRequest,
+        "modelHelpRequestOffer":modelHelpRequestOffer
     }
     
     return render(request,'newsfeed/help_request/offer/reject.html',context=context)
+
+def viewHelpRequestOfferDelete(request, username, slug,id):
+    # actually deletes the help request offer
+    FEEDBACK_ID_RANGE = [0,1,2,3]
+
+    if request.method == "POST":
+        intFeedbackId = int(request.POST['feedback-id'])
+
+        # if the user screws something up
+        if intFeedbackId not in FEEDBACK_ID_RANGE:
+            messages.warning(request,"Feedback id error. Please try resubmitting the form.")
+            return redirect(reverse("newsfeed:help-request-offer-detail",kwargs={"username":username,"slug":slug,"id":id}))
+        
+        # else the feedback id is appropriate
+
+
+
+        messages.success(request,'Help request offer successfully deleted')
+
+    else:
+        messages.warning(request,"Help request offer form filled incorrectly.")
+
+    # send notification to user that offer rejected
+    # modelNotification = NotificationHelpRequest(sender=request.user,recipient=modelHelpRequestOffer.author,
+    #     text="Your help request for request \"{}\" has been rejected.".format(modelHelpRequest.title)
+    # )
+    # modelNotification.help_request = modelHelpRequest 
+    # modelNotification.save()
+
+
+    return redirect(reverse("newsfeed:help-request-offer-detail",kwargs={"username":username,"slug":slug,"id":id}))
 
 def viewHelpRequestArchiveDetail(request):
     # shows user's old help requests / current ones
@@ -420,35 +451,3 @@ def viewHelpRequestArchiveDetail(request):
         "listmodelAcceptedRequests": listmodelAcceptedRequests,
     }
     return render(request,'newsfeed/help_request/archive.html',context = context)
-
-# removes help offer and user who said they would help from help offer
-# only preparation; can send form to explain why they chose to delete it
-# ie: inappropriate, bad help, negligence to help, etc
-def viewHelpRequestOfferDeletePrepare(request,username,slug,id):
-    # inputs:
-    # request, username of person who created HELP REQUEST, slug of help request, 
-    # id of HELP REQUEST OFFER
-
-    context = {
-
-    }
-
-    return render(request,'newsfeed/help_request/offer/remove_prepare.html')
-
-# actually deletes offer
-def viewHelpRequestOfferDelete(request,username,slug,id):
-    # inputs:
-    # request, username of person who created HELP REQUEST, slug of help request, 
-    # id of HELP REQUEST OFFER
-
-    # Allow delete if 
-    # 1: is the author of the offer or
-    # 2: is the author of the help request
-
-    # 1: check if author of offer
-    modelOffer = get_object_or_404(HelpRequestOffer, id=id)
-    if request.user == modelOffer.author:
-        messages.success(request,"Successfully deleted offer.")
-        modelOffer.delete()
-
-    return redirect(reverse('newsfeed:help-request-detail',kwargs={'username':username,'slug':slug}))

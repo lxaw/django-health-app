@@ -21,6 +21,7 @@ urlpatterns = [
 	path('request-help/create/',newsfeed_views.viewHelpRequestCreate,name="help-request-create"),
 	# delete help request
 	path('request-help/<str:username>/<slug:slug>/delete/',newsfeed_views.viewHelpRequestDelete,name="help-request-delete"),
+
 	##################
 	# URLS for Help Request Offers
 	##################
@@ -34,7 +35,6 @@ urlpatterns = [
 	path('request-help/<str:username>/<slug:slug>/offer/<int:id>/reject/',newsfeed_views.viewHelpRequestOfferReject,name="help-request-offer-reject"),
 	# remove accepted offer prepare
 	# note that both the creator of the help request offer AND the creator of the help request can remove offers
-	path('request-help/<str:username>/<slug:slug>/offer/<int:id>/delete-prepare/',newsfeed_views.viewHelpRequestOfferDeletePrepare,name='help-request-offer-delete-prepare'),
 	# remove accepted offer
 	path('request-help/<str:username>/<slug:slug>/offer/<int:id>/delete/',newsfeed_views.viewHelpRequestOfferDelete,name='help-request-offer-delete'),
 

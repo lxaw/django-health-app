@@ -9,7 +9,7 @@ from django.utils import timezone
 ###########################
 from users.models import CustomUser, DirectMessage
 from communities.models import Post
-from newsfeed.models import HelpRequest
+from newsfeed.models import HelpRequest,HelpRequestOffer
 
 ##########################################
 # Dj url imports
@@ -30,9 +30,6 @@ class BaseNotification(models.Model):
 
 	class Meta:
 		abstract = True
-
-	def voidDelete(self):
-		self.delete()
 
 #############
 # NOTE:
@@ -62,7 +59,7 @@ class NotificationHelpRequest(BaseNotification):
 	help_request = models.ForeignKey(HelpRequest,on_delete=models.CASCADE,related_name = "notification_help_request_set")
 
 	def __str__(self):
-		return "To: {}|From: {}|HelpRequest:{}".format(self.sender,self.recipient,self.help_request.title)
+		return "To: {}|From: {}|HelpRequest:{}".format(self.recipient,self.sender,self.help_request.title)
 	
 	def strGetType(self):
 		return "HelpRequest"	
@@ -75,7 +72,7 @@ class NotificationDirectMessage(BaseNotification):
 	direct_message = models.ForeignKey(DirectMessage,on_delete = models.CASCADE,related_name = "notification_direct_message_set")
 
 	def __str__(self):
-		return "To: {}|From: {}|DM:{}".format(self.sender,self.recipient,self.direct_message)
+		return "To: {}|From: {}|DM:{}".format(self.recipient,self.sender,self.direct_message)
 
 	def strGetType(self):
 		return "DirectMessage"
@@ -88,11 +85,15 @@ class NotificationUser(BaseNotification):
 	user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="notification_user_set")
 
 	def __str__(self):
-		return "To: {}|From: {}|User:{}".format(self.sender,self.recipient,self.user.username)
+		return "To: {}|From: {}|User:{}".format(self.recipient,self.sender,self.user.username)
 	
 	def strGetType(self):
 		return "User"
-
+####################################
+#
+# Tip of days
+#
+####################################
 class TipOfDay(models.Model):
 	# number of the day of the year
 	day_number = models.IntegerField()
@@ -121,3 +122,47 @@ class TipOfDay(models.Model):
 	def reverseGetArchiveUrl(self):
 		# returns url for archive of tips
 		return reverse('core:tip-archive',kwargs = {"pg_prev_tips":1})
+
+#######################################
+# 
+# Models for user feedback
+# user feedback is used to improve the site
+# 
+#######################################
+
+# abstract class for user feedback
+# we inherit from this class in order to provide specific types of feedback
+class BaseFeedback(models.Model):
+	# don't always need text
+	pub_date = models.DateTimeField(default=timezone.now)
+
+	class Meta:
+		abstract = True
+
+# feedback from a help request offer
+# most used when rejecting help request
+class FeedbackHelpRequestOffer(BaseFeedback):
+	# associated with user, or anonymous (User == null)
+	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "feedback_help_request_offer_set")
+
+	OFFENSIVE = 0
+	INAPPROPRIATE = 1
+	NO_REASON = 2
+	OTHER = 3
+
+	FEEDBACK_CHOICES = [
+		(OFFENSIVE,"offensive"),
+		(INAPPROPRIATE,"inappropriate"),
+		(NO_REASON,"no reason"),
+		(OTHER,"other"),
+	]
+
+	# if reason was "other", then text is present
+	text = models.CharField(max_length=300,null=True,blank=True)
+	feedback_chocies = models.CharField(
+		max_length=2,choices = FEEDBACK_CHOICES
+		,null=True,blank=True)
+
+	
+
+

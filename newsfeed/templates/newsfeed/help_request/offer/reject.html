@@ -28,28 +28,28 @@
 		</p>
 	</div>
 	<div>
-		<form action = "" method = "POST">
+		<form action = "{% url 'newsfeed:help-request-offer-delete' user.username modelHelpRequestOffer.help_request.slug modelHelpRequestOffer.id %}" method = "POST">
 			{% csrf_token %}
 			<div class="form-check">
-				<input onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkOffensive">
+				<input onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkOffensive" data = "0">
 				<label class="form-check-label" for="checkOffensive">
 					Offer was offensive
 				</label>
 			</div>
 			<div class="form-check">
-				<input  onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkInappropriate">
+				<input  onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkInappropriate" data = "1">
 				<label class="form-check-label" for="checkInappropriate">
 					Offer was inappropriate to request
 				</label>
 			</div>
 			<div class="form-check">
-				<input onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input  checkbox__form-send" type="radio" name="offer-issue" id="checkNoReason" checked>
+				<input onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input  checkbox__form-send" type="radio" name="offer-issue" id="checkNoReason" checked data = "2">
 				<label class="form-check-label" for="checkNoReason">
 					No reason
 				</label>
 			</div>
 			<div class="form-check">
-				<input onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input checkbox__form-send" type="radio" name="offer-issue" id="checkOther">
+				<input onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input checkbox__form-send" type="radio" name="offer-issue" id="checkOther" data = "3">
 				<label   for="checkOther">
 					Other
 				</label>
@@ -67,6 +67,7 @@
 			<button class = "btn btn-outline-success" type='submit'>
 				Submit
 			</button>
+			<input id = "range__hidden-input" type = "range" name = "feedback-id" min="0" max="3" value = "2" style='display:none'>
 		</form>
 	</div>
 
@@ -84,16 +85,24 @@ function voidCheckShowHideElement(strHideShowId){
 	// the desired hide / show element
 	let e = document.getElementById(strHideShowId);
 
+	// for update hidden input
+	let hiddenInput = document.getElementById('range__hidden-input');
+
 	let arrChecks = document.getElementsByClassName("checkbox__form-send");
 	// the element you want to hide / show
 	let eHideShow = document.getElementById(strHideShowId);
 
 	for(let checkbox of arrChecks){
-		if(checkbox.id == "checkOther" && checkbox.checked){
-			eHideShow.style.display = "";
-		}
-		else{
-			eHideShow.style.display = "none";
+		if(checkbox.checked){
+			// regardless update hidden input
+			hiddenInput.value = checkbox.getAttribute("data");
+			// show text
+			if(checkbox.id == "checkOther"){
+				eHideShow.style.display = "";
+			}
+			else{
+				eHideShow.style.display = "none";
+			}
 		}
 	}
 }
