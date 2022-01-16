@@ -31,36 +31,34 @@
 		<form action = "{% url 'newsfeed:help-request-offer-delete' user.username modelHelpRequestOffer.help_request.slug modelHelpRequestOffer.id %}" method = "POST">
 			{% csrf_token %}
 			<div class="form-check">
-				<input onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkOffensive" data = "0">
+				<input onclick="voidUpdateInput(this)" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkOffensive" data = "0">
 				<label class="form-check-label" for="checkOffensive">
 					Offer was offensive
 				</label>
 			</div>
 			<div class="form-check">
-				<input  onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkInappropriate" data = "1">
+				<input onclick="voidUpdateInput(this)" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkInappropriate" data = "1">
 				<label class="form-check-label" for="checkInappropriate">
 					Offer was inappropriate to request
 				</label>
 			</div>
 			<div class="form-check">
-				<input onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input  checkbox__form-send" type="radio" name="offer-issue" id="checkNoReason" checked data = "2">
+				<input onclick="voidUpdateInput(this)" class="form-check-input  checkbox__form-send" type="radio" name="offer-issue" id="checkNoReason" checked data = "2">
 				<label class="form-check-label" for="checkNoReason">
 					No reason
 				</label>
 			</div>
 			<div class="form-check">
-				<input onclick="voidCheckShowHideElement('div__text-input')" class="form-check-input checkbox__form-send" type="radio" name="offer-issue" id="checkOther" data = "3">
+				<input onclick="voidUpdateInput(this)" class="form-check-input checkbox__form-send" type="radio" name="offer-issue" id="checkOther" data = "3">
 				<label   for="checkOther">
 					Other
 				</label>
-				<div id = "div__text-input" style="display:none" >
-					<div class = "form-group">
-						<label for = "taTextOther">
-							Please describe.
-						</label>
-						<textarea class = "form-control" id = "taTextOther"></textarea>
-						<small id = "taTextOtherHelp" class = 'form-text text-muted'>Please accurately describe the situation.</small>
-					</div>
+				<div class = "form-group">
+					<label for = "taText">
+						Please describe.
+					</label>
+					<textarea name = "text" class = "form-control" id = "taText"></textarea>
+					<small id = "taTextHelp" class = 'form-text text-muted'>Please accurately describe the situation.</small>
 				</div>
 			</div>
 			<br>
@@ -80,31 +78,12 @@
 
 <script>
 
-function voidCheckShowHideElement(strHideShowId){
-	// takes in an element to be clicked, a str to get element of 
-	// the desired hide / show element
-	let e = document.getElementById(strHideShowId);
-
+function voidUpdateInput(e){
+	// takes in an element
+	// updates the hidden input based on clicked checkbox
 	// for update hidden input
 	let hiddenInput = document.getElementById('range__hidden-input');
-
-	let arrChecks = document.getElementsByClassName("checkbox__form-send");
-	// the element you want to hide / show
-	let eHideShow = document.getElementById(strHideShowId);
-
-	for(let checkbox of arrChecks){
-		if(checkbox.checked){
-			// regardless update hidden input
-			hiddenInput.value = checkbox.getAttribute("data");
-			// show text
-			if(checkbox.id == "checkOther"){
-				eHideShow.style.display = "";
-			}
-			else{
-				eHideShow.style.display = "none";
-			}
-		}
-	}
+	hiddenInput.value = e.getAttribute("data");
 }
 
 </script>

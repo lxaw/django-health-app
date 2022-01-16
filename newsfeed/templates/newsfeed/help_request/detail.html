@@ -7,7 +7,7 @@
 <br>
 
 <!-- If responded to, display the offer's author -->
-{% if modelHelpRequest.boolWasRespondedTo %}
+{% if modelHelpRequest.boolWasRespondedTo  and modelHelpRequestOfferAccepted %}
 	<div class = "container border rounded p-3">
 		<p>To be helped by user <strong>{{modelHelpRequest.accepted_user.username}}.</strong></p>
 		<a href = "{{modelHelpRequest.accepted_user.get_public_profile_url}}">
@@ -20,7 +20,7 @@
 				Or direct message them.
 			</p>
 		</a>
-		<a href = "{% url 'newsfeed:help-request-offer-delete-prepare' user.username modelHelpRequest.slug modelHelpRequestOfferAccepted.id %}" class = 'text-danger'>
+		<a href = "{% url 'newsfeed:help-request-offer-delete' user.username modelHelpRequest.slug modelHelpRequestOfferAccepted.id %}" class = 'text-danger'>
 			<p>
 				Remove user {{modelHelpRequest.accepted_user.username}} from your help request?
 			</p>
@@ -36,8 +36,11 @@
 			<div>
 				<form method = "POST" action = "{% url 'newsfeed:help-request-offer-create' modelHelpRequest.author.username modelHelpRequest.slug %}">
 					{% csrf_token %}
-					<label class = "text-muted" for="text_content">Write a brief introduction. Let them know why you can help.</label>
 					<textarea name='text' class = "form-control" rows = 4></textarea>
+					<small class = "text-muted">
+						Write a brief introduction. Let them know why you can help.
+					</small>
+					<br>
 					<br>
 					<div class = "container">
 						<div class = "row">

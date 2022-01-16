@@ -72,9 +72,12 @@ class HelpRequest(models.Model):
 	# return the url associated with it
 	# this is the url for viewing the request
 	def get_absolute_url(self):
-		return reverse('newsfeed:help-request-detail',kwargs={"slug":self.slug,
-			"username":self.author.username}
-			)
+		if self.id:
+			return reverse('newsfeed:help-request-detail',kwargs={"slug":self.slug,
+				"username":self.author.username}
+				)
+		else:
+			return reverse("")
 	
 	def get_parsed_tags(self):
 		if self.tags:

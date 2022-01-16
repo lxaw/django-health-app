@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import TipOfDay,NotificationHelpRequest,NotificationPost, NotificationDirectMessage,NotificationUser
+from .models import (TipOfDay,NotificationHelpRequest,NotificationPost,
+NotificationDirectMessage,NotificationUser,FeedbackHelpRequestOffer)
 
 # Register your models here.
 
@@ -65,8 +66,20 @@ class NotificationUserAdmin(admin.ModelAdmin):
 		("Linked User",{"fields":['user']}),
 	]
 
+###################################
+# User feedback
+###################################
+class FeedbackHelpRequestOfferAdmin(admin.ModelAdmin):
+	fieldsets = [
+		("Feedback Type",{"fields":['feedback_choice']}),
+		("Sender",{"fields":['sender']}),
+		("Text (optional)",{"fields":['text']}),
+	]
+
+# registering the models
 admin.site.register(TipOfDay,TipOfDayAdmin)
 admin.site.register(NotificationHelpRequest,NotificationHelpRequestAdmin)
 admin.site.register(NotificationPost,NotificationPostAdmin)
 admin.site.register(NotificationDirectMessage,NotificationDirectMessageAdmin)
 admin.site.register(NotificationUser,NotificationUserAdmin)
+admin.site.register(FeedbackHelpRequestOffer,FeedbackHelpRequestOfferAdmin)

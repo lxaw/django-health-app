@@ -159,9 +159,12 @@ class FeedbackHelpRequestOffer(BaseFeedback):
 
 	# if reason was "other", then text is present
 	text = models.CharField(max_length=300,null=True,blank=True)
-	feedback_chocies = models.CharField(
+	feedback_choice = models.CharField(
 		max_length=2,choices = FEEDBACK_CHOICES
 		,null=True,blank=True)
+	
+	def __str__(self):
+		return "Sender: {}, Id: {}".format(self.sender,self.feedback_choice)
 
 	
 

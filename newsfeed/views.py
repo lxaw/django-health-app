@@ -30,7 +30,7 @@ from users.models import CustomUser
 # notifications, feedback
 ##############
 # notifications
-from core.models import NotificationHelpRequest
+from core.models import NotificationHelpRequest, FeedbackHelpRequestOffer
 # feedback
 from core.models import FeedbackHelpRequestOffer
 
@@ -401,34 +401,64 @@ def viewHelpRequestOfferReject(request,username,slug,id):
 
 def viewHelpRequestOfferDelete(request, username, slug,id):
     # actually deletes the help request offer
-    FEEDBACK_ID_RANGE = [0,1,2,3]
+    modelHelpRequestAuthor = get_object_or_404(CustomUser,username=username)
+    modelHelpRequest = get_object_or_404(HelpRequest,slug=slug,author=modelHelpRequestAuthor)
+    modelOffer = get_object_or_404(HelpRequestOffer,id=id)
 
-    if request.method == "POST":
+    # this tests if the user who is deleting is the help request author
+    if request.method == "POST" and request.user == modelHelpRequest.author:
+
+        FEEDBACK_CHOICES = [0,1,2,3]
+
         intFeedbackId = int(request.POST['feedback-id'])
 
         # if the user screws something up
-        if intFeedbackId not in FEEDBACK_ID_RANGE:
+        if intFeedbackId not in FEEDBACK_CHOICES:
             messages.warning(request,"Feedback id error. Please try resubmitting the form.")
             return redirect(reverse("newsfeed:help-request-offer-detail",kwargs={"username":username,"slug":slug,"id":id}))
         
-        # else the feedback id is appropriate
+        # get the feedback
+        # this could be done more easily, still learning django feedback choices
 
+        # check if entered text
+        # if not, return none
+        strText = request.POST.get("text",None)
 
+        modelFeedback = FeedbackHelpRequestOffer(sender=request.user,
+            feedback_choice = intFeedbackId ,text=strText
+        )
+        # save to db
+        modelFeedback.save()
+
+        # make sure no user is accepted
+        if modelHelpRequest.accepted_user != None:
+            modelHelpRequest.accepted_user = None
+
+        # delete the offer
+        modelOffer.delete()
+        #send notification to user that offer rejected
+        modelNotification = NotificationHelpRequest(sender=request.user,recipient=modelHelpRequestOffer.author,
+            text="Your help request for request \"{}\" has been rejected.".format(modelHelpRequest.title)
+        )
+        modelNotification.help_request = modelHelpRequest 
+        modelNotification.save()
 
         messages.success(request,'Help request offer successfully deleted')
 
+    # can also delete if you are the author of the offer
+    if request.user == modelOffer.author:
+        # make sure no user is accepted
+        if modelHelpRequest.accepted_user != None:
+            modelHelpRequest.accepted_user = None
+        # delete the offer
+        modelOffer.delete()
+        messages.success(request,"Successfully deleted offer.")
+
     else:
-        messages.warning(request,"Help request offer form filled incorrectly.")
-
-    # send notification to user that offer rejected
-    # modelNotification = NotificationHelpRequest(sender=request.user,recipient=modelHelpRequestOffer.author,
-    #     text="Your help request for request \"{}\" has been rejected.".format(modelHelpRequest.title)
-    # )
-    # modelNotification.help_request = modelHelpRequest 
-    # modelNotification.save()
+        messages.warning(request,'You are not able to delete this offer.')
 
 
-    return redirect(reverse("newsfeed:help-request-offer-detail",kwargs={"username":username,"slug":slug,"id":id}))
+    return redirect(reverse("newsfeed:help-request-detail",kwargs={"username":username,"slug":slug}))
 
 def viewHelpRequestArchiveDetail(request):
     # shows user's old help requests / current ones
