@@ -31,17 +31,17 @@ from users.models import CustomUser
 
 class Post(models.Model):
 	# associate with user
-	author = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+	author = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name = "created_post_set")
 	# associate with a title
 	title = models.CharField(max_length=200,null=False)
 	# associate with text
-	text_content = models.CharField(max_length = 300)
+	text = models.CharField(max_length = 300)
 
 	# store date of publication
 	pub_date = models.DateTimeField(default=timezone.now)
 
 	# associate with the users that have commented / posted / whatever
-	responded_users = models.ManyToManyField(CustomUser,related_name='responded_users_set')
+	responded_users = models.ManyToManyField(CustomUser)
 
 	# associate with likes
 	user_likes = models.ManyToManyField(CustomUser, related_name="user_likes")
@@ -62,14 +62,12 @@ class Post(models.Model):
 
 		super(Post,self).save(*args, **kwargs)
 
-
-
 	def get_absolute_url(self):
-		return reverse('communities:post_detail',kwargs={"slug":self.slug,
+		return reverse('communities:post-detail',kwargs={"slug":self.slug,
 			"username":self.author.username}
 			)
 	
-	def like_count(self):
+	def intGetLikeCount(self):
 		return self.user_likes.count()
 
 	def boolWithinXDays(self,intDays):
@@ -86,7 +84,7 @@ class Comment(models.Model):
 	# associate with user
 	author = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
 	
-	body = models.TextField()
+	text = models.TextField()
 
 	pub_date = models.DateTimeField(default=timezone.now)
 

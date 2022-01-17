@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div>
+<div class = "container border border-primary rounded p-3">
 	<form method = "POST">
 
 		{% csrf_token %}
@@ -13,8 +13,10 @@
 		</fieldset>
 
 		<div>
-			<button type="submit">Sign Up</button>
+			<button class = "btn btn-outline-primary" type="submit">Sign Up</button>
 		</div>
+
+		<br>
 
 		<div>
 			Or <a href = "{% url 'users:login' %}" > log in</a>

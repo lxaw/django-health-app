@@ -1,0 +1,28 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class = "container border rounded p-3">
+	<h1 class = "text-center">Create a post.</h1>
+	<form method = "POST" action = "{% url 'communities:post-create' %}">
+		{% csrf_token %}
+		<div class = "form-group">
+			<label for = "tTitle">Post Title</label>
+			<input type='text' name = "title" id = "tTitle" class = "form-control">
+			<small id = "tTitleHelp">Write something that summarizes your post.</small>
+		</div>
+		<div class = "form-group">
+			<label for = "taText">Post Text</label>
+			<textarea name = "text" class = "form-control" rows = 4></textarea>
+			<small id = "taTextHelp">Write the content of your post here.</small>
+		</div>
+		<br>
+		<div class = "container">
+			<div class = "row">
+				<button type = "submit" class = "btn btn-primary">Submit</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+{% endblock %}

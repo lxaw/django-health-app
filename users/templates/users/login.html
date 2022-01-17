@@ -2,24 +2,30 @@
 
 {% block content %}
 
-<form method = "POST">
-	{% csrf_token %}	
-	<fieldset>
-		<legend>
+<div class = "container border rounded p-3">
+	<form method = "POST">
+		{% csrf_token %}	
+		<fieldset>
+			<legend>
+				Log In
+			</legend>
+			{{form.as_p}}
+		</fieldset>
+		<button class="btn btn-outline-primary"  type='submit'>
 			Log In
-		</legend>
-		{{form.as_p}}
-	</fieldset>
-	<button type='submit'>
-		Log In
-	</button>
-</form>
+		</button>
+	</form>
+	<br>
+</div>
 
+<br>
 
-<div>
-	<a href = "{% url 'users:register' %}">
-		Or sign up
-	</a>
+<div class = "container border border rounded p-3">
+	<div>
+		<a href = "{% url 'users:register' %}">
+			Or sign up
+		</a>
+	</div>
 </div>
 
 {% endblock content %}

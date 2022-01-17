@@ -1,0 +1,19 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class = "container border rounded p-3">
+	<form method = "POST" action = "{% url 'food:food-create' %}">
+		{% csrf_token %}
+		<h2 class = 'text-center'>Enter your meal information.</h2>
+		<div class = "form-group">
+			<label for = "name">What type of food was it?</label>
+			<textarea placeholder= "i.e: Chicken Sandwich" name = "name" class = "form-control"></textarea>
+			<label for = "kcals">How many calories was it?</label>
+			<input type="number" placeholder = "i.e: 1300" min="0.0" max = "5000" name = "kcals" class = "form-control"></textarea>
+		</div>
+		<button class = "btn btn-primary">Submit</button>
+	</form>
+</div>
+
+{% endblock content %}

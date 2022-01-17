@@ -2,37 +2,116 @@
 
 {% block content %}
 
-<h1>Here is your newsfeed.</h1>
-
-Welcome, <strong>{{user.username}}.</strong>
-
-<br>
-<h4>
-	See what your followed users are posting.
-</h4>
-{% for modelPost in listLastNFollowedUserPosts %}
-	<div class = "newsfeed__new-post border border-primary" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
-		<a href = "{{modelPost.get_absolute_url}}">
-			User  {{modelPost.author}} uploaded a post at {{modelPost.pub_date}}
-		</a>
+<div class = "container text-center border border-primary rounded p-3">
+	<div class = "d-flex flex-row">
+		<h1>
+			<i class="bi bi-newspaper"></i>
+		</h1>
+		<h1 class = 'container text-center'>
+			Newsfeed
+		</h1>
+		<h1>
+			<i class="bi bi-newspaper"></i>
+		</h1>
 	</div>
-{% endfor %}
+</div>
 
 <br>
-<br>
-<h4>
-	Most recent posts today.
-</h4>
-<br>
-{% for modelPost in listRecentPosts %}
 
-	<div class = "newsfeed__new-post border border-primary" style="width: 50%;padding:10px;border-radius: 5px;margin-bottom:10px;">
-		<a href = "{{modelPost.get_absolute_url}}">
-			User  {{modelPost.author}} uploaded a post at {{modelPost.pub_date}}
+<div class = "container border rounded p-3">
+	<h4 class = "text-center">
+		<a href = "{% url 'newsfeed:help-request-prepare' %}">
+			Request help.
 		</a>
-	</div>
+	</h4>
+</div>
 
-{% endfor %}
+<br>
+<div class = "container border rounded p-3">
+	<h4 class = "text-center">
+		<a href ="{% url 'newsfeed:help-request-archive-detail' %}">
+			Or view your requests.
+		</a>
+	</h4>
+</div>
+
+<br>
+
+<div class = "container border border rounded p-3">
+	<h4 class = 'text-center'>
+		Recent Help Requests
+	</h4>
+	<div id = "div__help-requests-holder">
+		{% include 'newsfeed/t/index_help_requests.html' %}
+	</div>
+</div>
+
+<br>
+
+<div class = "container border border rounded p-3">
+	<h4 class = 'text-center'>
+		See what your followed users are posting.
+	</h4>
+	{% if listLastNFollowedUserPosts|length == 0 %}
+		<p class = "text-muted text-center">
+			Looks like theres nothing yet!
+		</p>
+	{% else %}
+		{% for modelPost in listLastNFollowedUserPosts %}
+			{% include "communities/t/tPostThumb.html" %}
+		{% endfor %}
+	{% endif %}
+</div>
+
+<br>
+
+<div class = "container border border rounded p-3">
+	<h4 class = 'text-center'>
+		Most recent posts today.
+	</h4>
+	{% if listRecentPosts|length == 0 %}
+		<p class = "text-muted text-center">
+			Looks like theres nothing yet!
+		</p>
+	{% endif %}
+	{% for modelPost in listRecentPosts %}
+
+		{% include "communities/t/tPostThumb.html" %}
+
+	{% endfor %}
+</div>
 
 
 {% endblock content %}
+
+{% include 'newsfeed/t/jsHelpRequest.html' %}
+
+{% block javascript %}
+
+<script>
+
+function ajax_update_url(e,divName){
+	page = e.getAttribute('page');
+	strUrl = e.getAttribute('data-url');
+	let divHolder = document.getElementById(divName);
+
+	$.ajax({
+		type:"GET",
+		url:strUrl,
+		dataType:'json',
+		// all the args for url
+		data:{
+			'page':page,
+		},
+		success: function(data){
+			// reload stuff
+			divHolder.innerHTML = data.data_html;
+			// update url
+			window.history.pushState(null,"",strUrl);
+		}
+	})
+}
+
+</script>
+
+{% endblock %}

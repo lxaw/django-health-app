@@ -1,0 +1,50 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<div class = "container border border-primary rounded p-3">
+	<h2 class = 'text-center'>
+		Edit Your Information
+	</h2>
+</div>
+{{formUpdateForm}}
+<br>
+
+<div class = "container border rounded p-3">
+	<form method = "POST" enctype="multipart/form-data" action = "{% url 'users:profile-edit' %}">
+		{% csrf_token %}
+		<div class = "form-group">
+			<label for = "textUsername">Username</label>
+			<input class = 'form-control' type = 'text' name='username' id = "textUsername" value="{{user.username}}">
+			<small class = 'form-text text-muted'>Or leave blank if no change needed.</small>
+		</div>
+		<div class = "form-group">
+			<label for = "emailEmail">Email</label>
+			<input class = 'form-control' type = 'email' name='email' id = "emailEmail" value = "{{user.email}}">
+			<small class = 'form-text text-muted'>Or leave blank if no change needed.</small>
+		</div>
+		<div class = "form-group">
+			<label for = "textPhoneNumber">Phone Number</label>
+			<input class = 'form-control' type = 'text' name='phone_number' id = "textPhoneNumber" value = "{{user.phone_number}}">
+			<small class = 'form-text text-muted'>Or leave blank if no change needed.</small>
+		</div>
+		<div class = "form-group">
+			<label for = "textAbout">About You</label>
+			<input class = 'form-control' type = 'text' name='about' id = "textAbout" value = "{{user.about}}">
+			<small class = 'form-text text-muted'>Or leave blank if no change needed.</small>
+		</div>
+		<div class = "form-group">
+			<label for = "textPassword">Password</label>
+			<input class = 'form-control' type = 'password' name='password' id = "textPassword">
+			<small class = 'form-text text-muted'>Or leave blank if no change needed.</small>
+		</div>
+		<div class = "form-group">
+			<label for = "fileProfilePicture">Profile Picture</label>
+			<input name = 'profile_picture' type = 'file' class = 'form-control-file' id = "fileProfilePicture">
+			<small class = 'form-text text-muted'>Or leave no file if no change needed.</small>
+		</div>
+		<button type = "submit" class = 'btn btn-outline-success'>Update</button>
+	</form>
+</div>
+
+{% endblock %}

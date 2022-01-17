@@ -1,0 +1,59 @@
+<div class = "container">
+    {% for modelPost in qsPosts %}	
+
+        {% include 'communities/t/tPostThumb.html' %}
+
+    {% endfor %}
+</div>
+
+<br>
+
+<div class = 'container'>
+	<ul class='pagination justify-content-center'>
+	{% if qsPosts.has_previous %}
+		<li class="mx-1">
+			<p page='{{qsPosts.previous_page_number}}' data-url = '{% url "communities:index" qsPosts.previous_page_number %}' onclick = "ajax_update_url(this)" class = 'text-primary'>
+				Previous
+			</p>
+		</li>
+	{% else %}
+		<li class='mx-1'>
+            <span class = 'disabled'> 
+                Previous
+            </span>
+        </li>
+	{% endif %}
+
+	{% for i in qsPosts.paginator.page_range %}
+		{% if qsPosts.number == i %}
+		<li class='mx-1'>
+            <span class = "text-success">
+                {{ i }}
+            </span>
+        </li>
+		{% else %}
+		<li class="mx-1">
+			<p page = "{{i}}" data-url = "{% url 'communities:index' i %}" onclick = "ajax_update_url(this)">
+                <span class = "text-primary">
+                    {{i}}
+                </span>
+            </p>
+		</li>
+		{% endif %}
+	{% endfor %}
+	
+	{% if qsPosts.has_next %}
+		<li class="mx-1">
+            <p page = "qsPosts.next_page_number" data-url='{% url "communities:index" qsPosts.next_page_number %}' onclick="ajax_update_url(this)" class = "text-primary" >
+                Next
+            </p>
+        </li>
+	{% else %}
+		<li class="mx-1">
+            <span class='disabled'>
+                Next
+            </span>
+        </li> 
+	{% endif %}
+	</ul>
+</div>

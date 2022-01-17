@@ -1,0 +1,19 @@
+<div class = "container border rounded p-3 div__tip-of-day-holder mb-2">
+	{% include "core/t/tips/tTipBase.html" %}
+	<div class = "mt-0 mb-0">
+		{% if request.user.boolViewedTodaysTip %}
+		<a href = "{{modelTipOfDay.reverseGetArchiveUrl}}">
+			<p class = 'text-success'>
+				See in tip archive.
+			</p>
+		</a>
+		{% else %}
+		<a href = "{{modelTipOfDay.reverseGetReadUrl}}">
+			<button class = "btn btn-outline-success">
+				Got it!
+			</button>
+		</a>
+		{% endif %}
+	</div>
+	{% include 'core/t/tips/tTipTags.html' %}
+</div>

@@ -6,100 +6,44 @@
 .div__GLOBAL_CONTENT{
     margin:50px;
 }
+
+input[type=checkbox]{
+    transform:scale(2.0);
+}
+
 /*
 ***********************************
 * Navbar styles
 ***********************************
 */
 #navbar__main{
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(52,9,121,1) 100%, rgba(88,225,2,1) 100%, rgba(0,212,255,1) 100%);
+    background: rgb(24,7,7);
+    background: linear-gradient(90deg, rgba(24,7,7,1) 0%, rgba(179,1,1,1) 100%, rgba(88,225,2,1) 100%, rgba(0,212,255,1) 100%);
 }
 .navbar__main__a-tag{
     text-decoration: none;
-    font-size: large;
     font-weight:bold;
+    color:gainsboro;
 }
 .navbar__main__a-tag:hover{
     text-decoration: none;
+    color:ghostwhite;
 }
 
 /*
 ***********************************
-* Styles for Communities Page
+* Styles for Profile
 ***********************************
 */
-.p__communities-post-title{
-    font-weight: bold;
-}
-.btn__like-post--active{
-    background-color: rgb(101, 226, 101);
-    border-radius: 5px;
-}
-.btn__like-post--inactive{
-    border-radius: 5px;
-}
 
-.btn__delete-comment{
-    background-color: rgb(255, 115, 115);
-    border-radius: 5px;
-}
-.btn__reply-to-comment{
-    border-radius: 5px;
-}
-.btn__communities-post-comment-delete{
-    background-color: rgb(255, 126, 126);
-}
-/*
-Inputs
-*/
-.input__reply-to-comment{
-    border-radius: 5px;
-    background-color: rgb(101, 226, 101);
-}
-
-/*
-divs
-*/
-.div__communities-post-detail{
-    border-radius:10px;
-    border-color: black;
-    background-color: red;
-}
-
-.div__communities-post-comment{
-    border-radius: 10px;
-    background-color: rgb(241, 233, 255);
-    margin:20px;
-    padding:10px;
-}
-.div__communities-post-comment-reply{
-    border-radius: 10px;
-    background-color: #c3c2ff;
-    margin:20px;
-    padding:10px;
-}
-.div__communities-post{
-    border-radius: 10px;
-    background-color: rgb(233, 239, 255);
-    margin:20px;
-    padding:10px;
-}
-
-/*
-***********************************
-* Styles for Profile Page
-***********************************
-*/
 .img__users-profile-img{
     width:100px;
     height:100px;
     margin-left:10px;
     margin-right:10px;
 }
-.div__users-profile{
-    border-radius: 10px;
-    background-color: rgb(233, 239, 255);
-    padding:10px;
+.div__users-profile-banner{
+    border-color: rgb(216, 49, 49)
 }
 .div__users-profile-media{
     margin:10px;
@@ -112,37 +56,7 @@ divs
     border-radius: 10px;
     background-color: rgb(233, 239, 255);
     margin:20px;
-    width:50%;
     padding:10px;
 }
 .div__users-profile-chart-container{
-    height:300px;
-    width:400px;
-}
-/*
-***********************************
-* Styles for Podcasts & Tips Page
-***********************************
-*/
-.a__podcasts-podcast-link{
-    text-decoration: none;
-    color:mediumblue;
-}
-.a__podcasts-podcast-link:hover{
-    color:royalblue;
-    text-decoration: none;
-}
-.div__podcasts-podcast-thumbnail{
-    width:30px;
-    height:200px;
-    border-radius:5px;
-    margin:10px;
-}
-
-/*
-Styles for forms
-*/
-.form__create-comment{
-    padding:10px;
-    margin:20px;
 }

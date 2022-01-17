@@ -1,0 +1,73 @@
+<div id = "div__notif-post-holder">
+    <div>
+        <h3 class = "text-center">
+            Activity on Your Posts
+        </h3>
+        {% if qsNotifPosts|length == 0 %}
+            <p class = "text-center">
+                All caught up!
+            </p>
+        {% else %}
+            {% for modelNotifPost in qsNotifPosts %}
+                {% include 'core/t/tNotificationPost.html' %}
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class = 'container'>
+        <ul class='pagination justify-content-center'>
+        {% if qsNotifPosts.has_previous %}
+            <li class="mx-1">
+                <p class = "text-primary" 
+                ajax-url = "{% url 'core:ajax-index-posts' qsNotifPosts.previous_page_number intNotifHrPgNum intNotifDmPgNum %}" 
+                change-url = "{% url 'core:index' qsNotifPosts.previous_page_number intNotifHrPgNum intNotifDmPgNum %}"
+                onclick = 'ajax_update_url(this,"div__notif-post-holder")'>
+                    Previous
+                </p>
+            </li>
+        {% else %}
+            <li class='mx-1 disabled'>
+                <span >
+                    Previous
+                </span>
+            </li>
+        {% endif %}
+
+        {% for i in qsNotifPosts.paginator.page_range %}
+            {% if qsNotifPosts.number == i %}
+            <li class='active mx-1'>
+                <span class = 'text-success'>
+                    {{ i }}
+                </span>
+            </li>
+            {% else %}
+            <li class="mx-1">
+                <p class = "text-primary" 
+                ajax-url = "{% url 'core:ajax-index-posts' i intNotifHrPgNum intNotifDmPgNum %}" 
+                change-url = "{% url 'core:index' i intNotifHrPgNum intNotifDmPgNum %}"
+                onclick = 'ajax_update_url(this,"div__notif-post-holder")'>
+                    {{ i }}
+                </p>
+            </li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if qsNotifPosts.has_next %}
+            <li class="mx-1">
+                <p class = "text-primary" 
+                ajax-url = "{% url 'core:ajax-index-posts' qsNotifPosts.next_page_number intNotifHrPgNum intNotifDmPgNum %}" 
+                change-url = "{% url 'core:index' qsNotifPosts.next_page_number intNotifHrPgNum intNotifDmPgNum %}"
+                onclick = 'ajax_update_url(this,"div__notif-post-holder")'>
+                    Next
+                </p>
+
+            </li>
+        {% else %}
+            <li class="mx-1">
+                <span class='disabled'>
+                    Next
+                </span>
+            </li> 
+        {% endif %}
+        </ul>
+    </div>
+</div>

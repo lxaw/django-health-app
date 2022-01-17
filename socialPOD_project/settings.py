@@ -17,7 +17,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -48,7 +47,8 @@ INSTALLED_APPS = [
     'communities.apps.CommunitiesConfig',
     # food
     'food.apps.FoodConfig',
-
+    # fitness
+    'fitness.apps.FitnessConfig',
 
     # ############################
     # django defaults
@@ -155,4 +155,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # Where users go when logging in
-LOGIN_REDIRECT_URL = "core:index"
+# A way to have views with arguments be login views
+LOGIN_REDIRECT_URL ="users:login-redirect"

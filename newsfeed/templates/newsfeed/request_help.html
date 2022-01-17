@@ -1,0 +1,59 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class = "container border rounded p-3">
+	<h1 class = "text-center">What would you like help with?</h1>
+</div>
+
+<br>
+
+<div class = "container border rounded p-3">
+	<h4 class = "text-center">Give some information on your problem.</h4>
+	<form method = "POST" action = "{% url 'newsfeed:help-request-create' %}">
+		{% csrf_token %}
+		<div class = "form-group">
+			<label for = "title">Title your request.</label>
+			<textarea name = "title" id= "textareaProblemTitle" class = "form-control" rows = 1></textarea>
+			<small id = "textareaProblemTitleHelp" class= "form-text text-muted">Write a meaningful title that captures the core of the problem.</small>
+			<label for = "text">Write about your issue.</label>
+			<textarea name = "text" id= "textareaProblemEntry" class = "form-control" rows = 3></textarea>
+			<small id = "textareaProblemEntryHelp" class= "form-text text-muted">Summarize your problem so others can help.</small>
+		</div>
+
+		<br>
+		<label>Tags:</label>			
+		<div class = "container border rounded">
+			<br>
+			<div class = "row">
+				<div class = "col-4 text-center">
+					<input name = "nutrition" class = "form-check-input" type="checkbox" id= "inlineCheckBox1">
+					<label class = "form-check-label pl-2" for ="inlineCheckBox1">Nutrition</label>
+				</div>
+				<div class = "col-4 text-center">
+					<input name = "diet" class = "form-check-input" type="checkbox" id= "inlineCheckBox2">
+					<label class = "form-check-label pl-2" for ="inlineCheckBox2">Diet</label>
+				</div>
+				<div class = "col-4 text-center">
+					<input name = "routine" class = "form-check-input" type="checkbox" id= "inlineCheckBox3">
+					<label class = "form-check-label pl-2" for ="inlineCheckBox2">Routine</label>
+				</div>
+			</div>
+			<br>
+		</div>
+			<small id = "tagsHelp" class= "form-text text-muted">Choose tags related to your problem.</small>
+		<br>
+		<div class = "container">
+			<div class = "row">
+				<div>
+					<button type = "submit" class = "btn btn-primary">Submit</button>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<br>
+
+</div>
+
+{% endblock %}

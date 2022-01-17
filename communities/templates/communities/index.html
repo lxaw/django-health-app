@@ -2,111 +2,78 @@
 
 {% block content %}
 
-<h1 class = "text-hover">Here are your communities.</h1>
+<div class = "container border border-primary rounded p-3">
+	<h1 class = 'text-center'>
+		Communities
+	</h1>
+</div>
 
-<h4>
-	<a href = "{% url 'communities:create_post' %}">Create a post.</a>
-</h4>
+<br>
 
-<h4>Recent posts:</h4>
+{% if user.is_pod_plus_member %}
+<div class = "container border rounded p-3">
+	<div class = "d-flex flex-row justify-content-center">
+		<i class="bi bi-star mr-3 mt-1"></i>
+		<a href = "{% url 'communities:leaderboard-index' %}">
+			<h4 class = "text-center">
+				Community Leaderboard (POD+ Exclusive)
+			</h4>
+		</a>
+		<i class="bi bi-star ml-3 mt-1"></i>
+	</div>
+</div>
+{% endif %}
 
-<div class = "div__communities-recent-post-container container">
+<br>
 
-	<div class = "row">
-		<div class = "col-8">
-			{% for modelPost in listModelPosts %}
-				<div id = "div__post${{modelPost.id}}" class = "div__communities-post">
-					<a href = "{% url 'communities:post_detail' modelPost.author.username modelPost.slug %}" class = "p__communities-post-title">
-						{{modelPost.title}}
-					</a>
-					<br>
-					<a href = "{% url 'communities:profile' modelPost.author.username %}">
-						{{modelPost.author}}
-					</a> on {{modelPost.pub_date}}
-					<p>{{modelPost.text_content}}</p>
-					<p id = "p__post-likes${{modelPost.id}}">{{modelPost.user_likes.count}}</p>
+<div class = "container border rounded p-3">
+	<a href = "{% url 'communities:post-prepare' %}">
+		<h4 class ="text-center">
+			Create a post.
+		</h4>
+	</a>
+</div>
 
-					{% if user in modelPost.user_likes.all %}
-						<button  data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post btn__like-post--active" id = "btn__like-post${{modelPost.id}}">Like</button>
-					{% else %}
-						<button  data-url = "{% url 'communities:like_post' modelPost.id %}" class = "btn__like-post" id = "btn__like-post${{modelPost.id}}">Like</button>
-					{% endif %}
-					Total Comments: {{modelPost.comments.count}}
-					{% if modelPost.author == user %}
-						<button class = "btn__delete-post" data-url = "{% url 'communities:delete_post' modelPost.id %}">
-							Delete?
-						</button>
-					{% endif %}
-				</div>
-			{% endfor %}
-		</div>
-		<div class = "col-4" style="background-color: red;">
+<br>
 
-		</div>
+<div class = "container border border rounded p-3">
+	<div>
+		<h4 class = "text-center">Recent posts:</h4>
+	</div>
+	
+	<div class = "container" id = "div__posts-container" >
+		{% include 'communities/t/posts.html' %}
 	</div>
 
 </div>
+
+
+{% include 'communities/t/jPostActions.html' %}
 
 {% endblock content %}
 
 {% block javascript %}
 
 <script>
-	function delete_post(strUrl){
-		let strPostId = strUrl.split("\/").pop();
-		let divPost = document.getElementById('div__post$' + strPostId);
-		divPost.style.display = "none"
 
-		$.ajax({
-			url:strUrl,
-		})
-	}
+function ajax_update_url(e){
+	strUrl = e.getAttribute("data-url");
+	let divPostContainer = document.getElementById('div__posts-container');
 
+	$.ajax({
+		type: 'GET',
+		url: strUrl,
+		dataType:'json',
+		success:function(data){
+			// reload posts
+			divPostContainer.innerHTML = data.posts_html;
+			// update url
+			window.history.pushState(null,"",strUrl);
+		},
 
-	function update_post(strUrl){
-		let strPostId = strUrl.split('\/').pop();
-		let btn = document.getElementById("btn__like-post$" + strPostId)
-		let pPostLikes = document.getElementById("p__post-likes$" + strPostId);
-		let intCurrrentLikeCount = parseInt(pPostLikes.innerText,10);
-		if(btn.classList.contains("btn__like-post--active")){
-			// remove
-			// --
-
-			intCurrrentLikeCount -= 1;
-			btn.classList.remove("btn__like-post--active");
-		}
-		else{
-			// ++
-			intCurrrentLikeCount += 1;
-			btn.classList.add("btn__like-post--active");
-		}
-		// update like count
-		pPostLikes.innerHTML = intCurrrentLikeCount;
-
-		$.ajax({
-			url:strUrl,
-		})
-	}
-
-	// associating delete buttons with function
-	let arrbtnsDelete = document.getElementsByClassName("btn__delete-post");
-	for(let btn of arrbtnsDelete){
-		let strUrl = btn.getAttribute('data-url');
-		btn.addEventListener('click',()=>{
-			delete_post(strUrl);
-		})
-	}
-
-	// associating like buttons with function
-	let arrbtnsLike = document.getElementsByClassName("btn__like-post")
-	for(let btn of arrbtnsLike){
-		// get the id
-		let strUrl = btn.getAttribute("data-url");
-		btn.addEventListener("click",()=>{
-			update_post(strUrl);
-		})
-	}
+	})
+}
 
 </script>
-{% endblock javascript %}
 
+{% endblock %}

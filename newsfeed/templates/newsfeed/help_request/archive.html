@@ -1,0 +1,40 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class = "container border border-primary rounded p-3">
+	<h2 class = "text-center">Help Request Archive</h4>
+</div>
+
+<br>
+
+<div class = "container border  rounded p-3">
+	<h4 class = "text-center">Your pending requests</h4>
+	{% if listmodelPendingRequests|length == 0 %}
+		<p class ='text-muted text-center'>
+			No outgoing requests.
+		</p>
+	{% else %}
+
+		{% for modelHelpRequest in listmodelPendingRequests %}
+			{% include "newsfeed/t/tHelpRequest.html" %}
+		{% endfor%}
+	{% endif %}
+</div>
+
+<br>
+
+<div class = "container border  rounded p-3">
+	<h4 class = "text-center">Your older requests</h4>
+	{% if listmodelAcceptedRequests|length == 0 %}
+		<p class = 'text-muted text-center'>
+			No prior requests.
+		</p>
+	{% else %}
+		{% for modelHelpRequest in listmodelAcceptedRequests %}
+			{% include "newsfeed/t/tHelpRequest.html" %}
+			<br>
+		{% endfor%}
+	{% endif %}
+</div>
+
+{% endblock %}

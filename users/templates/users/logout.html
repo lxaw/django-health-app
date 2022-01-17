@@ -2,12 +2,18 @@
 
 {% block content %}
 
-<h2>You have been logged out.</h2>
-<h1>
+<div class = "container">
+	<h1 class = "text-center">You have been logged out.</h1>
+</div>
+
+<br>
+<div class = "container">
 	<a href = "{% url 'users:login' %}">
-		Log in again.
+		<h4 class = 'text-center'>
+				Log in again.
+		</h4>
 	</a>
-</h1>
+</div>
 
 
 {% endblock content %}

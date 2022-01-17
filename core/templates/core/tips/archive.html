@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class = 'container border border-primary rounded p-3'>
+	<h2 class = 'text-center'>
+		Tips Archive
+	</h2>
+</div>
+
+<br>
+
+<div class = 'container border rounded p-3'>
+	<h4 class = "text-center">
+		Your Viewed Tips
+	</h4>
+	<div>
+		{% include "core/tips/t/archived_tips.html" %}
+	</div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+
+	function ajax_update_url(e,strDivName){
+		strAjaxUrl = e.getAttribute('ajax-url');
+		// url to change page to
+		strChangeUrl = e.getAttribute('change-url');
+		// get the div to update
+		let divHolder = document.getElementById(strDivName);
+		console.log(divHolder);
+
+		$.ajax({
+			type:"GET",
+			url:strAjaxUrl,
+			dataType:'json',
+			success:function(data){
+				// reload div
+				divHolder.innerHTML = data.html_data;
+				// update url
+				window.history.pushState(null,'',strChangeUrl);
+			}
+		})
+	}
+	
+</script>
+{% endblock %}

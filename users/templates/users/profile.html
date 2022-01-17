@@ -3,137 +3,128 @@
 
 {% block content %}
 
-<div style="align-items:flex-start;" class = "div__users-profile">
-	<div style="display:inline-flex" class = "div__users-profile-media">
-		<img class = "rounded-circle img__users-profile-img" src = "{{user.profile_picture.url}}">
+<div style="align-items:flex-start;" class = "container border border-primary rounded p-3">
+	<div style="display:inline-flex" >
+		<img class = "rounded-circle" style="height:6.5rem;width:6.5rem;" src = "{{user.profile_picture.url}}">
 		<div class = "div__users-profile-media-account">
 			<h2 class = "account-heading">
 				Welcome,  <strong>{{user.username}}.</strong>
 			</h2>
-			<p class = "text-secondary">{{user.email}}</p>
-		</div>
-
-	</div>
-</div>
-
-<br>
-
-
-<br>
-
-<div class = "container border border-primary rounded">
-	<div class = "row">
-		<div class = "col-sm ">
-			<h2>Your information:</h2>
-			<strong>Email:</strong> {{dictUserStats.strEmail}}
-			<br>
-			<strong>Username:</strong> {{dictUserStats.strUsername}}
-			<br>
-			<strong>Days Active:</strong> {{dictUserStats.intDaysActive}}
-			<br>
-			<strong>Points:</strong> {{dictUserStats.intPoints}}
-			<br>
-			<strong>Date joined:</strong>{{dictUserStats.strDateJoined}}
-			<br>
-		</div>
-		<div class = "col-sm">
-			<h2>Your Diet Stats:</h2>
-			<strong>Standard Deviation: </strong>{{dictUserStats.floatStd}}
-			<br>
-			<strong>Mean: </strong>{{dictUserStats.floatMean}}
-			<br>
-			<strong>Median: </strong>{{dictUserStats.floatMedian}}
-			<br>
-		</div>
-		<div class = "col-sm ">
-			<h2>Your Physical Activity</h2>
-
+			{% if user.is_pod_plus_member %}
+				<p style="color:gold;">
+					<strong>
+						POD+ Member
+					</strong>
+				</p>
+			{% endif %}
 		</div>
 	</div>
 </div>
 
 <br>
-<h2>Your Graphs:</h2>
-<!-- kcal info for grab by javascript -->
-{{listKCals|json_script:"jsonKCals"}}
 
-<div class = "div__users-profile-chart-container">
-	<canvas id = "canvas__users-profile-chart__id"></canvas>
-</div>
-
-
-
-<h2>Your History:</h2>
-	<a href = "{% url 'users:upload_kcals' %}">
-		Upload your most recent meal.
+<div class = "container border border rounded p-3">
+	<a href = "{% url 'users:dm-index' %}">
+		<h3 class = "text-center">
+			Your DMs
+		</h3>
 	</a>
-	{% for modelKCal in setKCals %}
-
-
-	<div class = "div__kcal-entry">
-			<p><strong>Meal name: ?????</strong></p>
-			<p><strong>Date:</strong> {{modelKCal.date}}</p>
-			<p><strong>Kilocalorie count:</strong> {{modelKCal.amount}}</p>
-			<a href = "{% url 'users:delete_kcal' modelKCal.id %}" >
-				Delete?
-			</a>
-	</div>
-	{% endfor %}
+</div>
 
 <br>
-<h4>Following: {{user.follows.count}}</h4>
-{% for modelUser in listFollowedUsers %}
-	<div class = "border border-primary" style = "width:50%;padding:10px;margin-bottom:10px;border-radius:5px;">
-		<img class = "rounded-circle img__users-profile-img" src = "{{modelUser.profile_picture.url}}">
-		<a href = "{{modelUser.get_public_profile_url}}">
-			{{modelUser.username}}
+
+<div class = "container border border rounded p-3">
+	<a href = "{% url 'food:index' %}">
+		<h3 class = "text-center">
+			Your Diet Center
+		</h3>
+	</a>
+</div>
+
+<br>
+
+<div class = "container border border rounded p-3">
+	<a href = "{% url 'fitness:index' %}">
+		<h3 class = "text-center">
+			Your Fitness Center
+		</h3>
+	</a>	
+</div>
+
+<br>
+
+<div class = "container border border rounded p-3">
+	<div>
+		<h2 class = "text-center">
+			Your Information
+		</h2>
+		<a href = "{% url 'users:profile-edit-prepare' %}">
+			<p class = 'text-center'>
+				Edit Information
+			</p>
+		</a>
+		<a href = "{{user.get_public_profile_url}}">
+			<p class = 'text-center'>
+				See public profile
+			</p>
 		</a>
 	</div>
-{% endfor %}
+	<hr>
+	<strong>Email:</strong> {{dictUserStats.strEmail}}
+	<br>
+	<strong>Username:</strong> {{dictUserStats.strUsername}}
+	<br>
+	<strong>Days Active:</strong> {{dictUserStats.intDaysActive}}
+	<br>
+	{% if user.is_pod_plus_member %}
+		<strong>Points:</strong> {{dictUserStats.intPoints}}
+		<br>
+	{% endif %}
+	<strong>Date joined:</strong> {{dictUserStats.strDateJoined}}
+	<br>
+	<strong>About You:</strong> "{{dictUserStats.strAbout}}"
+</div>
+
+<br>
+
+<div class = "container border border rounded pb-5 pt-1">
+	<div class = "container p-3 text-center">
+		<h4>Follow count: {{user.follows.count}}</h4>
+	</div>
+	<div>
+		{% include "users/t/profile_followed_users.html" %}
+	</div>
+</div>
+
 
 {% endblock %}
 
 {% block javascript %}
+
 <script>
-var arrKCals = JSON.parse(document.getElementById('jsonKCals').textContent);
 
-var arrLabels = [];
-var arrData = [];
-var arrBackgroundColor = [];
-var arrBorderColor = [];
+	function ajax_update_url(e,strDivName){
+		page = e.getAttribute('page');
+		// url for ajax call
+		strAjaxUrl = e.getAttribute('ajax-url');
+		// url to change page to
+		strChangeUrl = e.getAttribute('change-url');
+		// get the div to update
+		let divHolder = document.getElementById(strDivName);
 
-// populate the arrays
-for(let kcalobjKCal of arrKCals){
-	arrLabels.push(kcalobjKCal.date);
-	arrData.push(kcalobjKCal.amount);
-	arrBackgroundColor.push("rgba(0,0,0,0.2)");
-	arrBorderColor.push("rgba(0,0,0,1)");
-}
-
-var ctx = document.getElementById('canvas__users-profile-chart__id').getContext('2d');
-
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-		labels: arrLabels,
-        datasets: [{
-            label: arrLabels,
-            data: arrData,
-			backgroundColor:arrBackgroundColor,
-			borderColor:arrBorderColor,
-            borderWidth: 1
-        }]
-    },
-    options: {
-		maintainAspectRatio:false,
-		responsive:true,
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-    }
-});
-
+		$.ajax({
+			type:"GET",
+			url:strAjaxUrl,
+			dataType:'json',
+			success:function(data){
+				// reload div
+				divHolder.innerHTML = data.html_data;
+				// update url
+				window.history.pushState(null,'',strChangeUrl);
+			}
+		})
+	}
+	
 </script>
-{% endblock javascript %}
+
+{% endblock %}
