@@ -454,6 +454,9 @@ def viewHelpRequestOfferDelete(request, username, slug,id):
             modelHelpRequest.accepted_user = None
         # delete the offer
         modelHelpRequestOffer.delete()
+        # make sure no user is accepted
+        if modelHelpRequest.accepted_user != None:
+            modelHelpRequest.accepted_user = None
         # delete the notification
         modelNotification = get_object_or_404(NotificationHelpRequest,sender=request.user, recipient=modelHelpRequest.author,help_request=modelHelpRequest)
         modelNotification.delete()
