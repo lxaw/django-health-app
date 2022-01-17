@@ -34,7 +34,7 @@
 		</div>
 	{% endif %}
 		{% if request.user == modelHelpRequest.author %}
-		<a href = "{% url 'newsfeed:help-request-offer-delete' user.username modelHelpRequest.slug modelHelpRequestOfferAccepted.id %}" class = 'text-danger'>
+		<a href = "{% url 'newsfeed:help-request-offer-reject' user.username modelHelpRequest.slug modelHelpRequestOfferAccepted.id %}" class = 'text-danger'>
 			<p>
 				Remove user {{modelHelpRequest.accepted_user.username}} from your help request?
 			</p>
