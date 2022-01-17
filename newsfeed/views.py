@@ -403,7 +403,7 @@ def viewHelpRequestOfferDelete(request, username, slug,id):
     # actually deletes the help request offer
     modelHelpRequestAuthor = get_object_or_404(CustomUser,username=username)
     modelHelpRequest = get_object_or_404(HelpRequest,slug=slug,author=modelHelpRequestAuthor)
-    modelOffer = get_object_or_404(HelpRequestOffer,id=id)
+    modelHelpRequestOffer = get_object_or_404(HelpRequestOffer,id=id)
 
     # this tests if the user who is deleting is the help request author
     if request.method == "POST" and request.user == modelHelpRequest.author:
@@ -434,8 +434,6 @@ def viewHelpRequestOfferDelete(request, username, slug,id):
         if modelHelpRequest.accepted_user != None:
             modelHelpRequest.accepted_user = None
 
-        # delete the offer
-        modelOffer.delete()
         #send notification to user that offer rejected
         modelNotification = NotificationHelpRequest(sender=request.user,recipient=modelHelpRequestOffer.author,
             text="Your help request for request \"{}\" has been rejected.".format(modelHelpRequest.title)
@@ -443,22 +441,29 @@ def viewHelpRequestOfferDelete(request, username, slug,id):
         modelNotification.help_request = modelHelpRequest 
         modelNotification.save()
 
+        # delete the offer, should be after you make the notification
+        modelHelpRequestOffer.delete()
+
         messages.success(request,'Help request offer successfully deleted')
+        return redirect(reverse("newsfeed:help-request-detail",kwargs={"username":username,"slug":slug}))
 
     # can also delete if you are the author of the offer
-    if request.user == modelOffer.author:
+    if request.user == modelHelpRequestOffer.author:
         # make sure no user is accepted
         if modelHelpRequest.accepted_user != None:
             modelHelpRequest.accepted_user = None
         # delete the offer
-        modelOffer.delete()
+        modelHelpRequestOffer.delete()
+        # delete the notification
+        modelNotification = get_object_or_404(NotificationHelpRequest,sender=request.user, recipient=modelHelpRequest.author,help_request=modelHelpRequest)
+        modelNotification.delete()
+
         messages.success(request,"Successfully deleted offer.")
+        return redirect(reverse("newsfeed:help-request-detail",kwargs={"username":username,"slug":slug}))
 
     else:
         messages.warning(request,'You are not able to delete this offer.')
-
-
-    return redirect(reverse("newsfeed:help-request-detail",kwargs={"username":username,"slug":slug}))
+        return redirect(reverse("newsfeed:help-request-detail",kwargs={"username":username,"slug":slug}))
 
 def viewHelpRequestArchiveDetail(request):
     # shows user's old help requests / current ones
