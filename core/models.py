@@ -16,6 +16,10 @@ from newsfeed.models import HelpRequest,HelpRequestOffer
 ##########################################
 from django.urls import reverse
 
+# slugs
+from django.template.defaultfilters import slugify
+
+
 # Create your models here.
 
 #####################################
@@ -167,5 +171,46 @@ class FeedbackHelpRequestOffer(BaseFeedback):
 		return "Sender: {}, Id: {}".format(self.sender,self.feedback_choice)
 
 	
+#######################################
+# 
+# Models for DM rooms
+# Dm rooms are to contain dms, so that 
+# a user could have multiple dm conversations 
+# with a different users for different reasons
+# 
+#######################################
 
+class BaseRoom(models.Model):
+	# when room created
+	pub_date = models.DateTimeField(default=timezone.now)
+	# each room has a name / topic
+	name = models.CharField(max_length=300)
 
+	slug = models.SlugField(null=False)
+
+	class Meta:
+		abstract = True
+	
+	def save(self,*args,**kwargs):
+		# NOTE:
+		# if allow users to change the name, may 
+		# need to change the slug as well.
+		# need to overwrite save to have slug updated when save
+		if not self.id:
+			self.slug = slugify(self.name)
+		super(BaseRoom,self).save(*args,**kwargs)
+
+# room to hold direct messages	
+class RoomDm(BaseRoom):
+	# a dm room requires both an author and a partner to be complete.
+
+	# person who created room
+	author = models.ForeignKey(CustomUser,on_delete = models.CASCADE,related_name="room_dm_author_set",null=False)
+	# person who author talks to
+	partner= models.ForeignKey(CustomUser,on_delete = models.CASCADE,related_name="room_dm_partner_set",null=False)
+
+	class Meta:
+		unique_together = [['author','name']]
+	
+	def __str__(self):
+		return "Author:{}|Partner:{}|Name:{}".format(self.author.username,self.partner.username,self.name)

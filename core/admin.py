@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (TipOfDay,NotificationHelpRequest,NotificationPost,
-NotificationDirectMessage,NotificationUser,FeedbackHelpRequestOffer)
+NotificationDirectMessage,NotificationUser,FeedbackHelpRequestOffer, RoomDm)
 
 # Register your models here.
 
@@ -76,6 +76,17 @@ class FeedbackHelpRequestOfferAdmin(admin.ModelAdmin):
 		("Text (optional)",{"fields":['text']}),
 	]
 
+###################################
+# Rooms
+###################################
+class RoomDmAdmin(admin.ModelAdmin):
+	fieldsets = [
+		("Pub date",{"fields":['pub_date']}),
+		("Name",{"fields":['name']}),
+		("Author",{"fields":['author']}),
+		("Partner",{"fields":['partner']}),
+	]
+
 # registering the models
 admin.site.register(TipOfDay,TipOfDayAdmin)
 admin.site.register(NotificationHelpRequest,NotificationHelpRequestAdmin)
@@ -83,3 +94,4 @@ admin.site.register(NotificationPost,NotificationPostAdmin)
 admin.site.register(NotificationDirectMessage,NotificationDirectMessageAdmin)
 admin.site.register(NotificationUser,NotificationUserAdmin)
 admin.site.register(FeedbackHelpRequestOffer,FeedbackHelpRequestOfferAdmin)
+admin.site.register(RoomDm,RoomDmAdmin)
