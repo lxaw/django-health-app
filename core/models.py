@@ -7,7 +7,7 @@ from django.utils import timezone
 ###########################
 # Necessary other models
 ###########################
-from users.models import CustomUser, DirectMessage
+from users.models import CustomUser
 from communities.models import Post
 from newsfeed.models import HelpRequest,HelpRequestOffer
 
@@ -22,77 +22,6 @@ from django.template.defaultfilters import slugify
 
 # Create your models here.
 
-#####################################
-# Models for notification
-#####################################
-
-# create a base notification class
-class BaseNotification(models.Model):
-	text = models.CharField(max_length=300,null=False)
-	read = models.BooleanField(default=False)
-	pub_date = models.DateTimeField(default=timezone.now)
-
-	class Meta:
-		abstract = True
-
-#############
-# NOTE:
-# Related names are a field in a db, so cannot have the same name even if inherited class
-#############
-
-# notifications for post
-class NotificationPost(BaseNotification):
-	# notification linking to post
-	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "sender_notification_post_set")
-	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="recipient_notification_post_set",null=False)
-
-	post = models.ForeignKey(Post,on_delete = models.CASCADE,related_name = "notification_post_set")
-
-	def __str__(self):
-		return "To: {}|From: {}|Post:{}".format(self.sender,self.recipient,self.post.title)
-	
-	def strGetType(self):
-		# get the type of notification, useful for looping
-		return "Post"
-
-class NotificationHelpRequest(BaseNotification):
-	# notification linking to help request
-	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "sender_notification_help_request_set")
-	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="recipient_notification_help_request_set",null=False)
-
-	help_request = models.ForeignKey(HelpRequest,on_delete=models.CASCADE,related_name = "notification_help_request_set")
-
-	def __str__(self):
-		return "To: {}|From: {}|HelpRequest:{}".format(self.recipient,self.sender,self.help_request.title)
-	
-	def strGetType(self):
-		return "HelpRequest"	
-
-class NotificationDirectMessage(BaseNotification):
-	# notification linking to dm
-	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "sender_notification_direct_message_set")
-	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="recipient_notification_direct_message_set",null=False)
-
-	direct_message = models.ForeignKey(DirectMessage,on_delete = models.CASCADE,related_name = "notification_direct_message_set")
-
-	def __str__(self):
-		return "To: {}|From: {}|DM:{}".format(self.recipient,self.sender,self.direct_message)
-
-	def strGetType(self):
-		return "DirectMessage"
-
-class NotificationUser(BaseNotification):
-	# notification linking to user
-	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "sender_notification_user_set")
-	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="recipient_notification_user_set",null=False)
-
-	user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="notification_user_set")
-
-	def __str__(self):
-		return "To: {}|From: {}|User:{}".format(self.recipient,self.sender,self.user.username)
-	
-	def strGetType(self):
-		return "User"
 ####################################
 #
 # Tip of days
@@ -168,12 +97,12 @@ class FeedbackHelpRequestOffer(BaseFeedback):
 		,null=True,blank=True)
 	
 	def __str__(self):
-		return "Sender: {}, Id: {}".format(self.sender,self.feedback_choice)
+		return "Sender: {}|Id: {}".format(self.sender,self.feedback_choice)
 
 	
 #######################################
 # 
-# Models for DM rooms
+# Models for Dm rooms
 # Dm rooms are to contain dms, so that 
 # a user could have multiple dm conversations 
 # with a different users for different reasons
@@ -214,3 +143,110 @@ class RoomDm(BaseRoom):
 	
 	def __str__(self):
 		return "Author:{}|Partner:{}|Name:{}".format(self.author.username,self.partner.username,self.name)
+
+#######################################
+# 
+# Models for Dms
+# All Dm's must be associated with a "room".
+# A room is created for each conversation.
+# 
+#######################################
+
+# if room == null, then regular dm between two users
+class Dm(models.Model):
+	# sender
+	sender = models.ForeignKey(CustomUser,on_delete = models.CASCADE,related_name = "dm_sender_set")
+	# recipient
+	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name = "dm_recipient_set")
+	# when it was sent
+	pub_date = models.DateTimeField(default=timezone.now)
+
+	# what room it belongs to
+	room = models.ForeignKey(RoomDm, on_delete = models.CASCADE,related_name="dm_set",null=True)
+
+	text = models.TextField()
+
+	def __str__(self):
+		return self.text
+	
+	def boolIsReply(self):
+		if(self.parent):
+			return True
+		return False
+	
+
+#######################################
+# 
+# Models for Notifications
+# All notifications inherit from a base
+# 
+#######################################
+
+# create a base notification class
+class BaseNotification(models.Model):
+	text = models.CharField(max_length=300,null=False)
+	read = models.BooleanField(default=False)
+	pub_date = models.DateTimeField(default=timezone.now)
+
+	class Meta:
+		abstract = True
+
+#############
+# NOTE:
+# Related names are a field in a db, so cannot have the same name even if inherited class
+#############
+
+# notifications for post
+class NotificationPost(BaseNotification):
+	# notification linking to post
+	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "sender_notification_post_set")
+	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="recipient_notification_post_set",null=False)
+
+	post = models.ForeignKey(Post,on_delete = models.CASCADE,related_name = "notification_post_set")
+
+	def __str__(self):
+		return "To: {}|From: {}|Post:{}".format(self.sender,self.recipient,self.post.title)
+	
+	def strGetType(self):
+		# get the type of notification, useful for looping
+		return "Post"
+
+class NotificationHelpRequest(BaseNotification):
+	# notification linking to help request
+	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "sender_notification_help_request_set")
+	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="recipient_notification_help_request_set",null=False)
+
+	help_request = models.ForeignKey(HelpRequest,on_delete=models.CASCADE,related_name = "notification_help_request_set")
+
+	def __str__(self):
+		return "To: {}|From: {}|HelpRequest:{}".format(self.recipient,self.sender,self.help_request.title)
+	
+	def strGetType(self):
+		return "HelpRequest"	
+
+class NotificationDm(BaseNotification):
+	# notification linking to dm
+	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "sender_notification_dm_set")
+	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="recipient_notification_dm_set",null=False)
+
+	dm = models.ForeignKey(Dm,on_delete = models.CASCADE,related_name = "notification_dm_set")
+
+	def __str__(self):
+		return ""
+		return "To: {}|From: {}|Dm:{}".format(self.recipient,self.sender,self.dm)
+
+	def strGetType(self):
+		return "DirectMessage"
+
+class NotificationUser(BaseNotification):
+	# notification linking to user
+	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "sender_notification_user_set")
+	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="recipient_notification_user_set",null=False)
+
+	user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="notification_user_set")
+
+	def __str__(self):
+		return "To: {}|From: {}|User:{}".format(self.recipient,self.sender,self.user.username)
+	
+	def strGetType(self):
+		return "User"

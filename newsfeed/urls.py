@@ -39,6 +39,11 @@ urlpatterns = [
 	path('request-help/<str:username>/<slug:slug>/offer/<int:id>/delete/',newsfeed_views.viewHelpRequestOfferDelete,name='help-request-offer-delete'),
 
 	##################
+	# URLs for dms
+	##################
+	path('dm/<str:sender_username>&<str:recipient_username>/<str:room_name>/',newsfeed_views.viewDmDetail,name='help-request-dm-detail'),
+
+	##################
 	# URLS for old Help Requests
 	##################
 	path('archive/',newsfeed_views.viewHelpRequestArchiveDetail,name="help-request-archive-detail"),

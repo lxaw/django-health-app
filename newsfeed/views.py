@@ -20,6 +20,7 @@ from django.template.loader import render_to_string
 
 # newsfeed models
 from newsfeed.models import HelpRequest,HelpRequestOffer
+from core.models import RoomDm
 
 # communities models
 from communities.models import Post
@@ -30,9 +31,8 @@ from users.models import CustomUser
 # notifications, feedback
 ##############
 # notifications
-from core.models import NotificationHelpRequest, FeedbackHelpRequestOffer
-# feedback
-from core.models import FeedbackHelpRequestOffer
+from core.models import (NotificationHelpRequest, 
+FeedbackHelpRequestOffer, FeedbackHelpRequestOffer,Dm)
 
 ############################
 # Necessary Forms
@@ -349,7 +349,12 @@ def viewHelpRequestOfferAccept(request,username,slug,id):
     # Utility:
     # accepts the offer for help and deletes the offer, marks the request as fulfilled
     # deletes all other offers as well
+    # 
+    # ALSO: Creates the RoomDm where all Dm's between
+    # the user who requested help and the user who
+    # has offered help can speak
     ###############################
+
     # get the help request offer
     modelHelpRequestOffer = get_object_or_404(HelpRequestOffer,id=id)
     # get the user who offered
@@ -364,9 +369,17 @@ def viewHelpRequestOfferAccept(request,username,slug,id):
     modelHelpRequest.accept_date = timezone.now()
     modelHelpRequest.save()
 
+    # create a room for new dm's
+    modelRoomDm = RoomDm(author = request.user,partner=modelUserOfferer
+    ,name=modelHelpRequest.title)
+    # save it
+    modelRoomDm.save()
+    
+
     context = {
         "modelUserOfferer":modelUserOfferer,
         "modelHelpRequest":modelHelpRequest,
+        "modelRoomDm":modelRoomDm,
     }
 
     return render(request,'newsfeed/help_request/offer/accept.html',context=context)
@@ -443,6 +456,10 @@ def viewHelpRequestOfferDelete(request, username, slug,id):
 
         # delete the offer, should be after you make the notification
         modelHelpRequestOffer.delete()
+        # make sure no user is accepted
+        modelHelpRequest.accepted_user = None
+        # save the model!
+        modelHelpRequest.save()
 
         messages.success(request,'Help request offer successfully deleted')
         return redirect(reverse("newsfeed:help-request-detail",kwargs={"username":username,"slug":slug}))
@@ -450,8 +467,10 @@ def viewHelpRequestOfferDelete(request, username, slug,id):
     # can also delete if you are the author of the offer
     if request.user == modelHelpRequestOffer.author:
         # make sure no user is accepted
-        if modelHelpRequest.accepted_user != None:
-            modelHelpRequest.accepted_user = None
+        modelHelpRequest.accepted_user = None
+        # save the model!
+        modelHelpRequest.save()
+
         # delete the offer
         modelHelpRequestOffer.delete()
         # make sure no user is accepted
@@ -489,3 +508,12 @@ def viewHelpRequestArchiveDetail(request):
         "listmodelAcceptedRequests": listmodelAcceptedRequests,
     }
     return render(request,'newsfeed/help_request/archive.html',context = context)
+
+
+######################################
+# views for creating dms between users
+######################################
+
+def viewDmDetail(request,sender_username,recipient_username,room_name):
+
+    return render("newsfeed/help_request/rooms/dm_detail.html")

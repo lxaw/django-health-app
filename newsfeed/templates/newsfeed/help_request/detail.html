@@ -47,7 +47,9 @@
 	{% if not modelHelpRequestOffer %}
 		<div class = "container border border rounded p-3">
 			<h4>Think you can help out?</h4>
-			<p class = "text-muted">Send a direct message to begin the conversation.</p>
+			<p class = "text-muted">
+				Send a short message.
+			</p>
 			<div>
 				<form method = "POST" action = "{% url 'newsfeed:help-request-offer-create' modelHelpRequest.author.username modelHelpRequest.slug %}">
 					{% csrf_token %}

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.forms import TextInput, Textarea
 
-from .models import CustomUser, DirectMessage
+from .models import CustomUser
 
 ###################################
 # This all deals with what the admin page shows for custom user class.
@@ -26,16 +26,6 @@ class CustomUserAdminConfig(UserAdmin):
 		('User Media',{'fields':('profile_picture',)}),
 		('Use Website User',{'fields':('last_tip_view_date',)}),
 	)
-
-class DirectMessageAdmin(admin.ModelAdmin):
-	fieldsets = [
-		("sender",{"fields":['sender']}),
-		("recipient",{"fields":['recipient']}),
-		("pub_date",{"fields":['pub_date']}),
-		("text",{"fields":['text']}),
-	]
-
-admin.site.register(DirectMessage,DirectMessageAdmin)
 
 # Register the configuration
 admin.site.register(CustomUser,CustomUserAdminConfig)
