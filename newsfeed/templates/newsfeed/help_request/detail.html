@@ -10,17 +10,28 @@
 {% if modelHelpRequest.boolWasRespondedTo and modelHelpRequestOfferAccepted  %}
 	{% if request.user != modelHelpRequestOffer.author %}
 	<div class = "container border rounded p-3">
-		<p>To be helped by user <strong>{{modelHelpRequest.accepted_user.username}}.</strong></p>
+		<div>
+			<h4 class = 'text-center'>
+				This help request is to be helped by <a href = "{{modelHelpRequest.accepted_user.get_public_profile_url}}">{{modelHelpRequest.accepted_user.username}}</a>.
+			</h4>
+		</div>
 		<a href = "{{modelHelpRequest.accepted_user.get_public_profile_url}}">
 			<p>
 				View <strong>{{modelHelpRequest.accepted_user.username}}</strong>'s profile.
 			</p>
 		</a>
+		{% if request.user == modelHelpRequest.author %}
 		<a href = "{% url 'users:dm-detail' modelHelpRequest.accepted_user %}">
 			<p>
 				Or direct message them.
 			</p>
 		</a>
+		<a href = "{% url 'newsfeed:help-request-accepted-user-reset-prepare' user.username modelHelpRequest.slug %}" class = 'text-danger'>
+			<p>
+				Remove user {{modelHelpRequest.accepted_user.username}} from your help request?
+			</p>
+		</a>
+		{% endif %}
 	{% else %}
 		<div class = "container border rounded p-3">
 			<p>
@@ -33,13 +44,6 @@
 			</a>
 		</div>
 	{% endif %}
-		{% if request.user == modelHelpRequest.author %}
-		<a href = "{% url 'newsfeed:help-request-offer-reject' user.username modelHelpRequest.slug modelHelpRequestOfferAccepted.id %}" class = 'text-danger'>
-			<p>
-				Remove user {{modelHelpRequest.accepted_user.username}} from your help request?
-			</p>
-		</a>
-		{% endif %}
 	</div>
 <!-- else if not the author of request and not responded to, allow offer creation -->
 {% elif request.user != modelHelpRequest.author %}

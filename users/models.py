@@ -214,4 +214,3 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 
 		return intSum
 		
-

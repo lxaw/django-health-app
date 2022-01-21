@@ -22,6 +22,9 @@ urlpatterns = [
 	# delete help request
 	path('request-help/<str:username>/<slug:slug>/delete/',newsfeed_views.viewHelpRequestDelete,name="help-request-delete"),
 
+	# prepare to reset user
+	path('request-help/<str:username>/<slug:slug>/reset-prepare/',newsfeed_views.viewHelpRequestAcceptedUserResetPrepare,name="help-request-accepted-user-reset-prepare"),
+
 	##################
 	# URLS for Help Request Offers
 	##################

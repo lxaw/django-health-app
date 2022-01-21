@@ -39,6 +39,11 @@ FeedbackHelpRequestOffer, FeedbackHelpRequestOffer,Dm)
 ############################
 from newsfeed.forms import HelpRequestForm,HelpRequestOfferForm
 
+############################
+# Common functions
+############################
+from newsfeed.common_functions import CommonFunctions
+
 @login_required
 def viewIndex(request,page=1):
     ###################################
@@ -285,13 +290,13 @@ def viewHelpRequestOfferCreate(request,username,slug):
     # is not the same person giving themselves advice!
     if request.user == modelHelpRequest.author:
         messages.warning(request,"Cannot give yourself an offer to help.")
-        return redirect(reverse('newsfeed:index',kwargs={"page":1}))
+        return redirect(reverse("newsfeed:help-request-detail",kwargs={'username':modelHelpRequest.author,'slug':modelHelpRequest.slug}))
     
     # make sure they have not already made a request
     for modelOffer in modelHelpRequest.help_request_offer_set.all():
         if request.user == modelOffer.author:
             messages.warning(request, "You have already created an offer to help. If you would like to create another, you must remove the old one.")
-            return redirect(reverse('newsfeed:index',kwargs={"page":1}))
+            return redirect(reverse("newsfeed:help-request-detail",kwargs={'username':modelHelpRequest.author,'slug':modelHelpRequest.slug}))
 
     if request.method == "POST":
 
@@ -304,6 +309,12 @@ def viewHelpRequestOfferCreate(request,username,slug):
         modelCreatedHelpRequestOffer.author = request.user
         # give it its text
         strTextContent = request.POST['text']
+        # test if text is valid
+        if strTextContent == "":
+            # can't have empty text
+            messages.warning(request,"You help offer needs to have text present. Please try again.")
+            return redirect(reverse("newsfeed:help-request-detail",kwargs={'username':modelHelpRequest.author,'slug':modelHelpRequest.slug}))
+
         modelCreatedHelpRequestOffer.text = strTextContent
         # give it its help request
         modelCreatedHelpRequestOffer.help_request = modelHelpRequest
@@ -363,23 +374,13 @@ def viewHelpRequestOfferAccept(request,username,slug,id):
     modelUserRequestee = get_object_or_404(CustomUser,username=username)
     # get the help request
     modelHelpRequest = get_object_or_404(HelpRequest,author=modelUserRequestee,slug=slug)
-    # mark the help request as fulfilled (ie add offerer to responded_users)
-    modelHelpRequest.accepted_user = modelUserOfferer
-    # # keep track of when it was accepted
-    modelHelpRequest.accept_date = timezone.now()
-    modelHelpRequest.save()
-
-    # create a room for new dm's
-    modelRoomDm = RoomDm(author = request.user,partner=modelUserOfferer
-    ,name=modelHelpRequest.title)
-    # save it
-    modelRoomDm.save()
     
+
+    CommonFunctions.voidHelpRequestOfferAccept(modelHelpRequest, modelUserOfferer)
 
     context = {
         "modelUserOfferer":modelUserOfferer,
         "modelHelpRequest":modelHelpRequest,
-        "modelRoomDm":modelRoomDm,
     }
 
     return render(request,'newsfeed/help_request/offer/accept.html',context=context)
@@ -390,8 +391,9 @@ def viewHelpRequestOfferReject(request,username,slug,id):
     # request, username (of the help request), slug (of the help request),
     # id (of the help request OFFER)
     # Utility:
-    # rejects the offer by deleting the help reqeust offer. No change to 
-    # the original help request
+    # DOES NOT DELETE THE HELP REQUEST OFFER
+    # Just a screen so that the user can then fill a form explaining
+    # why they want to remove the offer
     ###############################
 
     # get the help request offer
@@ -413,6 +415,14 @@ def viewHelpRequestOfferReject(request,username,slug,id):
     return render(request,'newsfeed/help_request/offer/reject.html',context=context)
 
 def viewHelpRequestOfferDelete(request, username, slug,id):
+    ###############################
+    # Inputs:
+    # request, username (of the help request), slug (of the help request),
+    # id (of the help request OFFER)
+    # Utility:
+    # Deletes the help request offer
+    ###############################
+
     # actually deletes the help request offer
     modelHelpRequestAuthor = get_object_or_404(CustomUser,username=username)
     modelHelpRequest = get_object_or_404(HelpRequest,slug=slug,author=modelHelpRequestAuthor)
@@ -454,12 +464,8 @@ def viewHelpRequestOfferDelete(request, username, slug,id):
         modelNotification.help_request = modelHelpRequest 
         modelNotification.save()
 
-        # delete the offer, should be after you make the notification
-        modelHelpRequestOffer.delete()
-        # make sure no user is accepted
-        modelHelpRequest.accepted_user = None
-        # save the model!
-        modelHelpRequest.save()
+        # delete the offer
+        CommonFunctions.voidDeleteHelpRequestOffer(modelHelpRequestOffer)
 
         messages.success(request,'Help request offer successfully deleted')
         return redirect(reverse("newsfeed:help-request-detail",kwargs={"username":username,"slug":slug}))
@@ -472,13 +478,7 @@ def viewHelpRequestOfferDelete(request, username, slug,id):
         modelHelpRequest.save()
 
         # delete the offer
-        modelHelpRequestOffer.delete()
-        # make sure no user is accepted
-        if modelHelpRequest.accepted_user != None:
-            modelHelpRequest.accepted_user = None
-        # delete the notification
-        modelNotification = get_object_or_404(NotificationHelpRequest,sender=request.user, recipient=modelHelpRequest.author,help_request=modelHelpRequest)
-        modelNotification.delete()
+        CommonFunctions.voidDeleteHelpRequestOffer(modelHelpRequestOffer)
 
         messages.success(request,"Successfully deleted offer.")
         return redirect(reverse("newsfeed:help-request-detail",kwargs={"username":username,"slug":slug}))
@@ -486,6 +486,37 @@ def viewHelpRequestOfferDelete(request, username, slug,id):
     else:
         messages.warning(request,'You are not able to delete this offer.')
         return redirect(reverse("newsfeed:help-request-detail",kwargs={"username":username,"slug":slug}))
+    
+@login_required
+def viewHelpRequestAcceptedUserResetPrepare(request, username,slug):
+    ###############################
+    # Inputs:
+    # request, username (of the help request), slug (of the help request)
+    # Utility:
+    # Shows a screen for user to fill out a form on why they wish
+    # to reset the help request user
+    # When form filled, help request user is reset
+    ###############################
+    # actually deletes the help request offer
+    modelHelpRequestAuthor = get_object_or_404(CustomUser,username=username)
+    modelHelpRequest = get_object_or_404(HelpRequest,slug=slug,author=modelHelpRequestAuthor)
+
+    # check if has permission
+    if request.user != modelHelpRequestAuthor:
+        messages.warning(request,"You do not have permission to do that action.")
+        return redirect(reverse("newsfeed:help-request-detail",kwargs={"username":username,"slug":slug}))
+
+    # check if there is an accepted user
+    if modelHelpRequest.accepted_user == None:
+        messages.warning(request,"There is no accepted user to reject.")
+        return redirect(reverse("newsfeed:help-request-detail",kwargs={"username":username,"slug":slug}))
+
+    else:
+        context = {
+            "modelHelpRequest":modelHelpRequest,
+        }
+        return render(request,"newsfeed/help_request/accepted_user_reset_prepare.html",context=context)
+
 
 def viewHelpRequestArchiveDetail(request):
     # shows user's old help requests / current ones
