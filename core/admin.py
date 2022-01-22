@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 from .models import (TipOfDay,NotificationHelpRequest,NotificationPost,
-NotificationDm,NotificationUser,FeedbackHelpRequestOffer, RoomDm,Dm)
+NotificationDm,NotificationUser,FeedbackHelpRequest,
+FeedbackHelpRequestOffer, RoomDm,Dm)
 
 # Register your models here.
 
@@ -68,6 +69,12 @@ class NotificationUserAdmin(admin.ModelAdmin):
 ###################################
 # User feedback
 ###################################
+class FeedbackHelpRequestAdmin(admin.ModelAdmin):
+	fieldsets = [
+		("Feedback Type",{"fields":['feedback_choice']}),
+		("Sender",{"fields":['sender']}),
+		("Text (optional)",{"fields":['text']}),
+	]
 class FeedbackHelpRequestOfferAdmin(admin.ModelAdmin):
 	fieldsets = [
 		("Feedback Type",{"fields":['feedback_choice']}),
@@ -104,5 +111,6 @@ admin.site.register(NotificationPost,NotificationPostAdmin)
 admin.site.register(NotificationDm,NotificationDmAdmin)
 admin.site.register(NotificationUser,NotificationUserAdmin)
 admin.site.register(FeedbackHelpRequestOffer,FeedbackHelpRequestOfferAdmin)
+admin.site.register(FeedbackHelpRequest,FeedbackHelpRequestAdmin)
 admin.site.register(RoomDm,RoomDmAdmin)
 admin.site.register(Dm,DmAdmin)

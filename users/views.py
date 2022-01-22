@@ -208,7 +208,7 @@ def viewProfileEdit(request):
 		else:
 			print(formUpdateForm.errors)
 
-	return redirect('users:profile')
+	return redirect(reverse('users:profile',kwargs={"pg_following":1}))
 
 
 ################################

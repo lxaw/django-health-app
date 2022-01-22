@@ -72,8 +72,35 @@ class BaseFeedback(models.Model):
 	class Meta:
 		abstract = True
 
-# feedback from a help request offer
+# feedback from a help request, NOT OFFER
 # most used when rejecting help request
+class FeedbackHelpRequest(BaseFeedback):
+	# associated with user, or anonymous (User == null)
+	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "feedback_help_request_set")
+	OFFENSIVE = 0
+	INAPPROPRIATE = 1
+	NO_REASON = 2
+	OTHER = 3
+
+	FEEDBACK_CHOICES = [
+		(OFFENSIVE,"offensive"),
+		(INAPPROPRIATE,"inappropriate"),
+		(NO_REASON,"no reason"),
+		(OTHER,"other"),
+	]
+
+	# if reason was "other", then text is present
+	text = models.CharField(max_length=300,null=True,blank=True)
+	feedback_choice = models.CharField(
+		max_length=2,choices = FEEDBACK_CHOICES
+		,null=True,blank=True)
+	
+	def __str__(self):
+		return "Sender: {}|Id: {}".format(self.sender,self.feedback_choice)
+	
+
+# feedback from a help request offer
+# most used when rejecting help request offer
 class FeedbackHelpRequestOffer(BaseFeedback):
 	# associated with user, or anonymous (User == null)
 	sender = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,related_name = "feedback_help_request_offer_set")

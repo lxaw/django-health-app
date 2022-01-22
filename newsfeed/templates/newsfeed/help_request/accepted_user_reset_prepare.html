@@ -28,18 +28,18 @@
 		</p>
 	</div>
 	<div>
-		<form action = "">
+		<form action = "{% url 'newsfeed:help-request-accepted-user-reset' modelHelpRequest.author.username modelHelpRequest.slug %}" method = "POST">
 			{% csrf_token %}
 			<div class="form-check">
 				<input onclick="voidUpdateInput(this)" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkOffensive" data = "0">
 				<label class="form-check-label" for="checkOffensive">
-					Offer was offensive
+					User was offensive
 				</label>
 			</div>
 			<div class="form-check">
 				<input onclick="voidUpdateInput(this)" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkInappropriate" data = "1">
 				<label class="form-check-label" for="checkInappropriate">
-					Offer was inappropriate to request
+					User was inappropriate
 				</label>
 			</div>
 			<div class="form-check">

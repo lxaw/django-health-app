@@ -52,10 +52,10 @@ class CommonFunctions:
 		# remove the help request offer
 		modelHelpRequestOffer.delete()
 	
-	def voidHelpRequestOfferAccept(modelHelpRequest,modelUserToBeAccepted):
+	def voidHelpRequestOfferAccept(modelHelpRequestOffer):
 		"""
 		Inputs:
-		Help Request, CustomUser of user to be accepted
+		Help Request Offer
 		Outputs:
 		void
 		Utility:
@@ -67,15 +67,13 @@ class CommonFunctions:
 		NOTE:
 		Should we delete all help request offers / notifications as well?
 		"""
-
-		modelHelpRequest.accepted_user = modelUserToBeAccepted
-		modelHelpRequest.accept_date = timezone.now()
-		modelHelpRequest.save()
+		modelHelpRequestOffer.help_request.accepted_user = modelHelpRequestOffer.author
+		modelHelpRequestOffer.help_request.save()
 
 		# create a room for chat
-		modelRoomDm = RoomDm(author = modelHelpRequest.author,
-		partner=modelUserToBeAccepted,name=modelHelpRequest.title)
+		modelRoomDm = RoomDm(author = modelHelpRequestOffer.help_request.author,
+		partner=modelHelpRequestOffer.author,name=modelHelpRequestOffer.help_request.title)
 		modelRoomDm.save()
 	
-
-
+		# DELETE THE HELP REQUEST OFFER WHEN COMPLETE
+		modelHelpRequestOffer.delete()

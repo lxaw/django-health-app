@@ -24,6 +24,8 @@ urlpatterns = [
 
 	# prepare to reset user
 	path('request-help/<str:username>/<slug:slug>/reset-prepare/',newsfeed_views.viewHelpRequestAcceptedUserResetPrepare,name="help-request-accepted-user-reset-prepare"),
+	# actually reset user
+	path('request-help/<str:username>/<slug:slug>/reset/',newsfeed_views.viewHelpRequestAcceptedUserReset,name="help-request-accepted-user-reset"),
 
 	##################
 	# URLS for Help Request Offers
@@ -44,7 +46,7 @@ urlpatterns = [
 	##################
 	# URLs for dms
 	##################
-	path('dm/<str:sender_username>&<str:recipient_username>/<str:room_name>/',newsfeed_views.viewDmDetail,name='help-request-dm-detail'),
+	path('dm/<str:hr_author_username>&<str:hr_accepted_user_username>/<str:room_name>/',newsfeed_views.viewDmDetail,name='help-request-dm-detail'),
 
 	##################
 	# URLS for old Help Requests
