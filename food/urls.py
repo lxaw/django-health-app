@@ -12,7 +12,7 @@ urlpatterns = [
 	# ex: /food/delete/4/
 	path('delete/<int:id>/',food_views.viewFoodDelete,name="food-delete"),
 	# ex: /food/prepare/
-	path('prepare/',food_views.viewFoodPrepare,name="food-prepare"),
+	path('create-prepare/',food_views.viewFoodPrepare,name="food-create-prepare"),
 	# ex: /food/create/
 	path('create/',food_views.viewFoodCreate,name="food-create"),
 ]

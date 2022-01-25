@@ -2,21 +2,21 @@
 	<h3 class = "text-center">
 		Activity on Your Help Requests
 	</h3>
-	{% if qsNotifHelpRequest|length == 0 %}
+	{% if qsNotifHelpRequests|length == 0 %}
 		<p class = "text-center">
 			All caught up!
 		</p>
 	{% else %}
-		{% for modelNotifHelpRequest in qsNotifHelpRequest %}
+		{% for modelNotifHelpRequest in qsNotifHelpRequests %}
 			{% include 'core/t/tNotificationHelpRequest.html' %}
 		{% endfor %}
 	{% endif %}
 	<div class = 'container'>
 		<ul class='pagination justify-content-center'>
-		{% if qsNotifHelpRequest.has_previous %}
+		{% if qsNotifHelpRequests.has_previous %}
 			<li class="mx-1">
-				<p class = "text-primary" ajax-url = "{% url 'core:ajax-index-help-requests' intNotifPostPgNum qsNotifHelpRequest.previous_page_number intNotifDmPgNum %}"
-				change-url = '{% url "core:index" intNotifPostPgNum qsNotifHelpRequest.previous_page_number intNotifDmPgNum %}'
+				<p class = "text-primary" ajax-url = "{% url 'core:ajax-index-help-requests' intNotifPostPgNum qsNotifHelpRequests.previous_page_number intNotifDmPgNum %}"
+				change-url = '{% url "core:index" intNotifPostPgNum qsNotifHelpRequests.previous_page_number intNotifDmPgNum %}'
 				onclick = "ajax_update_url(this,'div__notif-help-request-holder')"
 				>
 					Previous
@@ -30,8 +30,8 @@
 			</li>
 		{% endif %}
 
-		{% for i in qsNotifHelpRequest.paginator.page_range %}
-			{% if qsNotifHelpRequest.number == i %}
+		{% for i in qsNotifHelpRequests.paginator.page_range %}
+			{% if qsNotifHelpRequests.number == i %}
 			<li class='active mx-1'>
 				<span class = 'text-success'>
 					{{ i }}
@@ -39,7 +39,7 @@
 			</li>
 			{% else %}
 			<li class="mx-1">
-				<p	class = 'text-primary' ajax-url = '{% url "core:ajax-index-help-requests" intNotifHrPgNum i intNotifDmPgNum %}'
+				<p class = 'text-primary' ajax-url = '{% url "core:ajax-index-help-requests" intNotifHrPgNum i intNotifDmPgNum %}'
 					change-url='{% url "core:index" intNotifHrPgNum i intNotifDmPgNum %}'
 					onclick = "ajax_update_url(this,'div__notif-help-request-holder')"
 				>
@@ -49,12 +49,12 @@
 			{% endif %}
 		{% endfor %}
 		
-		{% if qsNotifHelpRequest.has_next %}
+		{% if qsNotifHelpRequests.has_next %}
 			<li class="mx-1">
 				<p  class = "text-primary"
-					ajax-url = '{% url "core:ajax-index-help-requests" intNotifHrPgNum qsNotifHelpRequest.next_page_number intNotifDmPgNum %}'
+					ajax-url = '{% url "core:ajax-index-help-requests" intNotifHrPgNum qsNotifHelpRequests.next_page_number intNotifDmPgNum %}'
 					onclick = "ajax_update_url(this,'div__notif-help-request-holder')"
-					change-url='{% url "core:index" intNotifHrPgNum qsNotifHelpRequest.next_page_number intNotifDmPgNum %}'>
+					change-url='{% url "core:index" intNotifHrPgNum qsNotifHelpRequests.next_page_number intNotifDmPgNum %}'>
 						Next
 				</p>
 			</li>

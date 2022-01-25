@@ -112,8 +112,8 @@ def viewFoodCreate(request):
 				modelFood.save()
 				return redirect('food:index')
 
-	messages.warning("Something went wrong. Please try again.")	
-	return redirect('food:index')
+	messages.warning(request,"Incorrect form data. Please try again.")	
+	return redirect('food:food-create-prepare')
 
 @login_required
 def viewFoodDelete(request,id):

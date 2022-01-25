@@ -62,7 +62,7 @@ def viewIndex(request,pg_post=1,pg_help_req=1,pg_dm=1):
 
 	# get all their notifications
 	qsNotifPosts = request.user.recipient_notification_post_set.order_by("-pub_date")
-	qsNotifHelpRequest = request.user.recipient_notification_help_request_set.order_by('-pub_date')
+	qsNotifHelpRequests = request.user.recipient_notification_help_request_set.order_by('-pub_date')
 	qsNotifDms = request.user.recipient_notification_dm_set.order_by('-pub_date')
 
 
@@ -76,8 +76,11 @@ def viewIndex(request,pg_post=1,pg_help_req=1,pg_dm=1):
 	# pagination
 	intPostNotifsPerPage = 3
 	intHelpRequestNotifsPerPage = 3
+	intDmNotifsPerPage = 3
+
 	paginator_post = Paginator(qsNotifPosts,intPostNotifsPerPage)
-	paginator_hr = Paginator(qsNotifHelpRequest,intHelpRequestNotifsPerPage)
+	paginator_hr = Paginator(qsNotifHelpRequests,intHelpRequestNotifsPerPage)
+	paginator_dm = Paginator(qsNotifDms,intDmNotifsPerPage)
 
 	try:
 		qsNotifPosts = paginator_post.page(pg_post)
@@ -85,16 +88,22 @@ def viewIndex(request,pg_post=1,pg_help_req=1,pg_dm=1):
 		qsNotifPosts = paginator_post.page(paginator_post.num_pages)
 	
 	try:
-		qsNotifHelpRequest = paginator_hr.page(pg_help_req)
+		qsNotifHelpRequests = paginator_hr.page(pg_help_req)
 	except EmptyPage:
-		qsNotifHelpRequest = paginator_hr.page(paginator_hr.num_pages)
+		qsNotifHelpRequests = paginator_hr.page(paginator_hr.num_pages)
+	
+	try:
+		qsNotifDms = paginator_dm.page(pg_dm)
+	except EmptyPage:
+		qsNotifDms = paginator_dm.page(paginator_dm.num_pages)
+	
 
 	context = {
 		'strTitle':'index',
 		'strDate':strDate,
 		'modelTipOfDay':modelTipOfDay,
 		'qsNotifPosts':qsNotifPosts,
-		'qsNotifHelpRequest':qsNotifHelpRequest,
+		'qsNotifHelpRequests':qsNotifHelpRequests,
 		'qsNotifDms':qsNotifDms,
 
 		# page numbers
@@ -103,6 +112,40 @@ def viewIndex(request,pg_post=1,pg_help_req=1,pg_dm=1):
 		'intNotifDmPgNum':pg_dm,
 	}
 	return render(request,'core/index.html',context=context)
+@login_required
+def aGetNotifDms(request,pg_post,pg_help_req,pg_dm):
+	###########################
+	# Inputs:
+	# request, str of model type, int for pg of posts, int for page of
+	# help reqs, int for page of dms
+	###########################
+	# ajax view to get the models for index
+
+	intPerPage = 3
+
+	# get all post notifications in order
+	qsNotifDms = request.user.recipient_notification_dm_set.all().order_by("-pub_date")
+	# paginate
+	paginator = Paginator(qsNotifDms,intPerPage)
+
+	try:
+		qsNotifDms = paginator.page(pg_dm)
+	except EmptyPage:
+		qsNotifDms = paginator.page(paginator.num_pages)
+
+	html_data = render_to_string(
+		"core/t/index_dms.html",
+		{"qsNotifDms":qsNotifDms,
+		# page numbers
+		"intNotifDmPgNum":pg_post,
+		'intNotifHrPgNum':pg_help_req,
+		"intNotifDmPgNum":pg_dm,
+		}
+	)	
+	data = {
+		"html_data":html_data,
+	}
+	return JsonResponse(data)
 
 @login_required
 def aGetNotifPosts(request,pg_post,pg_help_req,pg_dm):
@@ -151,18 +194,19 @@ def aGetNotifHelpRequests(request,pg_post,pg_help_req,pg_dm):
 	intPerPage = 3
 
 	# get all post notifications in order
-	qsNotifHelpRequest = request.user.recipient_notification_help_request_set.all().order_by("-pub_date")
+	qsNotifHelpRequests = request.user.recipient_notification_help_request_set.all().order_by("-pub_date")
 	# paginate
-	paginator = Paginator(qsNotifHelpRequest,intPerPage)
+	paginator = Paginator(qsNotifHelpRequests,intPerPage)
 
 	try:
-		qsNotifHelpRequest = paginator.page(pg_help_req)
+		qsNotifHelpRequests = paginator.page(pg_help_req)
 	except EmptyPage:
-		qsNotifHelpRequest = paginator.page(paginator.num_pages)
+		qsNotifHelpRequests = paginator.page(paginator.num_pages)
+	
 
 	html_data = render_to_string(
 		"core/t/index_help_requests.html",
-		{"qsNotifHelpRequest":qsNotifHelpRequest,
+		{"qsNotifHelpRequests":qsNotifHelpRequests,
 		# page numbers
 		"intNotifPostPgNum":pg_post,
 		'intNotifHrPgNum':pg_help_req,
