@@ -13,12 +13,29 @@
 		<h3 class = 'text-center'>
 			Help Offer for 
 			<a href = "{% url 'newsfeed:help-request-detail' modelHelpRequest.author.username modelHelpRequest.slug %}">
-				"{{modelHelpRequest.title}}"
+				{{modelHelpRequest.title}}
 			</a>
 		</h3>
-		<h5>Author: <a href = "{{modelHelpRequestOffer.author.get_public_profile_url}}">{{modelHelpRequestOffer.author}}</a></h5>
+		<div class = 'd-flex justify-content-between'>
+			<div>
+				<p>
+					Author: <a href = "{{modelHelpRequestOffer.author.get_public_profile_url}}">{{modelHelpRequestOffer.author}}</a>
+				</p>
+			</div>
+			<div>
+				<p>
+					Date: {{modelHelpRequestOffer.pub_date}}
+				</p>
+			</div>
+		</div>
+		<hr class = "mb-2 mt-1">
 		<div>
-			"{{modelHelpRequestOffer.text}}"
+			<p class = "text-muted mb-0">
+				Offer description:
+			</p>
+			<p>
+				{{modelHelpRequestOffer.text}}
+			</p>
 		</div>
 	</div>
 

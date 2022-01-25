@@ -214,21 +214,3 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 
 		return intSum
 		
-
-class DirectMessage(models.Model):
-	# sender
-	sender = models.ForeignKey(CustomUser,on_delete = models.CASCADE,related_name = "dm_sender_set")
-	# recipient
-	recipient = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name = "dm_recipient_set")
-	# when it was sent
-	pub_date = models.DateTimeField(default=timezone.now)
-
-	text = models.TextField()
-
-	def __str__(self):
-		return self.text
-	
-	def boolIsReply(self):
-		if(self.parent):
-			return True
-		return False

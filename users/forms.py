@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 #############################
 # Related models
 #############################
-from .models import CustomUser,DirectMessage
+from .models import CustomUser
 from food.models import Food
 
 #############################
@@ -55,17 +55,3 @@ class CustomUserUpdatePasswordForm(forms.ModelForm):
 	class Meta:
 		model = CustomUser
 		fields = ['password']
-	
-
-#############################
-# Forms for DMs
-#############################
-class DirectMessageForm(forms.ModelForm):
-	# form to create a dm
-	class Meta:
-		model = DirectMessage
-
-		fields = [
-			'text',
-		]
-		exclude = ()

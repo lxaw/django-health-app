@@ -46,6 +46,9 @@ class HelpRequest(models.Model):
 	# associate with the user that is to help 
 	accepted_user = models.ForeignKey(CustomUser,null=True,blank=True,on_delete=models.CASCADE,related_name = "responded_help_request_set")
 
+	# associate with a room for dm's
+	room = models.ForeignKey("core.RoomDm",null=True,on_delete=models.CASCADE,related_name="help_request_set")
+
 	# slug field
 	slug = models.SlugField(null=False)
 

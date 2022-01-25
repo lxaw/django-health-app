@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 from .models import (TipOfDay,NotificationHelpRequest,NotificationPost,
-NotificationDirectMessage,NotificationUser,FeedbackHelpRequestOffer)
+NotificationDm,NotificationUser,FeedbackHelpRequest,
+FeedbackHelpRequestOffer, RoomDm,Dm)
 
 # Register your models here.
 
@@ -48,13 +49,13 @@ class NotificationPostAdmin(admin.ModelAdmin):
 		("Post",{"fields":['post']}),
 	]
 
-class NotificationDirectMessageAdmin(admin.ModelAdmin):
+class NotificationDmAdmin(admin.ModelAdmin):
 	fieldsets = [
 		("Text",{"fields":['text']}),
 		("Pub Date",{"fields":['pub_date']}),
 		("Sender",{"fields":['sender']}),
 		("Recipient",{"fields":['recipient']}),
-		("Direct Message",{"fields":['direct_message']}),
+		("Dm",{"fields":['dm']}),
 	]
 
 class NotificationUserAdmin(admin.ModelAdmin):
@@ -69,6 +70,12 @@ class NotificationUserAdmin(admin.ModelAdmin):
 ###################################
 # User feedback
 ###################################
+class FeedbackHelpRequestAdmin(admin.ModelAdmin):
+	fieldsets = [
+		("Feedback Type",{"fields":['feedback_choice']}),
+		("Sender",{"fields":['sender']}),
+		("Text (optional)",{"fields":['text']}),
+	]
 class FeedbackHelpRequestOfferAdmin(admin.ModelAdmin):
 	fieldsets = [
 		("Feedback Type",{"fields":['feedback_choice']}),
@@ -76,10 +83,35 @@ class FeedbackHelpRequestOfferAdmin(admin.ModelAdmin):
 		("Text (optional)",{"fields":['text']}),
 	]
 
+###################################
+# Rooms
+###################################
+class RoomDmAdmin(admin.ModelAdmin):
+	fieldsets = [
+		("Pub date",{"fields":['pub_date']}),
+		("Name",{"fields":['name']}),
+		("Author",{"fields":['author']}),
+		("Partner",{"fields":['partner']}),
+	]
+###################################
+# Dms
+###################################
+class DmAdmin(admin.ModelAdmin):
+	fieldsets = [
+		("Pub date",{"fields":['pub_date']}),
+		("Recipient",{"fields":['recipient']}),
+		("Sender",{"fields":['sender']}),
+		("Text",{"fields":['text']}),
+		("Room",{"fields":['room']})
+	]
+
 # registering the models
 admin.site.register(TipOfDay,TipOfDayAdmin)
 admin.site.register(NotificationHelpRequest,NotificationHelpRequestAdmin)
 admin.site.register(NotificationPost,NotificationPostAdmin)
-admin.site.register(NotificationDirectMessage,NotificationDirectMessageAdmin)
+admin.site.register(NotificationDm,NotificationDmAdmin)
 admin.site.register(NotificationUser,NotificationUserAdmin)
 admin.site.register(FeedbackHelpRequestOffer,FeedbackHelpRequestOfferAdmin)
+admin.site.register(FeedbackHelpRequest,FeedbackHelpRequestAdmin)
+admin.site.register(RoomDm,RoomDmAdmin)
+admin.site.register(Dm,DmAdmin)

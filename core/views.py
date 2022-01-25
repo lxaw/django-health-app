@@ -18,7 +18,8 @@ from django.template.loader import render_to_string
 ###########################
 # Necessary models
 ###########################
-from .models import TipOfDay,NotificationPost,NotificationHelpRequest,NotificationUser
+from .models import (TipOfDay,NotificationPost,NotificationDm,
+NotificationHelpRequest,NotificationUser)
 from users.models import CustomUser
 
 ###########################
@@ -60,8 +61,10 @@ def viewIndex(request,pg_post=1,pg_help_req=1,pg_dm=1):
 	###################################
 
 	# get all their notifications
-	qsNotifPosts = request.user.recipient_notification_post_set.all().order_by("-pub_date")
-	qsModelNotifHelpRequest = request.user.recipient_notification_help_request_set.all().order_by('-pub_date')
+	qsNotifPosts = request.user.recipient_notification_post_set.order_by("-pub_date")
+	qsNotifHelpRequest = request.user.recipient_notification_help_request_set.order_by('-pub_date')
+	qsNotifDms = request.user.recipient_notification_dm_set.order_by('-pub_date')
+
 
 	dateToday = date.today()
 	strDate = dateToday.strftime("%B %d, %Y")
@@ -74,7 +77,7 @@ def viewIndex(request,pg_post=1,pg_help_req=1,pg_dm=1):
 	intPostNotifsPerPage = 3
 	intHelpRequestNotifsPerPage = 3
 	paginator_post = Paginator(qsNotifPosts,intPostNotifsPerPage)
-	paginator_hr = Paginator(qsModelNotifHelpRequest,intHelpRequestNotifsPerPage)
+	paginator_hr = Paginator(qsNotifHelpRequest,intHelpRequestNotifsPerPage)
 
 	try:
 		qsNotifPosts = paginator_post.page(pg_post)
@@ -82,16 +85,17 @@ def viewIndex(request,pg_post=1,pg_help_req=1,pg_dm=1):
 		qsNotifPosts = paginator_post.page(paginator_post.num_pages)
 	
 	try:
-		qsModelNotifHelpRequest = paginator_hr.page(pg_help_req)
+		qsNotifHelpRequest = paginator_hr.page(pg_help_req)
 	except EmptyPage:
-		qsModelNotifHelpRequest = paginator_hr.page(paginator_hr.num_pages)
+		qsNotifHelpRequest = paginator_hr.page(paginator_hr.num_pages)
 
 	context = {
 		'strTitle':'index',
 		'strDate':strDate,
 		'modelTipOfDay':modelTipOfDay,
 		'qsNotifPosts':qsNotifPosts,
-		'qsNotifHelpRequest':qsModelNotifHelpRequest,
+		'qsNotifHelpRequest':qsNotifHelpRequest,
+		'qsNotifDms':qsNotifDms,
 
 		# page numbers
 		'intNotifPostPgNum':pg_post,
@@ -205,6 +209,14 @@ def viewNotificationDelete(request,notification_type,notification_id):
 			modelNotification.delete()
 			messages.success(request,"Notification deleted.")
 			return redirect(reverse('core:index',args=[1,1,1]))
+	
+	elif notification_type == "Dm":
+		modelNotification = get_object_or_404(NotificationDm,id = notification_id)
+		if boolModelOwnershipCheck(modelNotification,"recipient",request.user):
+			modelNotification.delete()
+			messages.success(request,"Notification deleted.")
+			return redirect(reverse('core:index',args=[1,1,1]))
+
 	
 	else:
 		messages.warning(request,"Notification type {} undefined.".format(notification_type))

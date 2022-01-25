@@ -1,0 +1,40 @@
+<div class = "container border p-3 mb-2">
+	<div class = "d-flex justify-content-between">
+		{% if modelNotif.sender %}
+		<p>
+			From:
+			<a href = "{{modelNotif.sender.get_public_profile_url}}">
+				{{modelNotif.sender}}
+			</a>
+		</p>
+		{% endif %}
+		<p class = "small text-muted">{{modelNotif.pub_date}}</p>
+	</div>
+	<hr style = "margin-top:-2px;" >
+	<p>
+		{{modelNotif.text}}
+	</p>
+	<div class = "d-flex justify-content-between">
+		<p>
+			<a href = "{{modelNotif.dm.reverseGetDetail}}">
+				See DM.
+			</a>
+		</p>
+		<form action = "{% url 'core:notification-delete' modelNotif.strGetType modelNotif.id %}">
+			<button class = "btn btn-outline-success">
+				Got it!
+			</button>
+		</form>
+	</div>
+</div>
+
+<script>
+	function tNotifBtnDelete(strUrl){
+		$.ajax({
+			url: strUrl,
+			success:function(){
+				location.reload();
+			}
+		})
+	}
+</script>

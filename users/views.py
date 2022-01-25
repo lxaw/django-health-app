@@ -4,7 +4,9 @@
 from django.shortcuts import render, reverse, redirect,get_object_or_404,HttpResponseRedirect
 
 # forms
-from .forms import UserRegisterForm,CustomUserUpdateForm,CustomUserUpdatePasswordForm,DirectMessageForm
+from .forms import UserRegisterForm,CustomUserUpdateForm,CustomUserUpdatePasswordForm
+
+from core.forms import DmForm
 
 # messages on registration / log in
 from django.contrib import messages
@@ -206,7 +208,7 @@ def viewProfileEdit(request):
 		else:
 			print(formUpdateForm.errors)
 
-	return redirect('users:profile')
+	return redirect(reverse('users:profile',kwargs={"pg_following":1}))
 
 
 ################################
@@ -234,7 +236,7 @@ def viewDmIndex(request):
 	for modelDm in request.user.dm_recipient_set.all().order_by('-pub_date'):
 		modelUserSender = modelDm.sender
 		if modelUserSender not in dictUserDmDict:
-			dictUserDmDict[modelDm.recipient] = modelDm.pub_date
+			dictUserDmDict[modelDm.sender] = modelDm.pub_date
 		else:
 			# if the date of the last dm is less than what was recorded, update
 			if dictUserDmDict[modelUserSender] < modelDm.pub_date:
@@ -291,8 +293,8 @@ def viewDmDetail(request,username):
 	modelUser = get_object_or_404(CustomUser,username=username)
 
 	# get all the messages sent between you and user
-	qsSentDms = request.user.dm_sender_set.all().filter(recipient_id=modelUser.id)
-	qsRecievedDms = request.user.dm_recipient_set.all().filter(sender_id=modelUser.id)
+	qsSentDms = request.user.dm_sender_set.all().filter(recipient_id=modelUser.id,room=None)
+	qsRecievedDms = request.user.dm_recipient_set.all().filter(sender_id=modelUser.id,room=None)
 
 	qsAllDms = qsSentDms.union(qsRecievedDms).order_by('pub_date')
 
@@ -303,6 +305,8 @@ def viewDmDetail(request,username):
 
 	return render(request,'users/dm/dm_detail.html',context=context)
 
+
+# actually creates the dm
 @login_required
 def viewDmCreate(request,username):
 	######################
@@ -314,7 +318,7 @@ def viewDmCreate(request,username):
 
 	if request.method == "POST":
 		# form for dm
-		formDmForm = DirectMessageForm(data=request.POST)
+		formDmForm = DmForm(data=request.POST)
 
 		if formDmForm.is_valid():
 			# commit = false so can continue editing fields

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class = "container border rounded p-3">
+<div class = "container border rounded p-3 border-primary">
 	<h1 class = "text-center">
 		Help requests related to "{{strSelectedTag}}"
 	</h1>
@@ -11,7 +11,7 @@
 <br>
 
 <div class = "container border rounded p-3">
-	<h4>
+	<h4 class = 'text-center'>
 		Recent Help Requests
 	</h4>
 	{% for modelHelpRequest in listUnfilledHelpRequests %}
