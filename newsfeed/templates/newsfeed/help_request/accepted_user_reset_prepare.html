@@ -1,0 +1,91 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<div class = "container border border-primary rounded p-3">
+	<h2 class = 'text-center'>
+		Reset Accepted User
+	</h2>
+	<p class = 'text-muted text-center'>
+		You have not yet fully removed the accepted user from the help request.
+	</p>
+	<p>
+		In order for the accepted user to be removed, please
+		fill out this form explaining why this decision is being made.
+	</p>
+</div>
+
+<br>
+
+<div class = "container border rounded p-3">
+	<div>
+		<h4 class = 'text-center'>
+			Let us know what happened.
+		</h4>
+		<p>
+			Please let us know why the user was not satisfactory by filling out the appropriate checkbox.
+			Your feedback helps improve the quality of the site.
+		</p>
+	</div>
+	<div>
+		<form action = "{% url 'newsfeed:help-request-accepted-user-reset' modelHelpRequest.author.username modelHelpRequest.slug %}" method = "POST">
+			{% csrf_token %}
+			<div class="form-check">
+				<input onclick="voidUpdateInput(this)" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkOffensive" data = "0">
+				<label class="form-check-label" for="checkOffensive">
+					User was offensive
+				</label>
+			</div>
+			<div class="form-check">
+				<input onclick="voidUpdateInput(this)" class="form-check-input checkbox__form-send " type="radio" name="offer-issue" id="checkInappropriate" data = "1">
+				<label class="form-check-label" for="checkInappropriate">
+					User was inappropriate
+				</label>
+			</div>
+			<div class="form-check">
+				<input onclick="voidUpdateInput(this)" class="form-check-input  checkbox__form-send" type="radio" name="offer-issue" id="checkNoReason" checked data = "2">
+				<label class="form-check-label" for="checkNoReason">
+					No reason
+				</label>
+			</div>
+			<div class="form-check">
+				<input onclick="voidUpdateInput(this)" class="form-check-input checkbox__form-send" type="radio" name="offer-issue" id="checkOther" data = "3">
+				<label   for="checkOther">
+					Other
+				</label>
+				<div class = "form-group">
+					<label for = "taText">
+						Please describe.
+					</label>
+					<textarea name = "text" class = "form-control" id = "taText"></textarea>
+					<small id = "taTextHelp" class = 'form-text text-muted'>Please accurately describe the situation.</small>
+				</div>
+			</div>
+			<br>
+			<button class = "btn btn-outline-success" type='submit'>
+				Submit
+			</button>
+			<input id = "range__hidden-input" type = "range" name = "feedback-id" min="0" max="3" value = "2" style='display:none'>
+		</form>
+	</div>
+
+</div>
+
+
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+
+function voidUpdateInput(e){
+	// takes in an element
+	// updates the hidden input based on clicked checkbox
+	// for update hidden input
+	let hiddenInput = document.getElementById('range__hidden-input');
+	hiddenInput.value = e.getAttribute("data");
+}
+
+</script>
+
+{% endblock %}

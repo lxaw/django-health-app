@@ -38,6 +38,8 @@ Basic navbar to show it is possible
 -->
 <p>{{ request.build_absolute_uri }}</p>
 
+<span id = "base__hidden-path-tracker" style = "display:none" data-url = "{{request.get_full_path}}"></span>
+
 {% if user.is_developer %}
 	<p style = 'color:green'>developer {{user.user_name}}</p>
 	<a href = "{% url 'admin:index' %}">
@@ -57,7 +59,7 @@ Basic navbar to show it is possible
 
 		{% if user.is_authenticated %}
 			<div style="display:grid;">
-				<a style="grid-column:1;grid-row:1;"   class = "navbar-text navbar__main__a-tag" href = "{% url 'core:index' 1 1 1 %}">
+				<a style="grid-column:1;grid-row:1;" class = "navbar-text navbar__main__a-tag" href = "{% url 'core:index' 1 1 1 %}" data-str = "home">
 					Home
 				</a>
 				<div style = "grid-column-start: 2;grid-row:1;">
@@ -67,16 +69,16 @@ Basic navbar to show it is possible
 				</div>
 			</div>
 
-			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'communities:index' 1 %}">
+			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'communities:index' 1 %}" data-str = "communities">
 				Communities
 			</a>
-			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'newsfeed:index' 1 %}">
+			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'newsfeed:index' 1 %}" data-str ="newsfeed" >
 				Newsfeed
 			</a>
-			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'podcasts:index' %}">
+			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'podcasts:index' %}" data-str ="podcasts">
 				Podcasts & Tips
 			</a>
-			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'users:profile' 1 %}">
+			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'users:profile' 1 %}" data-str ="users">
 				Profile
 			</a>
 			<a class = "navbar-text navbar__main__a-tag" href = "{% url 'users:logout' %}">
@@ -116,3 +118,24 @@ Load the content from a child page
 
 </body>
 </html>
+
+<script>
+	function base__updateNavBarCurrentTab(){
+		let strCurrUrl = document.getElementById("base__hidden-path-tracker").getAttribute("data-url");
+		let strParsedUrl = strCurrUrl.split("/")[1];
+		console.log(strParsedUrl)
+
+		let arrNavbarATags = document.getElementsByClassName("navbar__main__a-tag");
+		for(let atag of arrNavbarATags){
+			let strTagDataStr = atag.getAttribute("data-str");
+			console.log(strTagDataStr);
+			if(strTagDataStr == strParsedUrl){
+				atag.style.color = "#868686";
+			}
+		}
+
+	}
+	document.addEventListener("DOMContentLoaded",()=>{
+		base__updateNavBarCurrentTab();
+	})
+</script>

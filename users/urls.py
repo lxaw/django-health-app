@@ -32,7 +32,7 @@ urlpatterns = [
 	# Food views
 	#####################
 	# ex: /users/dm/index
-	path('dm/index',users_views.viewDmIndex,name="dm-index"),
+	path('dm/index/',users_views.viewDmIndex,name="dm-index"),
 	# ex: /users/dm/prepare/
 	path('dm/prepare/',users_views.viewDmPrepareSearch,name="dm-prepare"),
 	# ex: /users/dm/bob/detail/

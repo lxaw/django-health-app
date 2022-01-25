@@ -22,6 +22,11 @@ urlpatterns = [
 	# delete help request
 	path('request-help/<str:username>/<slug:slug>/delete/',newsfeed_views.viewHelpRequestDelete,name="help-request-delete"),
 
+	# prepare to reset user
+	path('request-help/<str:username>/<slug:slug>/reset-prepare/',newsfeed_views.viewHelpRequestAcceptedUserResetPrepare,name="help-request-accepted-user-reset-prepare"),
+	# actually reset user
+	path('request-help/<str:username>/<slug:slug>/reset/',newsfeed_views.viewHelpRequestAcceptedUserReset,name="help-request-accepted-user-reset"),
+
 	##################
 	# URLS for Help Request Offers
 	##################
@@ -37,6 +42,14 @@ urlpatterns = [
 	# note that both the creator of the help request offer AND the creator of the help request can remove offers
 	# remove accepted offer
 	path('request-help/<str:username>/<slug:slug>/offer/<int:id>/delete/',newsfeed_views.viewHelpRequestOfferDelete,name='help-request-offer-delete'),
+
+	##################
+	# URLs for dms
+	##################
+	# detail a conversation
+	path('dm/<str:hr_author_username>&<str:hr_accepted_user_username>/<str:room_name>/',newsfeed_views.viewDmDetail,name='help-request-dm-detail'),
+	# create a dm
+	path('dm/<str:hr_author_username>&<str:hr_accepted_user_username>/<str:room_name>/create/',newsfeed_views.viewDmCreate,name='help-request-dm-create'),
 
 	##################
 	# URLS for old Help Requests
