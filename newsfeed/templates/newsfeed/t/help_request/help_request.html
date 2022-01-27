@@ -17,17 +17,24 @@
                 </p>
             </div>
         </div>
-        <a href = "{{modelHelpRequest.get_absolute_url}}">
-            <strong>
-                "{{modelHelpRequest.title}}"
-            </strong>
-        </a>
+        <p class = 'mt-2 mb-0'>
+            Request:
+            <a href = "{{modelHelpRequest.get_absolute_url}}">
+                <strong>
+                    {{modelHelpRequest.title}}
+                </strong>
+            </a>
+        </p>
     </div>
     <div>
-        {{modelHelpRequest.text}}
+        <p class = "mb-1 mt-1">
+            {{modelHelpRequest.text}}
+        </p>
     </div>
-    <p class = "text-muted">Related tags:</p>
-    <div class = "d-flex justify-content-between mb-2">
+    <p class = "text-muted mt-0 mb-0">
+        Related tags:
+    </p>
+    <div class = "d-flex justify-content-between mb-2 mt-1">
         <div>
             {% if modelHelpRequest.get_parsed_tags %}
                 {% for strTag in modelHelpRequest.get_parsed_tags %}

@@ -630,7 +630,6 @@ def viewDmDetail(request,hr_author_username,hr_accepted_user_username,room_name)
 
 
     # get the users
-
     modelAuthor = get_object_or_404(CustomUser,username=hr_author_username)
     modelAcceptedUser = get_object_or_404(CustomUser,username=hr_accepted_user_username)
     # check permissions!
@@ -665,6 +664,7 @@ def viewDmDetail(request,hr_author_username,hr_accepted_user_username,room_name)
         "strHrAcceptedUserUsername":hr_accepted_user_username,
         "strRoomName":room_name,
         "qsAllDms":qsAllDms,
+        "modelOtherUser":modelOtherUser,
     }
 
     return render(request,"newsfeed/help_request/rooms/dm_detail.html",context=context)

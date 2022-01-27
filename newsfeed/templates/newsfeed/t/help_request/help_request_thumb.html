@@ -1,0 +1,67 @@
+<div class = "container border rounded p-3 mb-2">
+    <div>
+        <div class = "d-flex flex-row">
+            <div>
+                <a href = "{{modelHelpRequest.author.get_public_profile_url}}">
+                    <img alt = "a profile picture" style="height:5rem;width:5rem;"  class = "rounded-circle" src = "{{modelHelpRequest.author.profile_picture.url}}">
+                </a> 
+            </div>
+            <div class = "ml-3 mt-2">
+                <p class = "mb-0 mt-2">
+                    <a href = "{{modelHelpRequest.author.get_public_profile_url}}">
+                        {{modelHelpRequest.author}}
+                    </a>
+                </p>
+                <p class = "mt-0 text-muted">
+                    {{modelHelpRequest.pub_date}}
+                </p>
+            </div>
+        </div>
+        <p class = 'mt-2 mb-0'>
+            Request:
+            <a href = "{{modelHelpRequest.get_absolute_url}}">
+                <strong>
+                    {{modelHelpRequest.title}}
+                </strong>
+            </a>
+        </p>
+    </div>
+    <p class = "text-muted mt-0 mb-0">
+        Related tags:
+    </p>
+    <div class = "d-flex justify-content-between mb-2 mt-1">
+        <div>
+            {% if modelHelpRequest.get_parsed_tags %}
+                {% for strTag in modelHelpRequest.get_parsed_tags %}
+                    <span style= "background-color: aliceblue;" class ="rounded mr-3 p-1">
+                        <a href = "{% url 'newsfeed:help-request-index-tag' strTag %}" style = "text-decoration: none;">
+                            {{strTag}}
+                        </a>
+                    </span>
+                {% endfor %}
+            {% else %}
+                <p>This request has no tags associated with it.</p>
+            {% endif %}
+        </div>
+        <div>
+            {% if request.user == modelHelpRequest.author %}
+                <button id = "btn__delete-help-request${{modelHelpRequest.id}}" onclick = "voidDeleteHelpRequest(this.id)" data-url = "{% url 'newsfeed:help-request-delete' modelHelpRequest.author.username modelHelpRequest.slug %}" class = "btn btn-outline-danger mb-3" type="submit">
+                    Delete?
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<script>
+
+function voidDeleteHelpRequest(eId){
+	// element id = eId of clicker
+	let e = document.getElementById(eId);
+	let strUrl = e.getAttribute('data-url');
+	if(confirm("Are you sure?") == true){
+		// delete
+		location.href = strUrl;
+	}
+}
+
+</script>

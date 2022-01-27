@@ -1,0 +1,41 @@
+<div class = "container">
+    {% if qsAllDms|length == 0 %}
+        <p class = "text-center">Nothing yet!</p>
+    {% else %}
+        {% for modelDm in qsAllDms %}
+            {% if modelDm.sender == user %}
+            <div class = "card-body">
+                <div class = "d-flex justify-content-between">
+                    <p class = "small text-muted">{{modelDm.pub_date}}</p>
+                    <p class = "small">
+                        <a href = "{{modelDm.sender.get_public_profile_url}}">
+                            {{modelDm.sender}}
+                        </a>
+                    </p>
+                </div>
+                <div class = "d-flex flew-row justify-content-end">
+                    <p class = "small p-2 me-3 mb-3 rounded-3" style="background-color: cornsilk;">
+                        {{modelDm.text}}
+                    </p>
+                </div>
+            </div>
+            {% else %}
+            <div class = "card-body">
+                <div class = "d-flex justify-content-between">
+                    <p class = "small">
+                        <a href = "{{modelDm.sender.get_public_profile_url}}">
+                            {{modelDm.sender}}
+                        </a>
+                    </p>
+                    <p class = "small text-muted">{{modelDm.pub_date}}</p>
+                </div>
+                <div class = "d-flex flew-row justify-content-start">
+                    <p class = "small p-2 ms-3 mb-3 rounded-3" style="background-color: antiquewhite;">
+                        {{modelDm.text}}
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>

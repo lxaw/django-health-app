@@ -2,7 +2,7 @@
 	<div>
 		<div class = "d-flex flex-row mb-0">
 			<img style="height:5rem;width:5rem;"  class = "rounded-circle" src = "{{modelPost.author.profile_picture.url}}">
-			<div class = "ml-3 mt-3 mb-2">
+			<div class = "ml-3 my-auto">
 				<div>
 					<p class = "mb-0">
 						<a href = "{{ modelPost.author.get_public_profile_url }}">
@@ -17,7 +17,7 @@
 				</div>
 			</div>
 		</div>
-		<div>
+		<div class = "mt-2">
 			<h4>
 				"{{modelPost.title}}"
 			</h4>
@@ -28,13 +28,13 @@
 		<div>
 			<a href = "{{modelPost.get_absolute_url}}">
 				<p>
-					See post.
+					See post
 				</p>
 			</a>
 		</div>
 		<div>
 			<p class = 'text-muted'>
-				{{modelPost.comments.count}} comment{{modelPost.comments.count|pluralize:',s'}}.
+				{{modelPost.comments.count}} comment{{modelPost.comments.count|pluralize:',s'}}
 			</p>
 		</div>
 	</div>

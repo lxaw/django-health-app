@@ -3,54 +3,26 @@
 {% block content %}
 <div class = "container rounded p-3">
 	<div class = "card-header rounded">
-		<div class = "text-center">
-			Direct Message <strong>{{modelUser}}</strong>
+		<div class = 'd-flex'>
+
+		</div>
+		<div class = "d-flex justify-content-between mb-0">
+			<div>
+				<p class = 'mb-0'>
+					Messaging <a href = "{{modelUser.get_public_profile_url}}">{{modelUser.username}}</a>
+				</p>
+			</div>
+			<div>
+				<p class = 'mb-0'>
+					Room: General
+				</p>
+			</div>
 		</div>
 	</div>
 
 	<br>
+	{% include "core/t/dms/dm_list.html" %}
 
-	<div class = "container">
-		{% if qsAllDms|length == 0 %}
-			<p class = "text-center">Nothing yet!</p>
-		{% else %}
-			{% for modelDm in qsAllDms %}
-				{% if modelDm.sender == user %}
-				<div class = "card-body">
-					<div class = "d-flex justify-content-between">
-						<p class = "small text-muted">{{modelDm.pub_date}}</p>
-						<p class = "small">
-							<a href = "{{modelDm.sender.get_public_profile_url}}">
-								{{modelDm.sender}}
-							</a>
-						</p>
-					</div>
-					<div class = "d-flex flew-row justify-content-end">
-						<p class = "small p-2 me-3 mb-3 rounded-3" style="background-color: cornsilk;">
-							{{modelDm.text}}
-						</p>
-					</div>
-				</div>
-				{% else %}
-				<div class = "card-body">
-					<div class = "d-flex justify-content-between">
-						<p class = "small">
-							<a href = "{{modelDm.sender.get_public_profile_url}}">
-								{{modelDm.sender}}
-							</a>
-						</p>
-						<p class = "small text-muted">{{modelDm.pub_date}}</p>
-					</div>
-					<div class = "d-flex flew-row justify-content-start">
-						<p class = "small p-2 ms-3 mb-3 rounded-3" style="background-color: antiquewhite;">
-							{{modelDm.text}}
-						</p>
-					</div>
-				</div>
-				{% endif %}
-			{% endfor %}
-		{% endif %}
-	</div>
 	<div class = "card-footer rounded">
 		<form method = "POST" action = "{% url 'users:dm-create' modelUser.username %}">
 			{% csrf_token %}
