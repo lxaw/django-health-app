@@ -1,4 +1,4 @@
-<div id = "div__notif-help-request-holder">
+<div id = "div__notif-dm-holder">
 	<h3 class = "text-center">
         Activity for Your Direct Messages
 	</h3>
@@ -15,9 +15,9 @@
 		<ul class='pagination justify-content-center'>
 		{% if qsNotifDms.has_previous %}
 			<li class="mx-1">
-				<p class = "text-primary" ajax-url = "{% url 'core:ajax-index-help-requests' intNotifPostPgNum qsNotifDms.previous_page_number intNotifDmPgNum %}"
-				change-url = '{% url "core:index" intNotifPostPgNum qsNotifDms.previous_page_number intNotifDmPgNum %}'
-				onclick = "ajax_update_url(this,'div__notif-help-request-holder')"
+				<p class = "text-primary" ajax-url = "{% url 'core:ajax-index-dms' intNotifPostPgNum intNotifHrPgNum qsNotifDms.previous_page_number %}"
+				change-url = '{% url "core:index" intNotifPostPgNum  intNotifHrPgNum qsNotifDms.previous_page_number %}'
+				onclick = "ajax_update_url(this,'div__notif-dm-holder')"
 				>
 					Previous
 				</p>
@@ -39,9 +39,9 @@
 			</li>
 			{% else %}
 			<li class="mx-1">
-				<p	class = 'text-primary' ajax-url = '{% url "core:ajax-index-help-requests" intNotifHrPgNum i intNotifDmPgNum %}'
-					change-url='{% url "core:index" intNotifHrPgNum i intNotifDmPgNum %}'
-					onclick = "ajax_update_url(this,'div__notif-help-request-holder')"
+				<p	class = 'text-primary' ajax-url = '{% url "core:ajax-index-dms" intNotifPostPgNum  intNotifHrPgNum i %}'
+					change-url='{% url "core:index" intNotifPostPgNum  intNotifHrPgNum i %}'
+					onclick = "ajax_update_url(this,'div__notif-dm-holder')"
 				>
 					{{ i }}
 				</p>
@@ -52,9 +52,9 @@
 		{% if qsNotifDms.has_next %}
 			<li class="mx-1">
 				<p  class = "text-primary"
-					ajax-url = '{% url "core:ajax-index-help-requests" intNotifHrPgNum qsNotifDms.next_page_number intNotifDmPgNum %}'
-					onclick = "ajax_update_url(this,'div__notif-help-request-holder')"
-					change-url='{% url "core:index" intNotifHrPgNum qsNotifDms.next_page_number intNotifDmPgNum %}'>
+					ajax-url = '{% url "core:ajax-index-dms" intNotifPostPgNum  intNotifHrPgNum qsNotifDms.next_page_number %}'
+					onclick = "ajax_update_url(this,'div__notif-dm-holder')"
+					change-url='{% url "core:index" intNotifPostPgNum  intNotifHrPgNum qsNotifDms.next_page_number %}'>
 						Next
 				</p>
 			</li>

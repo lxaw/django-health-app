@@ -100,7 +100,16 @@ Basic navbar to show it is possible
 <!-- If messages, display -->
 {% if messages %}
 	{% for message in messages %}
-		<div class = "alert alert-{{message.tags}}">{{message}}</div>
+		<div class = "alert alert-{{message.tags}} base__div-alert">
+			<div class = "d-flex justify-content-between">
+				<div>
+					{{message}}
+				</div>
+				<div>
+					<i class = 'bi bi-x base__i-x-clicker'></i>
+				</div>
+			</div>
+		</div>
 	{% endfor %}
 {% endif %}
 
@@ -120,15 +129,26 @@ Load the content from a child page
 </html>
 
 <script>
+	function base__removeMsg(){
+		let arrdivMsgs = document.getElementsByClassName("base__div-alert");
+
+		for(let divMsg of arrdivMsgs){
+			ixClicker = divMsg.getElementsByClassName("base__i-x-clicker")[0];
+			ixClicker.addEventListener("click",()=>{
+				divMsg.style.display = "none";
+			})
+		}
+	}
+
+
+
 	function base__updateNavBarCurrentTab(){
 		let strCurrUrl = document.getElementById("base__hidden-path-tracker").getAttribute("data-url");
 		let strParsedUrl = strCurrUrl.split("/")[1];
-		console.log(strParsedUrl)
 
 		let arrNavbarATags = document.getElementsByClassName("navbar__main__a-tag");
 		for(let atag of arrNavbarATags){
 			let strTagDataStr = atag.getAttribute("data-str");
-			console.log(strTagDataStr);
 			if(strTagDataStr == strParsedUrl){
 				atag.style.color = "#868686";
 			}
@@ -137,5 +157,6 @@ Load the content from a child page
 	}
 	document.addEventListener("DOMContentLoaded",()=>{
 		base__updateNavBarCurrentTab();
+		base__removeMsg();
 	})
 </script>
