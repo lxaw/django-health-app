@@ -135,7 +135,7 @@ Load the content from a child page
 		for(let divMsg of arrdivMsgs){
 			ixClicker = divMsg.getElementsByClassName("base__i-x-clicker")[0];
 			ixClicker.addEventListener("click",()=>{
-				divMsg.style.display = "none";
+				divMsg.remove();
 			})
 		}
 	}

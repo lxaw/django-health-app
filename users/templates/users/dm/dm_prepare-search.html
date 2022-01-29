@@ -32,7 +32,9 @@
 			</p>
 		{% else %}
 			<div>
-				<p>Click on a user to select them.</p>
+				<p class = 'text-center'>
+					Click on a user to select them.
+				</p>
 			</div>
 			{% for modelUser in listmodelMatchedUsers %}
 				<a href = "{% url 'users:dm-detail' modelUser.username %}">

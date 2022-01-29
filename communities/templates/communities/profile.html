@@ -9,25 +9,28 @@
 {% endif %}
 
 <div class = "container border rounded p-3">
-<div style="align-items:flex-start;" class = "div__users-profile">
-	<div style="display:inline-flex" class = "div__users-profile-media">
-		<img class = "rounded-circle" style="width:5rem;height:5rem;" src = "{{modelViewedUser.profile_picture.url}}">
-		<div class = "div__users-profile-media-account">
-			<h2 class = "account-heading">
+<div style="align-items:flex-start;">
+	<div style="display:inline-flex">
+		<div>
+			<img class = "rounded-circle" style="width:5rem;height:5rem;" src = "{{modelViewedUser.profile_picture.url}}">
+		</div>
+		<div class = 'ml-3 my-auto'>
+			<h2 class = "account-heading mb-0">
 				{{modelViewedUser.username}}
 			</h2>
 			
-			<p data-url = "{% url 'communities:follow-add-remove' modelViewedUser.username %}" id = "p__follow-unfollow-user">
 			{% if modelViewedUser != user and modelViewedUser in user.follows.all %}
-			<span class = "text-danger">
-				Unfollow {{modelViewedUser.username}}?
-			</span>
-			{% elif modelViewedUser != user and modelViewedUser not in user.follows.all %}
-			<span class = "text-success">
-				Follow {{modelViewedUser.username}}?
-			</span>
-			{% endif %}
+			<p class = "mt-0" 
+			data-url = "{% url 'communities:follow-add-remove' modelViewedUser.username %}" id = "p__follow-unfollow-user">
+				<span class = "text-danger">
+					Unfollow {{modelViewedUser.username}}?
+				</span>
+				{% elif modelViewedUser != user and modelViewedUser not in user.follows.all %}
+				<span class = "text-success">
+					Follow {{modelViewedUser.username}}?
+				</span>
 			</p>
+			{% endif %}
 		</div>
 	</div>
 </div>
@@ -91,7 +94,7 @@
 
 	{% for i in qsPosts.paginator.page_range %}
 		{% if qsPosts.number == i %}
-		<li class='active mx-1'><span>{{ i }}</span></li>
+		<li class='active mx-1 text-success'><span>{{ i }}</span></li>
 		{% else %}
 		<li class="mx-1"><a href='{% url "communities:profile" modelViewedUser.username i %}'>{{ i }}</a></li>
 		{% endif %}
