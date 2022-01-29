@@ -11,7 +11,7 @@
 <br>
 
 <div class = "container border rounded p-3">
-	<a href = "{% url 'food:food-prepare' %}">
+	<a href = "{% url 'food:food-entry-prepare' %}">
 		<h3 class = "text-center">Upload your most recent meal.</h3>
 	</a>
 </div>
@@ -49,15 +49,7 @@
 		<h2>Your History:</h2>
 	</div>
 	{% for modelFood in setFood %}
-		<div class = "container border rounded p-3">
-			<p><strong>Meal name: </strong> {{modelFood.name}}</p>
-			<p><strong>Date:</strong> {{modelFood.date}}</p>
-			<p><strong>Kilocalorie count:</strong> {{modelFood.kcals}}</p>
-			<p class = "p__delete-food text-danger" data-url="{% url 'food:food-delete' modelFood.id %}" >
-				Delete?
-			</a>
-		</div>
-		<br>
+		{% include "food/t/index/meal.html" %}
 	{% endfor %}
 </div>
 

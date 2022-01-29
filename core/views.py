@@ -120,7 +120,7 @@ def aGetNotifPosts(request,pg_post,pg_help_req,pg_dm):
 		qsNotifPosts = paginator.page(pg_post)
 	except EmptyPage:
 		qsNotifPosts = paginator.page(paginator.num_pages)
-
+	
 	html_data = render_to_string(
 		"core/t/index_posts.html",
 		{"qsNotifPosts":qsNotifPosts,

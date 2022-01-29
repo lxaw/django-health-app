@@ -138,3 +138,20 @@ def viewFoodDelete(request,id):
 	modelFoodInstance.delete()
 
 	return HttpResponseRedirect('/')
+
+@login_required
+def viewFoodEntryDetail(request,id):
+	###################################
+	# Inputs:
+	# request, int id
+	# Outputs:
+	# render
+	# Utility:
+	# detail a food entry
+	###################################
+
+	context = {
+
+	}
+
+	return render(request,"food/food_entry.html",context=context)

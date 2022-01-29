@@ -52,7 +52,7 @@
 		{% endif %}
 	</div>
 	<div class = "card-footer rounded">
-		<form method = "POST" action = "{% url 'users:dm-create' modelOtherUser.username %}">
+		<form method = "POST" action = "{% url 'newsfeed:dm-create' modelOtherUser.username %}">
 			{% csrf_token %}
 			<div class = "input-group">
 				<input autocomplete="off" type="text" class = "col-10 form-control" name = "text" id = "taDmContent" placeholder="Message {{modelUser}}"></textarea>
