@@ -16,7 +16,7 @@
 	{% else %}
 
 		{% for modelHelpRequest in listmodelPendingRequests %}
-			{% include "newsfeed/t/tHelpRequest.html" %}
+			{% include "newsfeed/t/help_request/help_request_thumb.html" %}
 		{% endfor%}
 	{% endif %}
 </div>
@@ -31,7 +31,7 @@
 		</p>
 	{% else %}
 		{% for modelHelpRequest in listmodelAcceptedRequests %}
-			{% include "newsfeed/t/tHelpRequest.html" %}
+			{% include "newsfeed/t/help_request/help_request_thumb.html" %}
 			<br>
 		{% endfor%}
 	{% endif %}
