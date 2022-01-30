@@ -219,7 +219,7 @@ class Dm(models.Model):
 			})
 		# else go to generic dm
 		else:
-			return reverse('user:dm-detail',kwargs={"username":sender.username})
+			return reverse('users:dm-detail',kwargs={"username":self.sender.username})
 	
 
 #######################################
