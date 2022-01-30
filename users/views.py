@@ -35,6 +35,7 @@ from .forms import SearchUserForm
 
 from food.models import Food
 from .models import CustomUser
+from core.models import NotificationDm
 
 #################################
 # Package installs
@@ -328,6 +329,14 @@ def viewDmCreate(request,username):
 			modelCreatedDm.recipient = modelOtherUser
 			modelCreatedDm.save()
 			messages.success(request,"Direct message sent.")
+
+			# create a notif
+			modelNotif = NotificationDm(sender=request.user,recipient = modelOtherUser,
+			dm=modelCreatedDm,
+			text="{} has sent you a DM in \"General\".".format(request.user.username),
+			)
+			modelNotif.save()
+
 
 		else:
 			messages.error(request,"Please input text.")
