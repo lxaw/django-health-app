@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<div class = 'container border border-primary p-3'>
+	<h1 class = 'text-center'>
+		Your Accepted Offers
+	</h1>
+</div>
+
+<br>
+
+<div class = 'container border p-3'>
+	{% if qsHelpRequests|length == 0 %}
+	<p class = 'text-center'>
+		Looks like you have yet to be accepted to any help request.
+		<a href = "{% url 'newsfeed:index' 1 %}">See current help requests.</a>
+	</p>
+	{% else %}
+	<div>
+		{% include 'newsfeed/t/help_request/help_request_accepted.html' %}
+	</div>
+	{% endif %}
+</div>
+
+{% endblock %}

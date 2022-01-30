@@ -14,13 +14,17 @@ urlpatterns = [
     # ex: /newfeed/help-request/lex/my-title
     path('request-help/<str:username>/<slug:slug>/',newsfeed_views.viewHelpRequestDetail,name="help-request-detail"),
     # ex: /newsfeed/request-help/tag/my-tag 
-    path('request-help/by-tag/tag/<str:tag>/',newsfeed_views.viewHelpRequestOfferDetailTag,name="help-request-index-tag"),
+    path('request-help/by-tag/tag/<str:tag>/',newsfeed_views.viewHelpRequestDetailTag,name="help-request-index-tag"),
 	# ex: /newsfeed/request_help
 	path('request-help/',newsfeed_views.viewHelpRequestPrepare,name="help-request-prepare"),
 	# creating a request for help
 	path('request-help/create/',newsfeed_views.viewHelpRequestCreate,name="help-request-create"),
 	# delete help request
 	path('request-help/<str:username>/<slug:slug>/delete/',newsfeed_views.viewHelpRequestDelete,name="help-request-delete"),
+
+	# see all the help requests that you have where
+	# you have been accepted
+	path('request-help/accepted-requests/',newsfeed_views.viewHelpRequestAccepted,name="help-request-accepted"),
 
 	# prepare to reset user
 	path('request-help/<str:username>/<slug:slug>/reset-prepare/',newsfeed_views.viewHelpRequestAcceptedUserResetPrepare,name="help-request-accepted-user-reset-prepare"),
