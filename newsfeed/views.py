@@ -108,7 +108,7 @@ def viewIndex(request,page=1):
     return render(request,'newsfeed/index.html',context = context)
 
 @login_required
-def viewHelpRequestOfferDetailTag(request, tag):
+def viewHelpRequestDetailTag(request, tag):
     ###################################
     # Inputs:
     # request, str tag
@@ -619,6 +619,22 @@ def viewHelpRequestArchiveDetail(request):
         "listmodelAcceptedRequests": listmodelAcceptedRequests,
     }
     return render(request,'newsfeed/help_request/archive.html',context = context)
+
+@login_required
+def viewHelpRequestAccepted(request):
+    # shows allof the help requests user has that
+    # have been accepted by another user
+
+    # get all the help requests that have
+    # the current user as the accepted user
+
+    qsHelpRequests = HelpRequest.objects.filter(accepted_user=request.user)
+
+    context = {
+        "qsHelpRequests":qsHelpRequests,
+    }
+
+    return render(request,'newsfeed/help_request/accepted_requests.html',context=context)
 
 
 ######################################
