@@ -4,7 +4,6 @@
 ***********************************
 */
 .div__GLOBAL_CONTENT{
-    margin:50px;
 }
 
 input[type=checkbox]{
@@ -30,33 +29,18 @@ input[type=checkbox]{
     color:ghostwhite;
 }
 
-/*
-***********************************
-* Styles for Profile
-***********************************
-*/
+.div__GLOBAL_CONTENT{
+    margin-top:2rem;
+    animation: transitionIn 0.75s;
+}
 
-.img__users-profile-img{
-    width:100px;
-    height:100px;
-    margin-left:10px;
-    margin-right:10px;
-}
-.div__users-profile-banner{
-    border-color: rgb(216, 49, 49)
-}
-.div__users-profile-media{
-    margin:10px;
-}
-.div__users-profile-media-account{
-    margin-left:30px;
-    margin-top:15px;
-}
-.div__kcal-entry{
-    border-radius: 10px;
-    background-color: rgb(233, 239, 255);
-    margin:20px;
-    padding:10px;
-}
-.div__users-profile-chart-container{
+@keyframes transitionIn{
+    from{
+        opacity: 0;
+        transform: rotateX(-10deg);
+    }
+    to{
+        opacity: 1;
+        transform: rotateX(0);
+    }
 }
