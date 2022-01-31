@@ -589,7 +589,7 @@ def viewHelpRequestAcceptedUserReset(request,username,slug):
         modelHelpRequest.save()
 
         # delete the room!
-        modelRoom = get_object_or_404(RoomDm, name=modelHelpRequest.name)
+        modelRoom = get_object_or_404(RoomDm,name=modelHelpRequest.title)
         modelRoom.delete()
 
         messages.success(request,'Successfully removed user')

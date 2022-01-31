@@ -96,29 +96,23 @@ Basic navbar to show it is possible
 
 </nav>
 
-
 <!-- If messages, display -->
-{% if messages %}
-	{% for message in messages %}
-		<div class = "alert alert-{{message.tags}} base__div-alert">
-			<div class = "d-flex justify-content-between">
-				<div>
-					{{message}}
-				</div>
-				<div>
-					<i class = 'bi bi-x base__i-x-clicker'></i>
+<div class = "div__GLOBAL_CONTENT" >
+	{% if messages %}
+		{% for message in messages %}
+			<div class = "alert alert-{{message.tags}} base__div-alert">
+				<div class = "d-flex justify-content-between">
+					<div>
+						{{message}}
+					</div>
+					<div>
+						<i class = 'bi bi-x base__i-x-clicker'></i>
+					</div>
 				</div>
 			</div>
-		</div>
-	{% endfor %}
-{% endif %}
+		{% endfor %}
+	{% endif %}
 
-<!-- 
-	
-Load the content from a child page
--->
-	
-<div class = "div__GLOBAL_CONTENT">
 	{% block content %}{% endblock content %}
 	
 
@@ -129,6 +123,7 @@ Load the content from a child page
 </html>
 
 <script>
+
 	function base__removeMsg(){
 		let arrdivMsgs = document.getElementsByClassName("base__div-alert");
 
@@ -139,8 +134,6 @@ Load the content from a child page
 			})
 		}
 	}
-
-
 
 	function base__updateNavBarCurrentTab(){
 		let strCurrUrl = document.getElementById("base__hidden-path-tracker").getAttribute("data-url");
