@@ -29,9 +29,26 @@ input[type=checkbox]{
     color:ghostwhite;
 }
 
-.div__GLOBAL_CONTENT{
+#div__GLOBAL_CONTENT{
     margin-top:2rem;
-    animation: transitionIn 0.75s;
+}
+
+.spd-transition-in{
+    animation: transitionIn 0.5s;
+}
+.spd-transition-out{
+    animation: transitionOut 0.5s;
+}
+
+@keyframes transitionOut{
+    from{
+        opacity: 1;
+        transform: rotateX(0);
+    }
+    to{
+        opacity: 0;
+        transform: rotateX(-10deg);
+    }
 }
 
 @keyframes transitionIn{

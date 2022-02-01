@@ -4,7 +4,7 @@
         {% for modelUser in qsFollowedUsers %}
             <div class = "border rounded p-3 mb-2">
                 <a href = "{{modelUser.get_public_profile_url}}">
-                    <img class = "rounded-circle img__users-profile-img" src = "{{modelUser.profile_picture.url}}">
+                    <img class = "rounded-circle" style="height:6.5rem;width:6.5rem;"  src = "{{modelUser.profile_picture.url}}">
                     {{modelUser.username}}
                 </a>
             </div>
