@@ -98,6 +98,35 @@ Basic navbar to show it is possible
 
 <!-- If messages, display -->
 <div id = "div__GLOBAL_CONTENT" class = "spd-transition-in">
+	<script type = "text/javascript">
+
+		function base__fadeOut(e){
+			var op = 1;
+			var timer = setInterval(()=>{
+				if(op <= 0.1){
+					clearInterval(timer);
+					e.style.display = "none";
+				}
+				e.style.opacity = op;
+				e.style.filter = "alpha(opacity=" + op * 100 + ")";
+				op -= op * 0.1;
+			},50);
+		}
+		window.onpageshow = function(event){
+			if(event.persisted){
+				window.location.reload();
+			}
+		}
+
+
+		document.addEventListener("DOMContentLoaded",()=>{
+			base__aTagFadeOut();
+			base__updateNavBarCurrentTab();
+			base__removeMsg();
+			base__aTagFadeOut();
+		});
+
+	</script>
 	{% if messages %}
 		{% for message in messages %}
 			<div class = "alert alert-{{message.tags}} base__div-alert">
@@ -153,14 +182,14 @@ Basic navbar to show it is possible
 		for(let atag of arrATags){
 			atag.addEventListener("click",(e)=>{
 				let href = atag.getAttribute("href");
-				if(href!= ""){
+				console.log(atag);
+				if(href!= "" && href != "#"){
 					e.preventDefault();
 
 					let opacity = 1;
 					let timer = setInterval(()=>{
 						if(opacity <= 0.1){
 							clearInterval(timer);
-							div__GLOBAL_CONTENT.style.display = "none";
 							window.location = href;
 						}
 						div__GLOBAL_CONTENT.style.opacity = opacity;
@@ -171,11 +200,4 @@ Basic navbar to show it is possible
 			})
 		}
 	}
-
-	document.addEventListener("DOMContentLoaded",()=>{
-		base__aTagFadeOut();
-		base__updateNavBarCurrentTab();
-		base__removeMsg();
-		base__aTagFadeOut();
-	})
 </script>
