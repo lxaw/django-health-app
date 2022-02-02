@@ -104,8 +104,8 @@ Basic navbar to show it is possible
 			var op = 1;
 			var timer = setInterval(()=>{
 				if(op <= 0.1){
-					clearInterval(timer);
 					e.style.display = "none";
+					clearInterval(timer);
 				}
 				e.style.opacity = op;
 				e.style.filter = "alpha(opacity=" + op * 100 + ")";
