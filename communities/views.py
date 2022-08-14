@@ -35,6 +35,13 @@ from core.models import NotificationPost, NotificationUser
 from .forms import PostForm, CommentForm
 from newsfeed.forms import HelpRequestForm
 
+# note! (08/14/22)
+# rqeuest.is_ajax has recently be depreciated.
+# since this is an archive, here is a new function to replace it.
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+
 @login_required
 def viewIndex(request,page=1):
 	###################################
@@ -74,7 +81,7 @@ def viewIndex(request,page=1):
 	}
 	# NOTE!
 	# request.is_ajax() is depreciated in newer versions of django
-	if request.is_ajax():
+	if is_ajax(request):
 		posts_html = render_to_string(
 			"communities/t/posts.html",
 			{'qsPosts':qsPosts}

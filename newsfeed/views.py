@@ -45,6 +45,9 @@ from core.forms import DmForm
 ############################
 from newsfeed.common_functions import CommonFunctions
 
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
 @login_required
 def viewIndex(request,page=1):
     ###################################
@@ -95,7 +98,7 @@ def viewIndex(request,page=1):
         "page":page,
     }
 
-    if request.is_ajax():
+    if is_ajax(request):
         help_requests_html = render_to_string(
             "newsfeed/t/index_help_requests.html",
             {"qsUnfilledHelpRequests":qsUnfilledHelpRequests}
