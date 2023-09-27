@@ -1,4 +1,4 @@
-# socialPOD Django
+# Django Health Web App
 ### :question: What is it?
 socialPOD was the old name for mLIFE, a study designed to help participants lose weight. See more here: [mLifeStudy](https://mlifestudy.org/ "mLifeStudy")
 
@@ -20,3 +20,6 @@ Note that I am not at this moment a UI designer (08/14/22) and as such I focused
 
 ## Profile Page:
 ![Profile Page](https://github.com/lxaw/socialPOD-django/blob/master/example_imgs/profile.png)
+
+## ❤️ How to Support ❤️
+- If this code or anyother I have written has helped you, feel free to make a donation at https://www.buymeacoffee.com/whalenlexn.
